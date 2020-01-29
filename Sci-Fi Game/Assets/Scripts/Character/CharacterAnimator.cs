@@ -1,5 +1,4 @@
-﻿using PixelCrushers.DialogueSystem;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -33,7 +32,8 @@ public class CharacterAnimator : MonoBehaviour
 
         if (character.cInput.rawInput.y != 0 || character.cInput.rawInput.x != 0)
         {
-            DialogueManager.StopConversation ();
+            // TODO
+            //DialogueManager.StopConversation ();
         }
 
         if (character.currentState == Character.State.Driving || character.currentState == Character.State.Falling)
