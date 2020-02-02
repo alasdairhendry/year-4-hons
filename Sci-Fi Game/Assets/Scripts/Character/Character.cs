@@ -88,6 +88,7 @@ public class Character : MonoBehaviour
     public CharacterInteraction cInteraction { get; protected set; }
     public PlayerCameraController cCameraController { get; protected set; }
     public Health Health { get; protected set; }
+    public FloatingTextIndicator FloatingTextIndicator { get; protected set; }
     public bool isGrounded { get; set; } = false;
 
     public new Collider collider;
@@ -111,6 +112,8 @@ public class Character : MonoBehaviour
         cGear = GetComponent<CharacterGear> ();
         cInteraction = GetComponent<CharacterInteraction> ();
         Health = GetComponent<Health> ();
+        FloatingTextIndicator = GetComponent<FloatingTextIndicator> ();
+
         if (GetComponent<NPC> () != null) IsAI = true;
 
         if (IsAI) return;

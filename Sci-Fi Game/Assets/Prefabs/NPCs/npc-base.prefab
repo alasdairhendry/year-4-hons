@@ -4366,6 +4366,7 @@ GameObject:
   - component: {fileID: 6532327703023628567}
   - component: {fileID: 1893421918157256857}
   - component: {fileID: 8217560849017227561}
+  - component: {fileID: 876625248145030355}
   m_Layer: 0
   m_Name: npc-base
   m_TagString: NPC
@@ -4551,6 +4552,7 @@ MonoBehaviour:
   hasAimHit: 0
   ricochetPrefab: {fileID: 388827053568320511, guid: fc0f47ba468f4f249917a3ecd104cb7a,
     type: 3}
+  meleeStrikeDistance: 5
 --- !u!114 &1794158433244268441
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4588,8 +4590,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3935918ba8db964a87302f5040e1c02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damageIndicatorPlaceholder: {fileID: 1526886381}
   maxHealth: 100
+  floatingTextIndicator: {fileID: 876625248145030355}
 --- !u!114 &1893421918157256857
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4624,6 +4626,19 @@ MonoBehaviour:
   lootableNPCPrefab: {fileID: 3701865369580869750, guid: 029f67d4782222043976e7f7ec384edc,
     type: 3}
   healthIndicatorPlaceholder: {fileID: 5278183680022476200}
+--- !u!114 &876625248145030355
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1794158433244268443}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11392fd103681cd49a128fe38795bbb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageIndicatorPlaceholder: {fileID: 1526886381}
 --- !u!1 &1794158433311667744
 GameObject:
   m_ObjectHideFlags: 0
@@ -4916,15 +4931,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 76915df11a9b0364dbadaa5540f90a0e, type: 3}
---- !u!1 &381146146569786409 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6431832202300931812, guid: 76915df11a9b0364dbadaa5540f90a0e,
-    type: 3}
-  m_PrefabInstance: {fileID: 6631672673873013453}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &381146146569786414 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6431832202300931811, guid: 76915df11a9b0364dbadaa5540f90a0e,
+    type: 3}
+  m_PrefabInstance: {fileID: 6631672673873013453}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &381146146569786409 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6431832202300931812, guid: 76915df11a9b0364dbadaa5540f90a0e,
     type: 3}
   m_PrefabInstance: {fileID: 6631672673873013453}
   m_PrefabAsset: {fileID: 0}

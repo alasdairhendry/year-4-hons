@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ef16cc6692d8a5459bd181a38a17005, type: 3}
+  m_Name: Saber
+  m_EditorClassIdentifier: 
+  weaponName: Saber
+  weaponAttackType: 0
+  offsetPosition: {x: 0.01074, y: 0.00224, z: -0.00359}
+  offsetRotation: {x: 24.929949, y: 260.11438, z: 140.8632}
+  localScale: {x: 0.1, y: 0.1, z: 0.1}
+  prefab: {fileID: 8229140038241286947, guid: b7ecc9e57837a8f4496af8df30ee800d, type: 3}
+  baseDamage: 10
+  activeBodyPart: 18
+  holsterBodyPart: 0
+  holsterData: {fileID: 11400000, guid: b2e675c6e8b759541bc71811bd10a49e, type: 2}
+  sheatheSoundData: {fileID: 11400000, guid: 920c09926d7c8b34eb684fdb99cbd15a, type: 2}
+  unsheatheSoundData: {fileID: 11400000, guid: 31a93ea8034f28c4391eba55c18cbc37, type: 2}
+  meleeDamageType: 1
+  swingSoundData: {fileID: 11400000, guid: 8f9cef27adfe5bd4d94f897cac9b1145, type: 2}
+  hitSoundData: {fileID: 11400000, guid: cb6463672b2395d4f81e313563631b00, type: 2}
+  missSoundData: {fileID: 11400000, guid: 6999d33aa01ee9b4db554d79a19462ce, type: 2}
+  genericAnimationClips:
+  - {fileID: 11400000, guid: f6b654ead82605b4ca2e94ac64ed7f95, type: 2}
+  - {fileID: 11400000, guid: c7ff4f24c223a994a83c951dc0b20beb, type: 2}
+  - {fileID: 11400000, guid: 0c40667cc2744dd40848195b2aeadd22, type: 2}
+  specialAnimationClips:
+  - {fileID: 11400000, guid: 2cfa07bf723390c43a7bba57be969059, type: 2}
+  - {fileID: 11400000, guid: f7c1ef56750e097498689ca18e2d551b, type: 2}
+  - {fileID: 11400000, guid: 103bc56950070dd41a087bdee8f0cb17, type: 2}
+  - {fileID: 11400000, guid: d419fc4babe1388468c3e6c4ff0588b7, type: 2}
+  - {fileID: 11400000, guid: c74f4f4113a13fc4abb77a12c36d5df1, type: 2}
+  comboAnimationClips:
+  - {fileID: 11400000, guid: f295eb2764bf40243930e1c8ca56edd3, type: 2}
+  - {fileID: 11400000, guid: 3f92678390418364aac56ef99585ebdb, type: 2}
+  - {fileID: 11400000, guid: 18f5ed2287dc28249b07a0d2b72b2d78, type: 2}
+  - {fileID: 11400000, guid: 0e3b9ab81edeacd4f839d3e0cc49d4c5, type: 2}
+  - {fileID: 11400000, guid: 37d77d3c58c145149841058fa17d9a06, type: 2}

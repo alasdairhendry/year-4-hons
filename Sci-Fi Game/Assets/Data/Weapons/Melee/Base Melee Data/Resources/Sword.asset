@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ef16cc6692d8a5459bd181a38a17005, type: 3}
+  m_Name: Sword
+  m_EditorClassIdentifier: 
+  weaponName: Sword
+  weaponAttackType: 0
+  offsetPosition: {x: 0.0107, y: 0.0023, z: -0.0049}
+  offsetRotation: {x: 346.67856, y: 88.92305, z: 267.72815}
+  localScale: {x: 0.1, y: 0.1, z: 0.1}
+  prefab: {fileID: 7687011114782894191, guid: 7b313df92ea195645ad7d0539201b7c4, type: 3}
+  baseDamage: 10
+  activeBodyPart: 18
+  holsterBodyPart: 54
+  holsterData: {fileID: 11400000, guid: 22c757d39ce5abf4e9bf36f9c723a539, type: 2}
+  sheatheSoundData: {fileID: 11400000, guid: 17449ef03929a5246b4b8de3ff7dd4f4, type: 2}
+  unsheatheSoundData: {fileID: 11400000, guid: ab967c0c7a6c0ef45a9c84ba7f6dafae, type: 2}
+  meleeDamageType: 1
+  swingSoundData: {fileID: 11400000, guid: 8f9cef27adfe5bd4d94f897cac9b1145, type: 2}
+  hitSoundData: {fileID: 11400000, guid: 9c12f392f8e363a4e834d5f317396071, type: 2}
+  missSoundData: {fileID: 11400000, guid: 670eb0814dbec8641a2426c49df39630, type: 2}
+  genericAnimationClips:
+  - {fileID: 11400000, guid: f6b654ead82605b4ca2e94ac64ed7f95, type: 2}
+  - {fileID: 11400000, guid: c7ff4f24c223a994a83c951dc0b20beb, type: 2}
+  - {fileID: 11400000, guid: 0c40667cc2744dd40848195b2aeadd22, type: 2}
+  specialAnimationClips:
+  - {fileID: 11400000, guid: 2cfa07bf723390c43a7bba57be969059, type: 2}
+  - {fileID: 11400000, guid: f7c1ef56750e097498689ca18e2d551b, type: 2}
+  - {fileID: 11400000, guid: 103bc56950070dd41a087bdee8f0cb17, type: 2}
+  - {fileID: 11400000, guid: d419fc4babe1388468c3e6c4ff0588b7, type: 2}
+  - {fileID: 11400000, guid: c74f4f4113a13fc4abb77a12c36d5df1, type: 2}
+  comboAnimationClips:
+  - {fileID: 11400000, guid: f295eb2764bf40243930e1c8ca56edd3, type: 2}
+  - {fileID: 11400000, guid: 3f92678390418364aac56ef99585ebdb, type: 2}
+  - {fileID: 11400000, guid: 18f5ed2287dc28249b07a0d2b72b2d78, type: 2}
+  - {fileID: 11400000, guid: 0e3b9ab81edeacd4f839d3e0cc49d4c5, type: 2}
+  - {fileID: 11400000, guid: 37d77d3c58c145149841058fa17d9a06, type: 2}

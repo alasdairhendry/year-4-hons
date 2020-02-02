@@ -13,8 +13,8 @@ public class Health : MonoBehaviour
     public System.Action onHealthChanged;
     public bool isDead { get; protected set; }
 
-    [SerializeField] private Transform damageIndicatorPlaceholder;
     [SerializeField] private float maxHealth = 100.0f;
+    [SerializeField] private FloatingTextIndicator floatingTextIndicator;
     public float currentHealth { get; protected set; }
     public float healthNormalised { get => currentHealth / maxHealth; }
     public float MaxHealth { get => maxHealth; set => maxHealth = value; }
@@ -51,8 +51,8 @@ public class Health : MonoBehaviour
         currentHealth = Mathf.Clamp ( currentHealth, 0.0f, maxHealth );
         onHealthRemoved?.Invoke ( removed, damageType );
         onHealthChanged?.Invoke ();
-        CheckDeath ();        
-        DamageCanvas.instance.SpawnDamageIndicator ( damageIndicatorPlaceholder, 0.5f, removed );
+        CheckDeath ();
+        floatingTextIndicator.CreateText (removed.ToString(), FloatingTextType.Damage);
         return removed;
     }
 

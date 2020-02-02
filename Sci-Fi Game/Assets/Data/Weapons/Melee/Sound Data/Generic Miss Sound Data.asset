@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32828f830ab38e64b8ef44d99df77ef1, type: 3}
+  m_Name: Generic Miss Sound Data
+  m_EditorClassIdentifier: 
+  audioClips:
+  - {fileID: 8300000, guid: ef85120d63fe0334ab1bc55570f7b510, type: 3}
+  - {fileID: 8300000, guid: d14f724f59fcc1b4391ac52c753b12e2, type: 3}
+  - {fileID: 8300000, guid: 42805f9f90348aa4b810dea9611f9240, type: 3}
+  - {fileID: 8300000, guid: 192da483f8ebbe546afe7d79788cd055, type: 3}
+  - {fileID: 8300000, guid: d6473de825f7b38479574fc88a2cdad5, type: 3}
+  - {fileID: 8300000, guid: 81b60696752b20a49944a5782dbe81a0, type: 3}
+  - {fileID: 8300000, guid: 7ee3c83ae0e86174a8a7934edf610dbe, type: 3}

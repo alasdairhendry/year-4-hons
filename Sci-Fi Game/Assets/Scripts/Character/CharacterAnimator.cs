@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,6 +16,7 @@ public class CharacterAnimator : MonoBehaviour
     [SerializeField] private float crouchStanceLerp = 5.0f;
 
     [SerializeField] private List<AnimationClip> deathClips = new List<AnimationClip> ();
+    //[SerializeField] private List<AnimationClip> meleeAttackClips = new List<AnimationClip> ();
 
     float animatorFloatForward = 0.0f;
     float animatorFloatSideway = 0.0f;
@@ -34,6 +36,20 @@ public class CharacterAnimator : MonoBehaviour
         overrideController = new AnimatorOverrideController ( animator.runtimeAnimatorController );
         overrideController["death-01"] = deathClips.GetRandom ();
         animator.runtimeAnimatorController = overrideController;
+    }
+
+    public MeleeAttackAnimation RandomiseAttackAnimation (List<MeleeAttackAnimation> possibleClips)
+    {
+        MeleeAttackAnimation randomAnimation = possibleClips.GetRandom ();
+        overrideController["melee-attack-01"] = randomAnimation.clip;
+        return randomAnimation;
+    }
+
+    public MeleeAttackComboAnimation RandomiseAttackAnimation (List<MeleeAttackComboAnimation> possibleClips)
+    {
+        MeleeAttackComboAnimation randomAnimation = possibleClips.GetRandom ();
+        overrideController["melee-attack-01"] = randomAnimation.clip;
+        return randomAnimation;
     }
 
     private void Update ()
@@ -80,11 +96,11 @@ public class CharacterAnimator : MonoBehaviour
         ////
         animator.SetFloat ( "running", Mathf.Lerp ( animatorFloatRunning, character.isRunning ? 1.0f : 0.0f, Time.deltaTime * runningStanceLerp ) );
         animator.SetFloat ( "ads", character.IsAiming ? 1.0f : 0.0f );
-        animator.SetBool ( "isGun", character.cWeapon.isEquipped && !character.cWeapon.isHolstered );
+        animator.SetBool ( "isGun", character.cWeapon.isEquipped && !character.cWeapon.isHolstered && character.cWeapon.currentWeaponData.weaponAttackType == WeaponAttackType.Gun );
+        animator.SetBool ( "isMelee", character.cWeapon.isEquipped && !character.cWeapon.isHolstered && character.cWeapon.currentWeaponData.weaponAttackType == WeaponAttackType.Melee );
         ////
 
         //animator.SetFloat ( "fightstance", Mathf.Lerp ( animator.GetFloat ( "fightstance" ), character.IsAiming ? 1.0f : 0.0f, Time.deltaTime * fightStanceLerp ) );
-        //animator.SetBool ( "isMelee", !character.cWeapon.isHolstered );
 
         animator.SetFloat ( "crouchstance", Mathf.Lerp ( animator.GetFloat ( "crouchstance" ), character.isCrouching ? 1.0f : 0.0f, Time.deltaTime * crouchStanceLerp ) );
         //animator.SetBool ( "weaponEquipped", character.cWeapon.isEquipped && !character.cWeapon.isHolstered );

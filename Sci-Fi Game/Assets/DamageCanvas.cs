@@ -18,16 +18,26 @@ public class DamageCanvas : MonoBehaviour
         }
     }
 
-    public void SpawnDamageIndicator (Transform targetTransform, float maxDistance, float damage)
+    public void SpawnIndicator (Transform targetTransform, float maxDistance, string text, FloatingTextType type)
     {
         GameObject go = Instantiate ( damageIndicatorPrefab );
         go.transform.SetParent ( this.transform );
         go.transform.position = targetTransform.position + (Random.insideUnitSphere * maxDistance);
         go.transform.localScale = Vector3.one * 0.01f;
 
-        if (damage < 1)
-            go.GetComponentInChildren<TextMeshProUGUI> ().text = damage.ToString ( "0.0" );
+        float parse = 0.0f;
+
+        if(float.TryParse(text, out parse ))
+        {
+            if (parse < 1)
+                go.GetComponentInChildren<TextMeshProUGUI> ().text = parse.ToString ( "0.0" );
+            else
+                go.GetComponentInChildren<TextMeshProUGUI> ().text = Mathf.Floor ( parse ).ToString ( "0" );
+        }
         else
-            go.GetComponentInChildren<TextMeshProUGUI> ().text = Mathf.Floor ( damage ).ToString ( "0" );
+        {
+            go.GetComponentInChildren<TextMeshProUGUI> ().text = text;
+
+        }
     }
 }

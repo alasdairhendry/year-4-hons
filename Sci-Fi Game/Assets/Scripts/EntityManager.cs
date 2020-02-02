@@ -17,6 +17,7 @@ public class EntityManager : MonoBehaviour
 
     public Character PlayerCharacter { get; protected set; }
     public Inventory PlayerInventory { get; protected set; } = new Inventory ( 12, true, true );
+    public PlayerCameraController CameraController { get; protected set; }
     public Camera MainCamera { get; protected set; }
     [SerializeField] private InventoryCanvas inventoryCanvas;
 
@@ -28,5 +29,6 @@ public class EntityManager : MonoBehaviour
         }
 
         PlayerCharacter = character;
+        CameraController = FindObjectOfType<PlayerCameraController> ();
     }
 }

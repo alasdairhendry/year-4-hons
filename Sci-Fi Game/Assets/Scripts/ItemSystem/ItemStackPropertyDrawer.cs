@@ -20,7 +20,7 @@ public class ItemStackPropertyDrawer : PropertyDrawer
 
         GUILayout.BeginVertical ("Box");
         EditorGUILayout.BeginHorizontal ();
-        EditorGUILayout.PropertyField ( property.FindPropertyRelative ( "ID" ), new GUIContent("ID") );
+        EditorGUILayout.PropertyField ( property.FindPropertyRelative ( "ID" ), new GUIContent ( "ID" ) );
         int x = EditorGUILayout.Popup ( property.FindPropertyRelative ( "ID" ).intValue, ItemDatabase.GetStrings () );
         EditorGUILayout.EndHorizontal();
         EditorGUILayout.PropertyField ( property.FindPropertyRelative ( "Amount" ) );

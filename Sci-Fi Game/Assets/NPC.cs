@@ -23,6 +23,8 @@ public class NPC : MonoBehaviour
     public bool IsAttackable { get => HostilityLevel != HostilityLevel.Passive; }
     public HostilityLevel HostilityLevel { get; protected set; }
     public Health Health { get; protected set; }
+    public FloatingTextIndicator FloatingTextIndicator { get; protected set; }
+
     public System.Action OnDeathAction;
 
     private GameObject healthIndicatorParent;
@@ -32,6 +34,7 @@ public class NPC : MonoBehaviour
     private void Awake ()
     {
         Health = GetComponent<Health> ();
+        FloatingTextIndicator = GetComponent<FloatingTextIndicator> ();
 
         Health.SetMaxHealth ( npcData.MaxHealth, true );
 

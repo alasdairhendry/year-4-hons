@@ -60,6 +60,16 @@ public class CharacterMovement : MonoBehaviour
         Quaternion targetRotation = Quaternion.Slerp ( transform.rotation, lookDirection, movementData.turnSpeed * Time.deltaTime );
         transform.rotation = targetRotation;
     }
+
+    public void SnapCharacterRotationToCamera ()
+    {
+        Vector3 moveDirection = new Vector3 ( 0.0f, 0.0f, 0.0f );
+        moveDirection = character.cCameraController.LookTransform.forward;
+        moveDirection.Normalize ();
+
+        Quaternion lookDirection = Quaternion.LookRotation ( moveDirection );
+        transform.rotation = lookDirection;
+    }
 }
 
 public static class Extensions

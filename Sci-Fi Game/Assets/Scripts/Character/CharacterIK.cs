@@ -117,7 +117,14 @@ public class CharacterIK : MonoBehaviour
 
     private void OnWeaponUnholstered (WeaponData obj)
     {
-        if (character.cWeapon.currentWeaponData.weaponType == WeaponData.WeaponType.Rifle)
+        if(character.cWeapon.currentWeaponData.weaponAttackType == WeaponAttackType.Melee)
+        {
+            isActiveLeftHand = false;
+            isActiveRightHand = false;
+            return;
+        }
+
+        if (character.cWeapon.currentWeaponGunData.weaponType == WeaponGunData.WeaponType.Rifle)
         {
             isActiveLeftHand = true;
             leftHandTargetWeight = 1.0f;
@@ -126,7 +133,14 @@ public class CharacterIK : MonoBehaviour
 
     private void OnWeaponEquipped (WeaponData data)
     {
-        if (character.cWeapon.currentWeaponData.weaponType == WeaponData.WeaponType.Rifle && !character.cWeapon.isHolstered)
+        if (character.cWeapon.currentWeaponData.weaponAttackType == WeaponAttackType.Melee)
+        {
+            isActiveLeftHand = false;
+            isActiveRightHand = false;
+            return;
+        }
+
+        if (character.cWeapon.currentWeaponGunData.weaponType == WeaponGunData.WeaponType.Rifle && !character.cWeapon.isHolstered)
         {
             isActiveLeftHand = true;
             leftHandTargetWeight = 1.0f;
@@ -141,11 +155,18 @@ public class CharacterIK : MonoBehaviour
 
     private void OnAimChanged()
     {
+        if (character.cWeapon.currentWeaponData.weaponAttackType == WeaponAttackType.Melee)
+        {
+            isActiveLeftHand = false;
+            isActiveRightHand = false;
+            return;
+        }
+
         isActiveRightHand = false;
 
         if (!character.IsAiming)
         {
-            if (character.cWeapon.isEquipped && character.cWeapon.currentWeaponData.weaponType == WeaponData.WeaponType.Pistol)
+            if (character.cWeapon.isEquipped && character.cWeapon.currentWeaponGunData.weaponType == WeaponGunData.WeaponType.Pistol)
             {
                 isActiveLeftHand = false;
             }
@@ -195,9 +216,21 @@ public class CharacterIK : MonoBehaviour
 
     private void MatchWeaponIK ()
     {
+        if (character.cWeapon.currentWeaponData == null)
+        {
+            return;
+        }
+
+        if (character.cWeapon.currentWeaponData.weaponAttackType == WeaponAttackType.Melee)
+        {
+            isActiveLeftHand = false;
+            isActiveRightHand = false;
+            return;
+        }
+
         if (character.cWeapon.isEquipped && !character.cWeapon.isHolstered)
         {
-            if (character.cWeapon.currentWeaponData.weaponType == WeaponData.WeaponType.Rifle)
+            if (character.cWeapon.currentWeaponGunData.weaponType == WeaponGunData.WeaponType.Rifle)
             {
                 leftHandTargetPosition = character.cWeapon.WeaponHandTarget.position;
                 leftHandTargetRotation = character.cWeapon.WeaponHandTarget.rotation;
@@ -216,7 +249,7 @@ public class CharacterIK : MonoBehaviour
                     character.cWeapon.GetCurrentIKData.eulerAngles = rightHandTarget.localEulerAngles;
                 }
 
-                if (character.cWeapon.currentWeaponData.weaponType == WeaponData.WeaponType.Pistol)
+                if (character.cWeapon.currentWeaponGunData.weaponType == WeaponGunData.WeaponType.Pistol)
                 {
                     leftHandTargetPosition = character.cWeapon.WeaponHandTarget.position;
                     leftHandTargetRotation = character.cWeapon.WeaponHandTarget.rotation;

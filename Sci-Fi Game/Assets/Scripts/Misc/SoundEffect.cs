@@ -18,21 +18,26 @@ public static class SoundEffect
         return src;
     }
 
-    public static AudioSource Play3D (AudioClip clip, Vector3 position, float minDistance = 10.0f, float maxDistance = 100.0f, bool selfDestruct = true)
+    public static AudioSource Play3D (AudioClip clip, Vector3 position, float minDistance = 10.0f, float maxDistance = 100.0f, bool selfDestruct = true, float delay = 0)
     {
         GameObject go = new GameObject ("Audio Source - 3D");
         go.transform.position = position;
         AudioSource src = go.AddComponent<AudioSource> ();
 
         if (selfDestruct)
-            go.AddComponent<SelfDestruct> ().Initialise ( clip.length, true );
+            go.AddComponent<SelfDestruct> ().Initialise ( clip.length + delay, true );
 
         src.spatialBlend = 1;
         src.minDistance = minDistance;
         src.maxDistance = maxDistance;
 
         src.clip = clip;
-        src.Play ();
+
+        if (delay > 0)
+            src.PlayDelayed ( delay );
+        else
+            src.Play ();
+
 
         return src;
     }

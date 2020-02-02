@@ -6,6 +6,7 @@ using UnityEngine;
 public class AudioClipObject : ScriptableObject
 {
     [SerializeField] private List<AudioClip> audioClips = new List<AudioClip> ();
+    public List<AudioClip> AudioClips { get => audioClips; set => audioClips = value; }
 
     public AudioClip GetRandom ()
     {

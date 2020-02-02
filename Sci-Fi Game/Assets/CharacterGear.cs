@@ -199,11 +199,14 @@ public class CharacterGear : MonoBehaviour
         }
         else
         {
-            // TODO - CHANGE TO SUPPORT MELEE TOO
-            ItemGearWeaponGun item = ItemDatabase.GetItem ( itemID ) as ItemGearWeaponGun;
+            //// TODO - CHANGE TO SUPPORT MELEE TOO
+            ItemGearWeapon item = ItemDatabase.GetItem ( itemID ) as ItemGearWeapon;
             if (item == null) { Debug.LogError ( "Big error" ); return; }
 
-            EntityManager.instance.PlayerCharacter.cWeapon.Equip ( item.weaponData );
+            if (item.WeaponType == WeaponAttackType.Gun)
+                EntityManager.instance.PlayerCharacter.cWeapon.Equip ( (item as ItemGearWeaponGun).weaponData );
+            else
+                EntityManager.instance.PlayerCharacter.cWeapon.Equip ( (item as ItemGearWeaponMelee).weaponData );
 
         }
     }

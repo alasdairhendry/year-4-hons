@@ -1,8 +1,8 @@
-﻿public enum WeaponType { Melee, Gun }
+﻿public enum WeaponAttackType { Melee, Gun }
 
 public abstract class ItemGearWeapon : ItemGear
 {
-    public WeaponType WeaponType { get; protected set; } = WeaponType.Gun;
+    public WeaponAttackType WeaponType { get; protected set; } = WeaponAttackType.Gun;
 
     public ItemGearWeapon (int ID) : base (ID)
     {

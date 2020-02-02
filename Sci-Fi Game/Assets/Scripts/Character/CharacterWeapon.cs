@@ -11,8 +11,11 @@ public class CharacterWeapon : MonoBehaviour
     public Character character { get; protected set; }
 
     public WeaponData currentWeaponData { get; protected set; }
+    public WeaponGunData currentWeaponGunData { get; protected set; }
+    public WeaponMeleeData currentWeaponMeleeData { get; protected set; }
+
     public GameObject currentWeaponObject { get; protected set; }
-    public WeaponData.FireType currentFireType;/*{ get; protected set; }*/
+    public WeaponGunData.FireType currentFireType;/*{ get; protected set; }*/
     public Transform muzzlePoint { get; protected set; }
 
     [Range(0.0f, 1.0f)] public float fireCooldown = 0.0f;
@@ -23,8 +26,24 @@ public class CharacterWeapon : MonoBehaviour
     public bool isHolstered { get; protected set; }
 
     public bool isEquipped { get { return currentWeaponData != null; } }
-    public bool weaponIsPistol { get { if (currentWeaponData == null) return false; return currentWeaponData.weaponType == WeaponData.WeaponType.Pistol; } }
-    public TransformData GetCurrentIKData { get { if (currentWeaponData == null) return null; return (character.currentVehicle != null) ? currentWeaponData.inVehicleIkData : currentWeaponData.ikData; } }
+    public bool weaponIsPistol
+    {
+        get
+        {
+            if (currentWeaponData == null) return false;
+            if (currentWeaponData.weaponAttackType == WeaponAttackType.Melee) return false;
+            return currentWeaponGunData.weaponType == WeaponGunData.WeaponType.Pistol;
+        }
+    }
+    public TransformData GetCurrentIKData
+    {
+        get
+        {
+            if (currentWeaponData == null) return null;
+            if (currentWeaponData.weaponAttackType == WeaponAttackType.Melee) return null;
+            return (character.currentVehicle != null) ? currentWeaponGunData.inVehicleIkData : currentWeaponGunData.ikData;
+        }
+    }
     public Transform WeaponHandTarget
     {
         get
@@ -62,7 +81,11 @@ public class CharacterWeapon : MonoBehaviour
     private AudioSource spinDownDelaySource;
 
     [SerializeField] private GameObject ricochetPrefab;
+    [SerializeField] private List<Transform> comboViews = new List<Transform> ();
     private float currentSpinUpTime = 0.0f;
+
+    private float currentMeleeAnimationLength = 0;
+    private float nextAttackAnimationDelay = 0;
 
     private void Awake ()
     {
@@ -79,16 +102,25 @@ public class CharacterWeapon : MonoBehaviour
     {
         if (character.IsAI) return;
 
-        CheckFireInput ();
-        CheckIsFiring ();
-        CheckBurstCooldown ();
-        CheckReload ();    
+        if(currentWeaponData != null)
+        {
+            if (currentWeaponData.weaponAttackType == WeaponAttackType.Gun)
+            {
+                CheckFireInput ();
+                CheckIsFiring ();
+                CheckBurstCooldown ();
+                CheckReload ();
+                CheckAimPosition ();
+                SetWeaponUI ();
+            }
+            else
+            {
+                CheckMeleeAttack ();
+            }
+        }        
 
-        CheckAimPosition ();
         CheckShouldAim ();
         CheckWeaponSwitch ();
-
-        SetWeaponUI ();
 
         if (Input.GetKeyDown ( KeyCode.H ))
         {
@@ -96,6 +128,310 @@ public class CharacterWeapon : MonoBehaviour
         }
     }
 
+    private void CheckShouldAim ()
+    {
+        if (shouldAimCooldown > 0.0f)
+        {
+            shouldAimCooldown -= Time.deltaTime;
+            if (shouldAimCooldown <= 0.0f)
+            {
+                shouldAimCooldown = 0.0f;
+                ShouldAim = false;
+            }
+        }
+    }
+
+    private void CheckWeaponSwitch ()
+    {
+        if (Input.GetKeyDown ( KeyCode.Alpha1 ))
+        {
+            Equip ( allWeaponData[0] );
+        }
+        if (Input.GetKeyDown ( KeyCode.Alpha2 ))
+        {
+            Equip ( allWeaponData[1] );
+        }
+
+        if (Input.GetKeyDown ( KeyCode.Alpha3 ))
+        {
+            Equip ( allWeaponData[2] );
+        }
+        if (Input.GetKeyDown ( KeyCode.Alpha4 ))
+        {
+            Equip ( allWeaponData[3] );
+        }
+
+        if (Input.GetKeyDown ( KeyCode.Alpha5 ))
+        {
+            Equip ( allWeaponData[4] );
+        }
+        if (Input.GetKeyDown ( KeyCode.Alpha6 ))
+        {
+            Equip ( allWeaponData[5] );
+        }
+    }
+
+    public void SetHolsterState (bool state)
+    {
+        if (!isEquipped) return;
+        if (isHolstered == state) return;
+
+        isHolstered = state;
+
+        if (isHolstered)
+        {
+            Mouse.SetCursorState ( CursorLockMode.None, true );
+            currentWeaponObject.transform.SetParent ( GetComponent<Animator> ().GetBoneTransform ( currentWeaponData.holsterBodyPart ) );
+            currentWeaponData.holsterData.SetLocal ( currentWeaponObject.transform );
+
+            onWeaponHolstered?.Invoke ( currentWeaponData );
+            AimingCanvas.instance.SetReticle ( ReticleType.Off );
+
+            if (currentWeaponData.sheatheSoundData.AudioClips.Count > 0)
+                SoundEffect.Play3D ( currentWeaponData.sheatheSoundData.GetRandom (), transform.position + (Vector3.up), 1, 5 );
+
+            currentWeaponObject.GetComponent<WeaponObject> ().OnHolstered ();
+        }
+        else
+        {
+            Mouse.SetCursorState ( CursorLockMode.Locked, false );
+            currentWeaponObject.transform.SetParent ( GetComponent<Animator> ().GetBoneTransform ( currentWeaponData.activeBodyPart ).Find ( "weapon-holder" ) );
+            currentWeaponObject.transform.localPosition = currentWeaponData.offsetPosition;
+            currentWeaponObject.transform.localEulerAngles = currentWeaponData.offsetRotation;
+            currentWeaponObject.transform.localScale = currentWeaponData.localScale;
+
+            onWeaponUnholstered?.Invoke ( currentWeaponData );
+            AimingCanvas.instance.SetReticle ( ReticleType.CanFire );
+
+            SoundEffect.Play3D ( currentWeaponData.unsheatheSoundData.GetRandom (), transform.position + (Vector3.up), 1, 5 );
+            currentWeaponObject.GetComponent<WeaponObject> ().OnUnholstered ();
+        }
+    }
+
+    public void Equip (WeaponData weaponData)
+    {
+        if (currentWeaponData)
+        {
+            Unequip ();
+        }
+
+        currentWeaponData = weaponData;
+        currentWeaponGunData = weaponData as WeaponGunData;
+        currentWeaponMeleeData = weaponData as WeaponMeleeData;
+
+        currentWeaponObject = Instantiate ( weaponData.prefab );
+
+        if (isHolstered)
+        {
+            currentWeaponObject.transform.SetParent ( GetComponent<Animator> ().GetBoneTransform ( currentWeaponData.holsterBodyPart ) );
+            currentWeaponData.holsterData.SetLocal ( currentWeaponObject.transform );
+            currentWeaponObject.GetComponent<WeaponObject> ().OnHolstered ();
+        }
+        else
+        {
+            currentWeaponObject.transform.SetParent ( GetComponent<Animator> ().GetBoneTransform ( weaponData.activeBodyPart ).Find ( "weapon-holder" ) );
+            currentWeaponObject.transform.localPosition = weaponData.offsetPosition;
+            currentWeaponObject.transform.localEulerAngles = weaponData.offsetRotation;
+            currentWeaponObject.transform.localScale = weaponData.localScale;
+            currentWeaponObject.GetComponent<WeaponObject> ().OnUnholstered ();
+        }
+
+        onWeaponEquiped?.Invoke ( currentWeaponData );
+
+        // IF IS GUN
+        if (currentWeaponData.weaponAttackType == WeaponAttackType.Gun)
+        {
+            currentAmmo = currentWeaponGunData.clipSize;
+            currentReloadTime = 0.0f;
+            currentSpinUpTime = 0.0f;
+            isFiring = false;
+
+            if (currentWeaponGunData.weaponSoundData.spinUpDelayLoop)
+                spinUpDelaySource.clip = currentWeaponGunData.weaponSoundData.spinUpDelayLoop;
+
+            if (currentWeaponGunData.weaponSoundData.spinDownDelayLoop)
+                spinDownDelaySource.clip = currentWeaponGunData.weaponSoundData.spinDownDelayLoop;
+
+            currentFireType = currentWeaponGunData.fireTypes[0];
+            muzzlePoint = currentWeaponObject.transform.Find ( "muzzle-point" );
+        }
+    }
+
+    [NaughtyAttributes.Button]
+    public void Unequip ()
+    {
+        WeaponData w = currentWeaponData;
+        currentWeaponData = null;
+        currentWeaponGunData = null;
+        currentWeaponMeleeData = null;
+
+        if (currentWeaponObject)
+        {
+            currentWeaponObject.transform.SetParent ( null );
+            currentWeaponObject.transform.GetChild ( 0 ).gameObject.AddComponent<BoxCollider> ();
+            currentWeaponObject.AddComponent<Rigidbody> ();
+        }
+
+        onWeaponUnequiped?.Invoke ( w );
+    }
+
+    #region Melee
+    private void CheckMeleeAttack ()
+    {
+        if (currentMeleeAnimationLength > 0)
+        {
+            currentMeleeAnimationLength -= Time.deltaTime;
+            ShouldAim = true;
+
+            if (currentMeleeAnimationLength <= 0)
+            {
+                currentMeleeAnimationLength = 0.0f;
+                shouldAimCooldown = 1.5f;
+                EntityManager.instance.CameraController.SetCinematicComboView ( null );
+            }
+        }
+
+        if (nextAttackAnimationDelay > 0)
+        {
+            nextAttackAnimationDelay -= Time.deltaTime;
+
+            if (nextAttackAnimationDelay <= 0)
+            {
+                nextAttackAnimationDelay = 0.0f;
+            }
+        }
+
+        if (Mouse.Down ( 0 ) && !isHolstered && nextAttackAnimationDelay <= 0.0f)
+        {
+            MeleeAttack ();
+        }
+    }
+
+    private void MeleeAttack ()
+    {
+        float attackTypeRoll = UnityEngine.Random.value;
+        float baseSpecialChance = 0.2f;
+        float baseComboChance = 0.1f;
+
+        EntityManager.instance.CameraController.SetCinematicComboView ( null );
+        currentMeleeAnimationLength = 0;
+
+        if (attackTypeRoll <= baseSpecialChance)
+        {
+            // Attack is a special attack
+            DoSpecialMeleeAttack ();
+        }
+        else
+        {
+            attackTypeRoll -= baseSpecialChance;
+
+            if(attackTypeRoll <= baseComboChance)
+            {
+                // Attack is a combo attack
+                DoComboMeleeAttack ();
+            }
+            else
+            {
+                // Attack is a generic attack
+                DoGenericMeleeAttack ();
+            }
+        }
+    }
+
+    private void DoGenericMeleeAttack ()
+    {
+        MeleeAttackAnimation selectedClip = GetComponent<CharacterAnimator> ().RandomiseAttackAnimation ( currentWeaponMeleeData.genericAnimationClips );
+        GetComponent<Animator> ().SetTrigger ( "meleeAttack" );
+        character.cMovement.SnapCharacterRotationToCamera ();
+
+        SoundEffect.Play3D ( currentWeaponMeleeData.swingSoundData.GetRandom (), currentWeaponObject.transform.position, 1, 5, delay: selectedClip.swingAudioDelay / 60.0f );
+        Invoke ( nameof ( DetermineMeleeHitChance ), selectedClip.resultAudioDelay / 60.0f );
+        nextAttackAnimationDelay = Mathf.Min ( (selectedClip.resultAudioDelay / 60.0f) + 0.25f, selectedClip.clipLength / 60.0f );
+        currentMeleeAnimationLength = selectedClip.clipLength / 60.0f;
+    }
+
+    private void DoSpecialMeleeAttack ()
+    {
+        MeleeAttackAnimation selectedClip = GetComponent<CharacterAnimator> ().RandomiseAttackAnimation ( currentWeaponMeleeData.specialAnimationClips );
+        GetComponent<Animator> ().SetTrigger ( "meleeAttack" );
+        character.cMovement.SnapCharacterRotationToCamera ();
+
+        SoundEffect.Play3D ( currentWeaponMeleeData.swingSoundData.GetRandom (), currentWeaponObject.transform.position, 1, 5, delay: selectedClip.swingAudioDelay / 60.0f );
+        Invoke ( nameof ( PerformHit ), selectedClip.resultAudioDelay / 60.0f );
+        nextAttackAnimationDelay = Mathf.Min ( (selectedClip.resultAudioDelay / 60.0f) + 0.25f, selectedClip.clipLength / 60.0f );
+        currentMeleeAnimationLength = selectedClip.clipLength / 60.0f;
+
+        character.FloatingTextIndicator.CreateText ( "SPECIAL", FloatingTextType.Info );
+    }
+
+    private void DoComboMeleeAttack ()
+    {
+        MeleeAttackComboAnimation selectedClip = GetComponent<CharacterAnimator> ().RandomiseAttackAnimation ( currentWeaponMeleeData.comboAnimationClips );
+        GetComponent<Animator> ().SetTrigger ( "meleeAttack" );
+        character.cMovement.SnapCharacterRotationToCamera ();
+
+        for (int i = 0; i < selectedClip.data.Count; i++)
+        {
+            SoundEffect.Play3D ( currentWeaponMeleeData.swingSoundData.GetRandom (), currentWeaponObject.transform.position, 1, 5, delay: selectedClip.data[i].swingAudioDelay / 60.0f );
+            Invoke ( nameof ( PerformHit ), selectedClip.data[i].resultAudioDelay / 60.0f );
+        }
+
+        nextAttackAnimationDelay = Mathf.Min ( (selectedClip.data[selectedClip.data.Count - 1].resultAudioDelay / 60.0f) + 0.25f, selectedClip.clipLength / 60.0f );
+        currentMeleeAnimationLength = selectedClip.clipLength / 60.0f;
+        character.FloatingTextIndicator.CreateText ( "COMBO", FloatingTextType.Info, true );
+        EntityManager.instance.CameraController.SetCinematicComboView ( comboViews.GetRandom () );
+    }
+
+    private void DetermineMeleeHitChance ()
+    {
+        if (UnityEngine.Random.value < 0.75f)
+        {
+            PerformHit ();
+        }
+        else
+        {
+            PerformMiss ();
+        }
+    }
+
+    [SerializeField] private float meleeStrikeDistance;
+    RaycastHit[] attackSphereHit;
+
+    private void PerformHit ()
+    {
+
+        attackSphereHit = new RaycastHit[0];
+        attackSphereHit = Physics.SphereCastAll ( EntityManager.instance.MainCamera.transform.parent.position, 0.25f, EntityManager.instance.MainCamera.transform.parent.forward, meleeStrikeDistance );
+
+        bool hit = false;
+
+        for (int i = 0; i < attackSphereHit.Length; i++)
+        {
+            if (attackSphereHit[i].collider.gameObject.CompareTag ( "NPC" ))
+            {
+                attackSphereHit[i].collider.gameObject.GetComponent<NPC> ().Health.RemoveHealth ( currentWeaponMeleeData.baseDamage, DamageType.PlayerAttack );
+                hit = true;
+            }
+        }
+
+        if (hit)
+        {
+            SoundEffect.Play3D ( currentWeaponMeleeData.hitSoundData.GetRandom (), currentWeaponObject.transform.position, 1, 5 );
+        }
+        else
+        {
+            PerformMiss ();
+        }
+    }
+
+    private void PerformMiss ()
+    {
+        SoundEffect.Play3D ( currentWeaponMeleeData.missSoundData.GetRandom (), currentWeaponObject.transform.position, 1, 5 );
+
+    }
+    #endregion
+
+    #region Gun
     public void CheckAimPosition ()
     {
         if (!character.IsAiming && isHolstered)
@@ -111,7 +447,7 @@ public class CharacterWeapon : MonoBehaviour
             Ray ray = new Ray ( character.cCameraController.cameraTransform.position, character.cCameraController.cameraTransform.forward );
             RaycastHit[] hits;
 
-            hits = Physics.RaycastAll ( ray, currentWeaponData.maxDistance );
+            hits = Physics.RaycastAll ( ray, currentWeaponGunData.maxDistance );
 
             hits = hits.OrderBy ( x => x.distance ).ToArray ();
 
@@ -168,12 +504,12 @@ public class CharacterWeapon : MonoBehaviour
         }
         else
         {
-            Vector3 position = currentWeaponObject.transform.TransformPoint ( currentWeaponData.clipTextLocalPosition );
+            Vector3 position = currentWeaponObject.transform.TransformPoint ( currentWeaponGunData.clipTextLocalPosition );
 
             if (isHolstered)
             {
                 clipText.text = "[H]";
-                position = currentWeaponObject.transform.TransformPoint ( currentWeaponData.clipTextHolsteredLocalPosition );
+                position = currentWeaponObject.transform.TransformPoint ( currentWeaponGunData.clipTextHolsteredLocalPosition );
             }
             else
             {
@@ -185,7 +521,7 @@ public class CharacterWeapon : MonoBehaviour
                     }
                     else
                     {
-                        clipText.text = currentAmmo.ToString ( "00" ) + " / " + currentWeaponData.clipSize.ToString ( "00" );
+                        clipText.text = currentAmmo.ToString ( "00" ) + " / " + currentWeaponGunData.clipSize.ToString ( "00" );
                     }
                 }
                 else
@@ -207,9 +543,9 @@ public class CharacterWeapon : MonoBehaviour
 
         if (Input.GetMouseButtonDown ( 0 ))
         {
-            if(currentWeaponData.spinUpDelaySeconds > 0)
+            if(currentWeaponGunData.spinUpDelaySeconds > 0)
             {
-                if(currentSpinUpTime < currentWeaponData.spinUpDelaySeconds)
+                if(currentSpinUpTime < currentWeaponGunData.spinUpDelaySeconds)
                 {
                     // TODO start playing spin up delay sound
                     // TODO STOP playing spin down sound
@@ -226,7 +562,7 @@ public class CharacterWeapon : MonoBehaviour
         }
         else
         {
-            if (currentFireType == WeaponData.FireType.Burst && currentBurstCounter != 3 && currentBurstCounter != 0)
+            if (currentFireType == WeaponGunData.FireType.Burst && currentBurstCounter != 3 && currentBurstCounter != 0)
             {
                 ShouldAim = true;
                 shouldAimCooldown = 1.0f;
@@ -237,14 +573,14 @@ public class CharacterWeapon : MonoBehaviour
             isFiring = false;
 
             if (currentSpinUpTime > 0)
-                currentSpinUpTime -= Time.deltaTime / currentWeaponData.spinDownDelaySeconds;
+                currentSpinUpTime -= Time.deltaTime / currentWeaponGunData.spinDownDelaySeconds;
 
             if (currentSpinUpTime < 0) currentSpinUpTime = 0;
         }
 
         if (Input.GetMouseButtonUp ( 0 ))
         {
-            if (currentWeaponData.spinUpDelaySeconds > 0)
+            if (currentWeaponGunData.spinUpDelaySeconds > 0)
             {
                 if (currentSpinUpTime > 0.0f)
                 {
@@ -296,16 +632,16 @@ public class CharacterWeapon : MonoBehaviour
     {
         if (isFiring) return;
         if (fireCooldown > 0.0f) return;
-        if (currentFireType == WeaponData.FireType.Burst && currentBurstCooldown > 0.0f) return;
+        if (currentFireType == WeaponGunData.FireType.Burst && currentBurstCooldown > 0.0f) return;
         if (currentReloadTime > 0.0f) { isFiring = false; return; }
         if (!character.IsAiming) return;
 
-        if (currentSpinUpTime < currentWeaponData.spinUpDelaySeconds) { currentSpinUpTime += Time.deltaTime; return; }
-        if (currentSpinUpTime > currentWeaponData.spinUpDelaySeconds)
+        if (currentSpinUpTime < currentWeaponGunData.spinUpDelaySeconds) { currentSpinUpTime += Time.deltaTime; return; }
+        if (currentSpinUpTime > currentWeaponGunData.spinUpDelaySeconds)
         {
             // TODO stop playing spin up audio loop
             // TODO stop playing spin down audio loop
-            currentSpinUpTime = currentWeaponData.spinUpDelaySeconds;
+            currentSpinUpTime = currentWeaponGunData.spinUpDelaySeconds;
         }
 
         isFiring = true;
@@ -353,8 +689,8 @@ public class CharacterWeapon : MonoBehaviour
             if(currentReloadTime <= 0.0f)
             {
                 currentReloadTime = 0.0f;
-                currentAmmo = currentWeaponData.clipSize;
-                SoundEffect.Play ( currentWeaponData.weaponSoundData.audioClipReloadFinished.GetRandom (), true );
+                currentAmmo = currentWeaponGunData.clipSize;
+                SoundEffect.Play ( currentWeaponGunData.weaponSoundData.audioClipReloadFinished.GetRandom (), true );
             }
         }
         else
@@ -370,8 +706,8 @@ public class CharacterWeapon : MonoBehaviour
     {
         if (currentReloadTime > 0.0f) return;
         if (isHolstered || currentWeaponData == null) { return; }
-        currentReloadTime = currentWeaponData.reloadTime;
-        SoundEffect.Play ( currentWeaponData.weaponSoundData.audioClipReload.GetRandom (), true );
+        currentReloadTime = currentWeaponGunData.reloadTime;
+        SoundEffect.Play ( currentWeaponGunData.weaponSoundData.audioClipReload.GetRandom (), true );
     }
 
     public void Fire ()
@@ -386,39 +722,39 @@ public class CharacterWeapon : MonoBehaviour
 
         if (currentAmmo > 0)
         {
-            SoundEffect.Play ( currentWeaponData.weaponSoundData.audioClipFire.GetRandom (), true );
-            character.cIK.AddRecoil ( currentWeaponData.recoilData );
+            SoundEffect.Play3D ( currentWeaponGunData.weaponSoundData.audioClipFire.GetRandom (), muzzlePoint.position, 10, 100 );
+            character.cIK.AddRecoil ( currentWeaponGunData.recoilData );
             currentAmmo--;
             RayBullet ();
 
         }
         else
         {
-            SoundEffect.Play ( currentWeaponData.weaponSoundData.audioClipEmptyFire.GetRandom (), true );
-            character.cIK.AddRecoil ( currentWeaponData.recoilData );
+            SoundEffect.Play3D ( currentWeaponGunData.weaponSoundData.audioClipEmptyFire.GetRandom (), muzzlePoint.position, 2, 10 );
+            character.cIK.AddRecoil ( currentWeaponGunData.recoilData );
         }
 
-        fireCooldown = 60.0f / currentWeaponData.fireRate;
+        fireCooldown = 60.0f / currentWeaponGunData.fireRate;
 
         switch (currentFireType)
         {
-            case WeaponData.FireType.Single:
+            case WeaponGunData.FireType.Single:
                 isFiring = false;
                 break;
 
-            case WeaponData.FireType.Burst:
+            case WeaponGunData.FireType.Burst:
 
                 currentBurstCounter++;
                 if (currentBurstCounter == 3)
                 {
                     isFiring = false;
-                    currentBurstCooldown = 60.0f / currentWeaponData.burstDelay;
+                    currentBurstCooldown = 60.0f / currentWeaponGunData.burstDelay;
                     currentBurstCounter = 0;
                 }
 
                 break;
 
-            case WeaponData.FireType.Auto:
+            case WeaponGunData.FireType.Auto:
                 if (!Input.GetMouseButton ( 0 ))
                 {
                     isFiring = false;
@@ -439,10 +775,10 @@ public class CharacterWeapon : MonoBehaviour
                 }
                 else
                 {
-                    if (aimEnemyHit.distance > currentWeaponData.maxDistance) return;
+                    if (aimEnemyHit.distance > currentWeaponGunData.maxDistance) return;
 
-                    float distNrm = Mathf.InverseLerp ( 0.0f, currentWeaponData.maxDistance, aimEnemyHit.distance );
-                    float baseDamageWithFalloff = currentWeaponData.damageByDistanceFalloff.Evaluate ( distNrm ) * currentWeaponData.baseDamage;
+                    float distNrm = Mathf.InverseLerp ( 0.0f, currentWeaponGunData.maxDistance, aimEnemyHit.distance );
+                    float baseDamageWithFalloff = currentWeaponGunData.damageByDistanceFalloff.Evaluate ( distNrm ) * currentWeaponData.baseDamage;
 
                     npcInSights.Health.RemoveHealth ( baseDamageWithFalloff, DamageType.PlayerAttack );
 
@@ -450,7 +786,7 @@ public class CharacterWeapon : MonoBehaviour
                     go.transform.position = aimEnemyHit.point;
                     go.transform.rotation = Quaternion.LookRotation ( -character.cCameraController.cameraTransform.forward );
 
-                    GameObject ps = Instantiate ( currentWeaponData.muzzlePrefab );
+                    GameObject ps = Instantiate ( currentWeaponGunData.muzzlePrefab );
                     ps.transform.SetParent ( muzzlePoint );
                     ps.transform.localPosition = Vector3.zero;
                     ps.transform.localRotation = Quaternion.identity;
@@ -461,145 +797,18 @@ public class CharacterWeapon : MonoBehaviour
         }
     }
 
-    private void CheckWeaponSwitch ()
-    {
-        if (Input.GetKeyDown ( KeyCode.Alpha1 ))
-        {
-            Equip ( allWeaponData[0] );
-        }
-        if (Input.GetKeyDown ( KeyCode.Alpha2 ))
-        {
-            Equip ( allWeaponData[1] );
-        }
-
-        if (Input.GetKeyDown ( KeyCode.Alpha3 ))
-        {
-            Equip ( allWeaponData[2] );
-        }
-        if (Input.GetKeyDown ( KeyCode.Alpha4 ))
-        {
-            Equip ( allWeaponData[3] );
-        }
-
-        if (Input.GetKeyDown ( KeyCode.Alpha5 ))
-        {
-            Equip ( allWeaponData[4] );
-        }
-        if (Input.GetKeyDown ( KeyCode.Alpha6 ))
-        {
-            Equip ( allWeaponData[5] );
-        }
-    }   
-
-    private void CheckShouldAim ()
-    {
-        if (shouldAimCooldown > 0.0f)
-        {
-            shouldAimCooldown -= Time.deltaTime;
-            if (shouldAimCooldown <= 0.0f)
-            {
-                shouldAimCooldown = 0.0f;
-                ShouldAim = false;
-            }
-        }
-    }
-
-    public void SetHolsterState (bool state)
-    {
-        if (!isEquipped) return;
-        if (isHolstered == state) return;
-
-        isHolstered = state;
-
-        if (isHolstered)
-        {
-            Mouse.SetCursorState ( CursorLockMode.None, true );
-            currentWeaponObject.transform.SetParent ( GetComponent<Animator> ().GetBoneTransform ( currentWeaponData.holsterBodyPart ) );
-            currentWeaponData.holsterData.SetLocal ( currentWeaponObject.transform );
-
-            onWeaponHolstered?.Invoke ( currentWeaponData );
-            AimingCanvas.instance.SetReticle ( ReticleType.Off );
-        }
-        else
-        {
-            Mouse.SetCursorState ( CursorLockMode.Locked, false );
-            currentWeaponObject.transform.SetParent ( GetComponent<Animator> ().GetBoneTransform ( currentWeaponData.activeBodyPart ).Find ( "weapon-holder" ) );
-            currentWeaponObject.transform.localPosition = currentWeaponData.offsetPosition;
-            currentWeaponObject.transform.localEulerAngles = currentWeaponData.offsetRotation;
-            currentWeaponObject.transform.localScale = currentWeaponData.localScale;
-
-            onWeaponUnholstered?.Invoke ( currentWeaponData );
-            AimingCanvas.instance.SetReticle ( ReticleType.CanFire );
-        }
-    }
-
-    public void Equip (WeaponData weaponData)
-    {
-        if (currentWeaponData)
-        {
-            Unequip ();
-        }
-
-        currentWeaponData = weaponData;
-        currentWeaponObject = Instantiate ( weaponData.prefab );
-
-        if (isHolstered)
-        {
-            currentWeaponObject.transform.SetParent ( GetComponent<Animator> ().GetBoneTransform ( currentWeaponData.holsterBodyPart ) );
-            currentWeaponData.holsterData.SetLocal ( currentWeaponObject.transform );
-        }
-        else
-        {
-            currentWeaponObject.transform.SetParent ( GetComponent<Animator> ().GetBoneTransform ( weaponData.activeBodyPart ).Find ( "weapon-holder" ) );
-            currentWeaponObject.transform.localPosition = weaponData.offsetPosition;
-            currentWeaponObject.transform.localEulerAngles = weaponData.offsetRotation;
-            currentWeaponObject.transform.localScale = weaponData.localScale;
-        }
-
-        onWeaponEquiped?.Invoke ( currentWeaponData );
-
-        currentAmmo = currentWeaponData.clipSize;
-        currentReloadTime = 0.0f;
-        currentSpinUpTime = 0.0f;
-        isFiring = false;
-
-        if (currentWeaponData.weaponSoundData.spinUpDelayLoop)
-            spinUpDelaySource.clip = currentWeaponData.weaponSoundData.spinUpDelayLoop;
-
-        if (currentWeaponData.weaponSoundData.spinDownDelayLoop)
-            spinDownDelaySource.clip = currentWeaponData.weaponSoundData.spinDownDelayLoop;
-
-        currentFireType = currentWeaponData.fireTypes[0];
-        muzzlePoint = currentWeaponObject.transform.Find ( "muzzle-point" );
-    }
-
     [NaughtyAttributes.Button]
     public void ToggleFireType ()
     {
-        int index = currentWeaponData.fireTypes.IndexOf ( currentFireType );
+        int index = currentWeaponGunData.fireTypes.IndexOf ( currentFireType );
         index++;
 
-        if(index >= currentWeaponData.fireTypes.Count)
+        if (index >= currentWeaponGunData.fireTypes.Count)
         {
             index = 0;
         }
 
-        currentFireType = currentWeaponData.fireTypes[index];
+        currentFireType = currentWeaponGunData.fireTypes[index];
     }
-
-    [NaughtyAttributes.Button]
-    public void Unequip ()
-    {
-        WeaponData w = currentWeaponData;
-        currentWeaponData = null;
-
-        if (currentWeaponObject)
-        {
-            currentWeaponObject.transform.SetParent ( null );
-            currentWeaponObject.transform.GetChild ( 0 ).gameObject.AddComponent<BoxCollider> ();
-            currentWeaponObject.AddComponent<Rigidbody> ();
-        }
-
-        onWeaponUnequiped?.Invoke ( w );
-    }
+    #endregion
 }

@@ -57,6 +57,68 @@ public static class ItemDatabase
         { 41, new ItemData_StepTrigger(41) },
         { 42, new ItemData_Selector(42) },
         { 43, new ItemData_AxleCharger(43) },
+
+        { 44, new ItemData_HammerWeapon(44) },
+        { 45, new ItemData_ChiselWeapon(45) },
+        { 46, new ItemData_Flamingo(46) },
+        { 47, new ItemData_Mallet(47) },
+        { 48, new ItemData_Pan(48) },
+        { 49, new ItemData_Saber(49) },
+        { 50, new ItemData_Screwdriver(50) },
+        { 51, new ItemData_Sword(51) },
+        { 52, new ItemData_Wrench(52) },
+
+        //{ 53, new ItemData_Wrench(53) },
+        //{ 54, new ItemData_Wrench(54) },
+        //{ 55, new ItemData_Wrench(55) },
+        //{ 56, new ItemData_Wrench(56) },
+        //{ 57, new ItemData_Wrench(57) },
+        //{ 58, new ItemData_Wrench(58) },
+        //{ 59, new ItemData_Wrench(59) },
+
+        //{ 60, new ItemData_Wrench(60) },
+        //{ 61, new ItemData_Wrench(61) },
+        //{ 62, new ItemData_Wrench(62) },
+        //{ 63, new ItemData_Wrench(63) },
+        //{ 64, new ItemData_Wrench(64) },
+        //{ 65, new ItemData_Wrench(65) },
+        //{ 66, new ItemData_Wrench(66) },
+        //{ 67, new ItemData_Wrench(67) },
+        //{ 68, new ItemData_Wrench(68) },
+        //{ 69, new ItemData_Wrench(69) },
+
+        //{ 70, new ItemData_Wrench(70) },
+        //{ 71, new ItemData_Wrench(71) },
+        //{ 72, new ItemData_Wrench(72) },
+        //{ 73, new ItemData_Wrench(73) },
+        //{ 74, new ItemData_Wrench(74) },
+        //{ 75, new ItemData_Wrench(75) },
+        //{ 76, new ItemData_Wrench(76) },
+        //{ 77, new ItemData_Wrench(77) },
+        //{ 78, new ItemData_Wrench(78) },
+        //{ 79, new ItemData_Wrench(79) },
+
+        //{ 80, new ItemData_Wrench(80) },
+        //{ 81, new ItemData_Wrench(81) },
+        //{ 82, new ItemData_Wrench(82) },
+        //{ 83, new ItemData_Wrench(83) },
+        //{ 84, new ItemData_Wrench(84) },
+        //{ 85, new ItemData_Wrench(85) },
+        //{ 86, new ItemData_Wrench(86) },
+        //{ 87, new ItemData_Wrench(87) },
+        //{ 88, new ItemData_Wrench(88) },
+        //{ 89, new ItemData_Wrench(89) },
+
+        //{ 90, new ItemData_Wrench(90) },
+        //{ 91, new ItemData_Wrench(91) },
+        //{ 92, new ItemData_Wrench(92) },
+        //{ 93, new ItemData_Wrench(93) },
+        //{ 94, new ItemData_Wrench(94) },
+        //{ 95, new ItemData_Wrench(95) },
+        //{ 96, new ItemData_Wrench(96) },
+        //{ 97, new ItemData_Wrench(97) },
+        //{ 98, new ItemData_Wrench(98) },
+        //{ 99, new ItemData_Wrench(99) },
     };
 
     public static void Initialise ()
@@ -140,7 +202,7 @@ public static class ItemDatabase
 
     public static string[] GetStrings ()
     {
-        return itemDictionary.Values.Select ( x => x.Name ).ToArray ();
+        return itemDictionary.Values.Select ( x => x.ID + " - " +  x.Name + " [" + x.category + "]" ).ToArray ();
     }
 
     public static void SendTo (this Inventory from, Inventory to, int id, int amount)

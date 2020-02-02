@@ -44,14 +44,19 @@ public class PlayerCameraController : MonoBehaviour
 
     public Transform yRotationRoot { get; protected set; }
     public Transform xRotationRoot { get; protected set; }
+    public Vector3 initialCameraPosition { get; protected set; }
+    public Quaternion initialCameraRotation { get; protected set; }
     public Transform cameraTransform { get; protected set; }
+    public Transform CinematicComboView { get; protected set; }
 
     private void Awake ()
     {
         camera = GetComponentInChildren<Camera> ();
         yRotationRoot = transform.GetChild ( 0 );
         xRotationRoot = yRotationRoot.GetChild ( 0 );
-        cameraTransform = xRotationRoot.GetChild ( 0 );
+        cameraTransform = xRotationRoot.GetChild ( 0 ).GetChild ( 0 );
+        initialCameraPosition = cameraTransform.localPosition;
+        initialCameraRotation = cameraTransform.localRotation;
     }    
 
     public PlayerCameraController SetTarget(Transform t)
@@ -73,6 +78,14 @@ public class PlayerCameraController : MonoBehaviour
 
     private void Update ()
     {
+        if (CinematicComboView != null)
+        {
+            // In cinema view
+            mouseX = Mathf.Lerp ( mouseX, 0.0f, Time.deltaTime * 10 );
+            mouseY = Mathf.Lerp ( mouseY, 0.0f, Time.deltaTime * 10 );
+            return;
+        }
+
         if (Mouse.Down ( 0, false ) || !character.cWeapon.isHolstered)
         {
             shouldRecordMovement = true;
@@ -97,12 +110,12 @@ public class PlayerCameraController : MonoBehaviour
     private void FixedUpdate ()
     {
         if (!target) return;
-        //if (!character) return;
+        
         if (target.gameObject.activeSelf == false) { return; }
 
         if (character)
         {
-            targetFOV = character.IsAiming ? 40.0f : 60.0f;
+            targetFOV = character.IsAiming && character.cWeapon.currentWeaponData.weaponAttackType == WeaponAttackType.Gun ? 40.0f : 60.0f;
             currentFOV = Mathf.Lerp ( currentFOV, targetFOV, Time.deltaTime * fovChangeDamp );
             camera.fieldOfView = currentFOV;
         }
@@ -134,6 +147,22 @@ public class PlayerCameraController : MonoBehaviour
             xRotationRoot.localRotation = xRotation;
     }
 
+    private void LateUpdate ()
+    {
+        if(CinematicComboView != null)
+        {
+            // In cinema view
+            cameraTransform.position = Vector3.Slerp ( cameraTransform.position, CinematicComboView.position, Time.deltaTime * 25.0f );
+            cameraTransform.rotation = Quaternion.Slerp ( cameraTransform.rotation, CinematicComboView.rotation, Time.deltaTime * 25.0f );
+        }
+        else
+        {
+            // Out of cinema view
+            cameraTransform.localPosition = Vector3.Slerp ( cameraTransform.localPosition, initialCameraPosition, Time.deltaTime * 25.0f );
+            cameraTransform.localRotation = Quaternion.Slerp ( cameraTransform.localRotation, initialCameraRotation, Time.deltaTime * 25.0f );
+        }
+    }
+
     public void SetXRecoil (float x)
     {
         xRecoilAngle = Time.deltaTime * x;
@@ -142,5 +171,10 @@ public class PlayerCameraController : MonoBehaviour
     public void SetYRecoil (float x)
     {
         yRecoilAngle= Time.deltaTime * x;
+    }
+
+    public void SetCinematicComboView(Transform transform)
+    {
+        CinematicComboView = transform;
     }
 }
