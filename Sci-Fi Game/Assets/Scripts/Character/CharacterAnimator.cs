@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,15 +14,26 @@ public class CharacterAnimator : MonoBehaviour
     [SerializeField] private float fightStanceLerp = 5.0f;
     [SerializeField] private float crouchStanceLerp = 5.0f;
 
+    [SerializeField] private List<AnimationClip> deathClips = new List<AnimationClip> ();
+
     float animatorFloatForward = 0.0f;
     float animatorFloatSideway = 0.0f;
     float animatorFloatRunning = 0.0f;
+    private AnimatorOverrideController overrideController;
 
     private void Awake ()
     {
         character = GetComponent<Character> ();
         characterIK = GetComponent<CharacterIK> ();
         animator = GetComponent<Animator> ();
+        SetupOverrideController ();
+    }
+
+    private void SetupOverrideController ()
+    {
+        overrideController = new AnimatorOverrideController ( animator.runtimeAnimatorController );
+        overrideController["death-01"] = deathClips.GetRandom ();
+        animator.runtimeAnimatorController = overrideController;
     }
 
     private void Update ()
@@ -53,6 +65,7 @@ public class CharacterAnimator : MonoBehaviour
         }
 
         float fwd = (character.cInput.input.magnitude);
+
         if(character.IsAiming)
         {
             animator.SetFloat ( "forward", Mathf.Lerp ( animatorFloatForward, character.cInput.input.y, Time.deltaTime * locomotionLerp ) );
@@ -64,16 +77,17 @@ public class CharacterAnimator : MonoBehaviour
             animator.SetFloat ( "sideway", Mathf.Lerp ( animatorFloatSideway, fwd, Time.deltaTime * locomotionLerp ) );
         }
        
+        ////
         animator.SetFloat ( "running", Mathf.Lerp ( animatorFloatRunning, character.isRunning ? 1.0f : 0.0f, Time.deltaTime * runningStanceLerp ) );
+        animator.SetFloat ( "ads", character.IsAiming ? 1.0f : 0.0f );
+        animator.SetBool ( "isGun", character.cWeapon.isEquipped && !character.cWeapon.isHolstered );
+        ////
 
-        animator.SetFloat ( "fightstance", Mathf.Lerp ( animator.GetFloat ( "fightstance" ), character.IsAiming ? 1.0f : 0.0f, Time.deltaTime * fightStanceLerp ) );
+        //animator.SetFloat ( "fightstance", Mathf.Lerp ( animator.GetFloat ( "fightstance" ), character.IsAiming ? 1.0f : 0.0f, Time.deltaTime * fightStanceLerp ) );
+        //animator.SetBool ( "isMelee", !character.cWeapon.isHolstered );
+
         animator.SetFloat ( "crouchstance", Mathf.Lerp ( animator.GetFloat ( "crouchstance" ), character.isCrouching ? 1.0f : 0.0f, Time.deltaTime * crouchStanceLerp ) );
-        animator.SetBool ( "weaponEquipped", character.cWeapon.isEquipped && !character.cWeapon.isHolstered );
+        //animator.SetBool ( "weaponEquipped", character.cWeapon.isEquipped && !character.cWeapon.isHolstered );
         animator.SetBool ( "isPistol", character.cWeapon.weaponIsPistol );
-    }
-
-    public void OnCompleteAnimation_GrabMain ()
-    {
-        characterIK.SetRightHand ( character.cDrag.target.cDrag.dragIKTarget );
     }
 }

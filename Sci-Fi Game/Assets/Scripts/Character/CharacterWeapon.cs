@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class CharacterWeapon : MonoBehaviour
 {
@@ -16,7 +17,7 @@ public class CharacterWeapon : MonoBehaviour
 
     [Range(0.0f, 1.0f)] public float fireCooldown = 0.0f;
     public bool isFiring = false;
-    public int currentRounds = 0;
+    public float currentAmmo = 0;
     public float currentReloadTime = 0.0f;
 
     public bool isHolstered { get; protected set; }
@@ -34,8 +35,7 @@ public class CharacterWeapon : MonoBehaviour
         }
     }
 
-    [SerializeField] private WeaponData pistolData;
-    [SerializeField] private WeaponData rifleData;
+    [SerializeField] private List<WeaponData> allWeaponData = new List<WeaponData> ();
 
     public System.Action<WeaponData> onWeaponEquiped;
     public System.Action<WeaponData> onWeaponUnequiped;
@@ -51,79 +51,28 @@ public class CharacterWeapon : MonoBehaviour
     [SerializeField] private float minHitDistance = 2.0f;
 
     public Vector3 AimPosition = new Vector3 ();
-    public RaycastHit aimHit;
+    public RaycastHit aimEnemyHit;
+    public NPC npcInSights = null;
     public bool hasAimHit = false;
-
-    public void CheckAimPosition ()
-    {
-        bool setAimPosition = false;
-        bool setHit = false;
-
-        if (character.IsAiming)
-        {
-            Ray ray = new Ray ( character.cCameraController.cameraTransform.position, character.cCameraController.cameraTransform.forward );
-            RaycastHit[] hits;
-
-            hits = Physics.RaycastAll ( ray, currentWeaponData.maxDistance );
-
-            hits = hits.OrderBy ( x => x.distance ).ToArray ();
-
-            for (int i = 0; i < hits.Length; i++)
-            {
-                if (hits[i].distance < minHitDistance) continue;
-
-                Character character = hits[i].collider.gameObject.GetComponent<Character> ();
-
-                if (character != null)
-                {
-                    if (!character.IsAI)
-                    {
-                        continue;
-                    }
-                }
-
-                AimPosition = hits[i].point;
-                setAimPosition = true;
-
-                aimHit = hits[i];
-                setHit = true;
-                hasAimHit = true;
-                break;
-            }
-        }
-
-        if (!setAimPosition)
-        {
-            AimPosition = character.cCameraController.cameraTransform.position + (character.cCameraController.cameraTransform.forward * 15);
-        }
-
-        if (!setHit)
-        {
-            hasAimHit = false;
-        }
-
-    }
-
-    [NaughtyAttributes.Button]
-    public void EquipPistol ()
-    {
-        Equip ( pistolData );
-    }
-
-    [NaughtyAttributes.Button]
-    public void EquipRifle ()
-    {
-        Equip ( rifleData );
-    }
 
     private int currentBurstCounter = 0;
     private float currentBurstCooldown = 0.0f;
 
+    private AudioSource spinUpDelaySource;
+    private AudioSource spinDownDelaySource;
+
+    [SerializeField] private GameObject ricochetPrefab;
+    private float currentSpinUpTime = 0.0f;
+
     private void Awake ()
     {
         character = GetComponent<Character> ();
-        EquipPistol ();
-        SetHolsterState ();
+        if (allWeaponData.Count > 0)
+            Equip ( allWeaponData[0] );
+        SetHolsterState ( true );
+
+        spinUpDelaySource = SoundEffect.Create ( this, 1.0f, parent: this.transform );
+        spinDownDelaySource = SoundEffect.Create ( this, 1.0f, parent: this.transform );
     }
 
     private void Update ()
@@ -143,7 +92,71 @@ public class CharacterWeapon : MonoBehaviour
 
         if (Input.GetKeyDown ( KeyCode.H ))
         {
-            SetHolsterState ( );
+            SetHolsterState ( !isHolstered );
+        }
+    }
+
+    public void CheckAimPosition ()
+    {
+        if (!character.IsAiming && isHolstered)
+        {
+            return;
+        }
+
+        bool setAimPosition = false;
+        bool setHit = false;
+
+        if (character.IsAiming || !isHolstered)
+        {
+            Ray ray = new Ray ( character.cCameraController.cameraTransform.position, character.cCameraController.cameraTransform.forward );
+            RaycastHit[] hits;
+
+            hits = Physics.RaycastAll ( ray, currentWeaponData.maxDistance );
+
+            hits = hits.OrderBy ( x => x.distance ).ToArray ();
+
+            for (int i = 0; i < hits.Length; i++)
+            {
+                if (hits[i].distance < minHitDistance) continue;
+
+                NPC npc = hits[i].collider.gameObject.GetComponent<NPC> ();
+
+                if (npc == null)
+                {
+                    continue;
+                }
+
+                AimPosition = hits[i].point;
+                setAimPosition = true;
+
+                npcInSights = npc;
+                aimEnemyHit = hits[i];
+                setHit = true;
+                hasAimHit = true;
+                break;
+            }
+        }
+
+        if (!setAimPosition)
+        {
+            AimPosition = character.cCameraController.cameraTransform.position + (character.cCameraController.cameraTransform.forward * 15);
+        }
+
+        if (!setHit)
+        {
+            if (!isHolstered)
+                AimingCanvas.instance.SetReticle ( ReticleType.CanFire );
+            npcInSights = null;
+            aimEnemyHit = new RaycastHit ();
+            hasAimHit = false;
+        }
+        else
+        {
+            if (npcInSights?.HostilityLevel == HostilityLevel.Passive)
+            {
+                if (!isHolstered)
+                    AimingCanvas.instance.SetReticle ( ReticleType.CantFire );
+            }
         }
     }
 
@@ -172,7 +185,7 @@ public class CharacterWeapon : MonoBehaviour
                     }
                     else
                     {
-                        clipText.text = currentRounds.ToString ( "00" ) + " / " + currentWeaponData.clipSize.ToString ( "00" );
+                        clipText.text = currentAmmo.ToString ( "00" ) + " / " + currentWeaponData.clipSize.ToString ( "00" );
                     }
                 }
                 else
@@ -190,51 +203,110 @@ public class CharacterWeapon : MonoBehaviour
     private void CheckFireInput ()
     {
         if (isHolstered || currentWeaponData == null) { isFiring = false; return; }
+        if (EventSystem.current.IsPointerOverGameObject ()) return;
 
-        switch (currentFireType)
+        if (Input.GetMouseButtonDown ( 0 ))
         {
-            case WeaponData.FireType.Single:
-                if (Input.GetMouseButtonDown ( 0 ))
+            if(currentWeaponData.spinUpDelaySeconds > 0)
+            {
+                if(currentSpinUpTime < currentWeaponData.spinUpDelaySeconds)
                 {
-                    TryFire ();
-
-                    ShouldAim = true;
-                    shouldAimCooldown = 1.0f;
+                    // TODO start playing spin up delay sound
+                    // TODO STOP playing spin down sound
                 }
-                break;
-
-            case WeaponData.FireType.Burst:                
-                if (Input.GetMouseButtonDown ( 0 ))
-                {
-                    TryFire ();
-
-                    ShouldAim = true;
-                    shouldAimCooldown = 1.0f;
-                }
-                break;
-
-            case WeaponData.FireType.Auto:
-                if (Input.GetMouseButton ( 0 ))
-                {
-                    TryFire ();
-
-                    ShouldAim = true;
-                    shouldAimCooldown = 1.0f;
-                }
-                else
-                {
-                    isFiring = false;
-                }
-                break;
+            }
         }
+
+        if (Input.GetMouseButton ( 0 ))
+        {
+            TryFire ();
+
+            ShouldAim = true;
+            shouldAimCooldown = 1.0f;
+        }
+        else
+        {
+            if (currentFireType == WeaponData.FireType.Burst && currentBurstCounter != 3 && currentBurstCounter != 0)
+            {
+                ShouldAim = true;
+                shouldAimCooldown = 1.0f;
+                Debug.Log ( "wut" );
+                return;
+            }
+
+            isFiring = false;
+
+            if (currentSpinUpTime > 0)
+                currentSpinUpTime -= Time.deltaTime / currentWeaponData.spinDownDelaySeconds;
+
+            if (currentSpinUpTime < 0) currentSpinUpTime = 0;
+        }
+
+        if (Input.GetMouseButtonUp ( 0 ))
+        {
+            if (currentWeaponData.spinUpDelaySeconds > 0)
+            {
+                if (currentSpinUpTime > 0.0f)
+                {
+                    // TODO STOP playing spin up delay sound
+                    // TODO START playing spin down sound
+                }
+            }
+        }
+
+        //switch (currentFireType)
+        //{
+        //    case WeaponData.FireType.Single:
+        //        if (Input.GetMouseButtonDown ( 0 ))
+        //        {
+        //            TryFire ();
+
+        //            ShouldAim = true;
+        //            shouldAimCooldown = 1.0f;
+        //        }
+        //        break;
+
+        //    case WeaponData.FireType.Burst:                
+        //        if (Input.GetMouseButtonDown ( 0 ))
+        //        {
+        //            TryFire ();
+
+        //            ShouldAim = true;
+        //            shouldAimCooldown = 1.0f;
+        //        }
+        //        break;
+
+        //    case WeaponData.FireType.Auto:
+        //        if (Input.GetMouseButton ( 0 ))
+        //        {
+        //            TryFire ();
+
+        //            ShouldAim = true;
+        //            shouldAimCooldown = 1.0f;
+        //        }
+        //        else
+        //        {
+        //            isFiring = false;
+        //        }
+        //        break;
+        //}
     }
 
     private void TryFire ()
     {
+        if (isFiring) return;
         if (fireCooldown > 0.0f) return;
         if (currentFireType == WeaponData.FireType.Burst && currentBurstCooldown > 0.0f) return;
-        if (currentReloadTime > 0.0f) { isFiring = false;  return; }
+        if (currentReloadTime > 0.0f) { isFiring = false; return; }
         if (!character.IsAiming) return;
+
+        if (currentSpinUpTime < currentWeaponData.spinUpDelaySeconds) { currentSpinUpTime += Time.deltaTime; return; }
+        if (currentSpinUpTime > currentWeaponData.spinUpDelaySeconds)
+        {
+            // TODO stop playing spin up audio loop
+            // TODO stop playing spin down audio loop
+            currentSpinUpTime = currentWeaponData.spinUpDelaySeconds;
+        }
 
         isFiring = true;
     }
@@ -281,7 +353,8 @@ public class CharacterWeapon : MonoBehaviour
             if(currentReloadTime <= 0.0f)
             {
                 currentReloadTime = 0.0f;
-                currentRounds = currentWeaponData.clipSize;
+                currentAmmo = currentWeaponData.clipSize;
+                SoundEffect.Play ( currentWeaponData.weaponSoundData.audioClipReloadFinished.GetRandom (), true );
             }
         }
         else
@@ -298,24 +371,30 @@ public class CharacterWeapon : MonoBehaviour
         if (currentReloadTime > 0.0f) return;
         if (isHolstered || currentWeaponData == null) { return; }
         currentReloadTime = currentWeaponData.reloadTime;
-        SoundEffect.Play ( currentWeaponData.audioClipReload );
+        SoundEffect.Play ( currentWeaponData.weaponSoundData.audioClipReload.GetRandom (), true );
     }
 
     public void Fire ()
     {
         if (!isFiring) return;
 
-        if(currentRounds > 0)
+        if (npcInSights != null && npcInSights.HostilityLevel == HostilityLevel.Passive)
         {
-            SoundEffect.Play ( currentWeaponData.audioClipFire );
+            isFiring = false;
+            return;
+        }
+
+        if (currentAmmo > 0)
+        {
+            SoundEffect.Play ( currentWeaponData.weaponSoundData.audioClipFire.GetRandom (), true );
             character.cIK.AddRecoil ( currentWeaponData.recoilData );
-            currentRounds--;
+            currentAmmo--;
             RayBullet ();
 
         }
         else
         {
-            SoundEffect.Play ( currentWeaponData.audioClipEmptyFire );
+            SoundEffect.Play ( currentWeaponData.weaponSoundData.audioClipEmptyFire.GetRandom (), true );
             character.cIK.AddRecoil ( currentWeaponData.recoilData );
         }
 
@@ -348,25 +427,37 @@ public class CharacterWeapon : MonoBehaviour
         }
     }
 
-    [SerializeField] private GameObject ricochetPrefab;
-
     private void RayBullet ()
     {
         if (hasAimHit)
         {
-            float distNrm = Mathf.InverseLerp ( 0.0f, currentWeaponData.maxDistance, aimHit.distance );
-            float damage = currentWeaponData.damageByDistanceFalloff.Evaluate ( distNrm ) * currentWeaponData.maxDamage;
+            if(npcInSights != null)
+            {
+                if(npcInSights.HostilityLevel == HostilityLevel.Passive)
+                {
+                    return;
+                }
+                else
+                {
+                    if (aimEnemyHit.distance > currentWeaponData.maxDistance) return;
 
-            GameObject go = Instantiate ( ricochetPrefab );
-            go.transform.position = aimHit.point;
-            go.transform.rotation = Quaternion.LookRotation ( -character.cCameraController.cameraTransform.forward );
+                    float distNrm = Mathf.InverseLerp ( 0.0f, currentWeaponData.maxDistance, aimEnemyHit.distance );
+                    float baseDamageWithFalloff = currentWeaponData.damageByDistanceFalloff.Evaluate ( distNrm ) * currentWeaponData.baseDamage;
 
-            GameObject ps = Instantiate ( currentWeaponData.muzzlePrefab );
-            ps.transform.SetParent ( muzzlePoint );
-            ps.transform.localPosition = Vector3.zero;
-            ps.transform.localRotation = Quaternion.identity;
+                    npcInSights.Health.RemoveHealth ( baseDamageWithFalloff, DamageType.PlayerAttack );
 
-            SkillManager.instance.AddXp ( SkillManager.SkillType.Shooting, 10.0f );
+                    GameObject go = Instantiate ( ricochetPrefab );
+                    go.transform.position = aimEnemyHit.point;
+                    go.transform.rotation = Quaternion.LookRotation ( -character.cCameraController.cameraTransform.forward );
+
+                    GameObject ps = Instantiate ( currentWeaponData.muzzlePrefab );
+                    ps.transform.SetParent ( muzzlePoint );
+                    ps.transform.localPosition = Vector3.zero;
+                    ps.transform.localRotation = Quaternion.identity;
+
+                    SkillManager.instance.AddXp ( SkillManager.SkillType.Shooting, 10.0f );
+                }
+            }         
         }
     }
 
@@ -374,11 +465,29 @@ public class CharacterWeapon : MonoBehaviour
     {
         if (Input.GetKeyDown ( KeyCode.Alpha1 ))
         {
-            EquipPistol ();
+            Equip ( allWeaponData[0] );
         }
         if (Input.GetKeyDown ( KeyCode.Alpha2 ))
         {
-            EquipRifle ();
+            Equip ( allWeaponData[1] );
+        }
+
+        if (Input.GetKeyDown ( KeyCode.Alpha3 ))
+        {
+            Equip ( allWeaponData[2] );
+        }
+        if (Input.GetKeyDown ( KeyCode.Alpha4 ))
+        {
+            Equip ( allWeaponData[3] );
+        }
+
+        if (Input.GetKeyDown ( KeyCode.Alpha5 ))
+        {
+            Equip ( allWeaponData[4] );
+        }
+        if (Input.GetKeyDown ( KeyCode.Alpha6 ))
+        {
+            Equip ( allWeaponData[5] );
         }
     }   
 
@@ -395,27 +504,32 @@ public class CharacterWeapon : MonoBehaviour
         }
     }
 
-    public void SetHolsterState()
+    public void SetHolsterState (bool state)
     {
         if (!isEquipped) return;
+        if (isHolstered == state) return;
 
-        isHolstered = !isHolstered;
+        isHolstered = state;
 
         if (isHolstered)
         {
+            Mouse.SetCursorState ( CursorLockMode.None, true );
             currentWeaponObject.transform.SetParent ( GetComponent<Animator> ().GetBoneTransform ( currentWeaponData.holsterBodyPart ) );
             currentWeaponData.holsterData.SetLocal ( currentWeaponObject.transform );
 
             onWeaponHolstered?.Invoke ( currentWeaponData );
+            AimingCanvas.instance.SetReticle ( ReticleType.Off );
         }
         else
         {
+            Mouse.SetCursorState ( CursorLockMode.Locked, false );
             currentWeaponObject.transform.SetParent ( GetComponent<Animator> ().GetBoneTransform ( currentWeaponData.activeBodyPart ).Find ( "weapon-holder" ) );
             currentWeaponObject.transform.localPosition = currentWeaponData.offsetPosition;
             currentWeaponObject.transform.localEulerAngles = currentWeaponData.offsetRotation;
             currentWeaponObject.transform.localScale = currentWeaponData.localScale;
 
             onWeaponUnholstered?.Invoke ( currentWeaponData );
+            AimingCanvas.instance.SetReticle ( ReticleType.CanFire );
         }
     }
 
@@ -444,8 +558,17 @@ public class CharacterWeapon : MonoBehaviour
 
         onWeaponEquiped?.Invoke ( currentWeaponData );
 
-        currentRounds = currentWeaponData.clipSize;
+        currentAmmo = currentWeaponData.clipSize;
         currentReloadTime = 0.0f;
+        currentSpinUpTime = 0.0f;
+        isFiring = false;
+
+        if (currentWeaponData.weaponSoundData.spinUpDelayLoop)
+            spinUpDelaySource.clip = currentWeaponData.weaponSoundData.spinUpDelayLoop;
+
+        if (currentWeaponData.weaponSoundData.spinDownDelayLoop)
+            spinDownDelaySource.clip = currentWeaponData.weaponSoundData.spinDownDelayLoop;
+
         currentFireType = currentWeaponData.fireTypes[0];
         muzzlePoint = currentWeaponObject.transform.Find ( "muzzle-point" );
     }

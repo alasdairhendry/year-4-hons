@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: 83e726fb134a5894698d5f31b8a11e46
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Open Sans Condensed Light
+  fontNames:
+  - Open Sans Condensed Light
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 3b98865b7e5cc994d97fcae7f2e0e870, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

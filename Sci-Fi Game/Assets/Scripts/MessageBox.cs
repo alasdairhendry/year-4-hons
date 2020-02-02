@@ -10,6 +10,7 @@ public class MessageBox : MonoBehaviour
 
     public enum Type { Info, Warning, Error }
     [SerializeField] private TextMeshProUGUI textField;
+    [SerializeField] private GameObject panel;
 
     private List<Message> messages = new List<Message> ();
 
@@ -20,6 +21,23 @@ public class MessageBox : MonoBehaviour
 
         AddMessage ( "Welcome to the game." );
     }
+
+    public void Open ()
+    {
+        panel.SetActive ( true );
+    }
+
+    public void Close ()
+    {
+        panel.SetActive ( false );
+    }
+
+    public void Trigger ()
+    {
+        if (panel.activeSelf) Close ();
+        else Open ();
+    }
+
 
     public static void AddMessage (string message, Type type = Type.Info)
     {

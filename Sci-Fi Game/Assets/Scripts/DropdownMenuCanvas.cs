@@ -61,6 +61,12 @@ public class DropdownMenuCanvas : MonoBehaviour
             }
             else
             {
+                if (list[i].interactType == InventoryInteractionData.InteractType.DoNothing)
+                {
+                    dropdownItemPanels[i].gameObject.SetActive ( false );
+                    continue;
+                }
+
                 item = ItemDatabase.GetItem ( itemID );
 
                 if(item == null)

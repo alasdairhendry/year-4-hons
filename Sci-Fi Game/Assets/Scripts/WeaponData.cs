@@ -7,11 +7,15 @@ using UnityEngine;
 public class WeaponData : ScriptableObject
 {
     public enum WeaponType { Pistol, Rifle }
+    public enum AmmoType { Bullets, Energy, Plasma }
     public enum FireType { Single, Burst, Auto }
 
     public string weaponName;
     [Space]
     public WeaponType weaponType = WeaponType.Pistol;
+    public AmmoType ammoType = AmmoType.Bullets;
+    public List<FireType> fireTypes = new List<FireType> ();
+    public int attachmentSlots = 1;
     public HumanBodyBones activeBodyPart = HumanBodyBones.RightHand;
     public TransformData ikData;
     public TransformData inVehicleIkData;
@@ -22,17 +26,16 @@ public class WeaponData : ScriptableObject
     public float fireRate = 60.0f;  // Rounds per minute
     public float burstDelay = 60.0f;  // Delay Between burst fires. Calculated in Rounds per Minute to keep uniformity in calculations
     public float reloadTime = 1.2f;
-    public int clipSize = 30;
+    public float clipSize = 30;
+    [Space]
+    public float spinUpDelaySeconds = 0;
+    public float spinDownDelaySeconds = 0;
     [Space]
     public float maxDistance;
-    public float maxDamage;
+    public float baseDamage;
     public AnimationCurve damageByDistanceFalloff;
     [Space]
-    public List<FireType> fireTypes = new List<FireType> ();
-    [Space]
-    public AudioClip audioClipFire;
-    public AudioClip audioClipEmptyFire;
-    public AudioClip audioClipReload;
+    public WeaponSoundData weaponSoundData;
     public RecoilData recoilData;
     [Space]
     public GameObject prefab;

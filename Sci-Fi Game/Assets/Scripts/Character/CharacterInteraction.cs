@@ -19,7 +19,7 @@ public class CharacterInteraction : MonoBehaviour
     private Camera mainCamera;
 
     public float SquaredInteractionDisplayRadius { get => interactionDisplayRadius * interactionDisplayRadius; }
-    private Interactable currentlyHoveredInteractable = null;
+    public Interactable currentlyHoveredInteractable { get; protected set; } = null;
 
     private void Start ()
     {
@@ -51,13 +51,13 @@ public class CharacterInteraction : MonoBehaviour
         {
             Interactable interactable = hit.collider.gameObject.GetComponent<Interactable> ();
 
-            if(currentlyHoveredInteractable != null)
-            {
-                currentlyHoveredInteractable.OnPointerExit ();
-            }
+            //if(currentlyHoveredInteractable != null)
+            //{
+            //    currentlyHoveredInteractable.OnPointerExit ();
+            //}
 
             currentlyHoveredInteractable = interactable;
-            interactable.OnPointerEnter ();
+            //interactable.OnPointerEnter ();
 
             if (interactable != null)
             {
@@ -83,7 +83,7 @@ public class CharacterInteraction : MonoBehaviour
 
     private void GetInteractionRequests ()
     {
-        if (Mouse.Click ( 0 ) && EventSystem.current.IsPointerOverGameObject () == false)
+        if (Mouse.Click ( 0 ) && EventSystem.current.IsPointerOverGameObject () == false && EntityManager.instance.PlayerCharacter.cWeapon.isHolstered)
         {
             ray = mainCamera.ScreenPointToRay ( Input.mousePosition );
 
@@ -95,14 +95,16 @@ public class CharacterInteraction : MonoBehaviour
                 {
                     if (Extensions.SquaredDistance ( hit.collider.transform.position, transform.position ) <= SquaredInteractionAvailableRadius)
                     {
-                        if (InventoryItemInteraction.IsCurrentlyInteracting)
-                        {
-                            InventoryItemInteraction.OnClickInteractableItem ( interactable.GetInteractableType );
-                        }
-                        else
-                        {
+                        EntityManager.instance.PlayerCharacter.cWeapon.SetHolsterState ( true );
+
+                        //if (InventoryItemInteraction.IsCurrentlyInteracting)
+                        //{
+                        //    InventoryItemInteraction.OnClickInteractableItem ( interactable.GetInteractableType );
+                        //}
+                        //else
+                        //{
                             interactable.Interact ();
-                        }
+                        //}
                     }
                 }
             }
@@ -145,56 +147,24 @@ public class CharacterInteraction : MonoBehaviour
             float squaredDistancePlayerToInteractable = Extensions.SquaredDistance ( transform.position, interactionsInDisplayRadius[i].transform.position );
             Interactable inter = interactionsInDisplayRadius[i].GetComponent<Interactable> ();
 
-            //if (inter == null)
-            //{
-            //    Debug.Log ( "Wtf again" );
-            //    continue;
-            //}
-
             if (inter.IsInteractable)
             {
-                //if (closestInteractable == null)
-                //    closestInteractable = inter;
-                //else
-                //{
-                //    if (dist < Extensions.SquaredDistance ( transform.position, closestInteractable.transform.position ))
-                //    {
-                //        if (colliderToUIDictionary.ContainsKey ( closestInteractable.GetComponent<Collider> () ))
-                //            colliderToUIDictionary[closestInteractable.GetComponent<Collider> ()].GetComponentInChildren<TextMeshProUGUI> ().text = "";
-                //        closestInteractable = inter;
-                //    }
-                //}
-
-                ShowObject ( colliderToUIDictionary[interactionsInDisplayRadius[i]], inter.GetDescriptiveName );
+                ShowObject ( colliderToUIDictionary[interactionsInDisplayRadius[i]], inter.InteractType, inter.GetName);
                 SetScale ( colliderToUIDictionary[interactionsInDisplayRadius[i]].transform, inter.SquaredInteractionRadius, squaredDistancePlayerToInteractable );
-                UpdatePosition ( colliderToUIDictionary[interactionsInDisplayRadius[i]].transform, inter.UIWorldPosition );
+                UpdatePosition ( colliderToUIDictionary[interactionsInDisplayRadius[i]].transform, inter.UIWorldPosition() );
             }
             else
             {
                 HideObject ( colliderToUIDictionary[interactionsInDisplayRadius[i]] );
                 SetScale ( colliderToUIDictionary[interactionsInDisplayRadius[i]].transform, inter.SquaredInteractionRadius, -1.0f );
-                UpdatePosition ( colliderToUIDictionary[interactionsInDisplayRadius[i]].transform, inter.UIWorldPosition );
+                UpdatePosition ( colliderToUIDictionary[interactionsInDisplayRadius[i]].transform, inter.UIWorldPosition() );
             }
         }
-
-        //if (closestInteractable != null)
-        //{
-        //    if (Vector3.Distance ( transform.position, closestInteractable.transform.position ) <= closestInteractable.InteractionRadius)
-        //    {
-        //        if (colliderToUIDictionary.ContainsKey ( closestInteractable.GetComponent<Collider> () ))
-        //            colliderToUIDictionary[closestInteractable.GetComponent<Collider> ()].GetComponentInChildren<TextMeshProUGUI> ().text = closestInteractable.GetName;
-        //    }
-        //    else
-        //    {
-        //        if (colliderToUIDictionary.ContainsKey ( closestInteractable.GetComponent<Collider> () ))
-        //            colliderToUIDictionary[closestInteractable.GetComponent<Collider> ()].GetComponentInChildren<TextMeshProUGUI> ().text = "";
-        //    }
-        //}
     }
 
-    private void ShowObject(GameObject go, string text)
+    private void ShowObject(GameObject go, string type, string name)
     {
-        go.GetComponentInChildren<TextMeshProUGUI> ().text = text;
+        go.GetComponentInChildren<TextMeshProUGUI> ().text = "<b><size=75%>" + type + "</size></b>\n" + name;
         go.GetComponent<Animator> ().SetBool ( "show", true);
     }
 
@@ -244,7 +214,7 @@ public class CharacterInteraction : MonoBehaviour
                 go.transform.SetParent ( interactionCanvas );
                 go.transform.localScale = Vector3.one;
                 colliderToUIDictionary.Add ( interactables[i], go );
-                ShowObject ( go, "" );
+                ShowObject ( go, "", "" );
             }
         }
     }

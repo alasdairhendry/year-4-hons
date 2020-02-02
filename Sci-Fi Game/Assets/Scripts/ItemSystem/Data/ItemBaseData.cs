@@ -7,11 +7,11 @@ public enum ItemCategory
 {
     Consumable,
     Weapon,
-    Armour,
+    Gear,
     Ingredient,
     Attachment,
     Misc,
-    Money,
+    Currency,
     Tool,
     Book,
     Key
@@ -35,7 +35,6 @@ public abstract class ItemBaseData
     public int SellPrice { get; protected set; }            // A baseline price that the player can sell this item for (this may be overridden by a merchants price modifier)
     public int BuyPrice { get; protected set; }            // A baseline price that the player can buy this item for (this may be overridden by a merchants price modifier)
     public Sprite Sprite { get; protected set; }            // A sprite to display in the game UI 
-    //public string inventoryInteractVerb { get; protected set; }
 
     protected Dictionary<InventoryInteractionData.InteractType, InventoryInteractionData> interactionData { get; set; } = new Dictionary<InventoryInteractionData.InteractType, InventoryInteractionData> ();
     protected InventoryInteractionData.InteractType defaultInteractionData = InventoryInteractionData.InteractType.Use;
@@ -43,7 +42,7 @@ public abstract class ItemBaseData
     public ItemBaseData(int ID)
     {
         this.ID = ID;
-        AddInteractionData ( new InventoryInteractionData ( InventoryInteractionData.InteractType.Use, (inventoryIndex) => { InventoryItemInteraction.OnClickInventoryItem ( ID ); } ), true );
+        AddInteractionData ( new InventoryInteractionData ( InventoryInteractionData.InteractType.DoNothing, (inventoryIndex) => { } ), true );
         AddInteractionData ( new InventoryInteractionData ( InventoryInteractionData.InteractType.Drop, (inventoryIndex) =>
         {
             int amount = EntityManager.instance.PlayerInventory.GetStackAtIndex ( inventoryIndex ).Amount;
@@ -53,7 +52,7 @@ public abstract class ItemBaseData
 
     protected void FetchSprite ()
     {
-        Sprite = Resources.Load<Sprite> ( "Items/Sprites/" + ID + "_" + Name) as Sprite;
+        Sprite = Resources.Load<Sprite> ( "Items/Sprites/" + ID) as Sprite;
     }
 
     public void AddInteractionData (InventoryInteractionData data, bool setAsDefault = false)
@@ -125,7 +124,6 @@ public abstract class ItemBaseData
         return data;
     }
 
-    public virtual void OnInventoryInteract () { Debug.Log ( "Inventory interact with item " + Name ); }
     public virtual void OnShopInteract () { }
 }
 
@@ -179,7 +177,7 @@ public abstract class ItemBaseDataBook : ItemBaseData
 
 public class InventoryInteractionData
 {
-    public enum InteractType { Use, Open, Read, Empty, Fill, Drink, Eat, Drop, Destroy }
+    public enum InteractType { Use, Open, Read, Empty, Fill, Drink, Eat, Drop, Equip, DoNothing, Attach }
     public InteractType interactType = InteractType.Use;
 
     // Takes in an int for the inventory index

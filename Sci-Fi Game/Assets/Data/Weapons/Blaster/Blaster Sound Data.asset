@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9898abbf7740984bbf90a68788cf513, type: 3}
+  m_Name: Blaster Sound Data
+  m_EditorClassIdentifier: 
+  audioClipFire:
+  - {fileID: 8300000, guid: a06143c1f3ac6824786552ad5b92bcdc, type: 3}
+  - {fileID: 8300000, guid: fc6d064058f247d4596be68192881862, type: 3}
+  - {fileID: 8300000, guid: 59a1d58913a8c614f9e80c44c3812487, type: 3}
+  audioClipSilencedFire:
+  - {fileID: 8300000, guid: 724a6ee461f9c4343bf2517f0d1d94d0, type: 3}
+  audioClipReload:
+  - {fileID: 8300000, guid: 2c7f71b8fad63e14b88231e55a3b46a0, type: 3}
+  audioClipReloadFinished:
+  - {fileID: 8300000, guid: ad928831d467c414a8c2aa3324ed1b16, type: 3}
+  - {fileID: 8300000, guid: 915e8c4e186a6db47ac62a9ed11b7fc3, type: 3}
+  audioClipEmptyFire:
+  - {fileID: 8300000, guid: abdc4189f49915a4c80097ca4b5e205c, type: 3}
+  - {fileID: 8300000, guid: 0377fe47ae8b0fa46ad09c72087a6a9e, type: 3}
+  spinUpDelayLoop: {fileID: 0}
+  spinDownDelayLoop: {fileID: 0}

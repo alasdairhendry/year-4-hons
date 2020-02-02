@@ -72,8 +72,6 @@ public class CharacterPhysics : MonoBehaviour
         rigidbody.isKinematic = isKinematic;
     }
 
-
-
     public void SetConstraints(RigidbodyConstraints constraints)
     {
         rigidbody.constraints = constraints;

@@ -7,6 +7,7 @@ public class InventoryCanvas : MonoBehaviour
 {
     private Inventory targetInventory;
     [SerializeField] private List<InventoryItemPanel> inventoryPanels = new List<InventoryItemPanel> ();
+    [SerializeField] private GameObject panel;
 
     public List<InventoryItemPanel> InventoryPanels { get => inventoryPanels; }
 
@@ -18,6 +19,23 @@ public class InventoryCanvas : MonoBehaviour
         }
 
         OnInventoryChanged ();
+        Close ();
+    }
+
+    public void Open ()
+    {
+        panel.SetActive ( true );
+    }
+
+    public void Close ()
+    {
+        panel.SetActive ( false );
+    }
+
+    public void Trigger ()
+    {
+        if (panel.activeSelf) Close ();
+        else Open ();
     }
 
     public void SetTargetInventory (Inventory target )
@@ -60,5 +78,7 @@ public class InventoryCanvas : MonoBehaviour
                 }
             }
         }
+
+        TooltipCanvas.instance?.Refresh ();
     }   
 }

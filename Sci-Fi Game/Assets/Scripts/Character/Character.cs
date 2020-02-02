@@ -81,12 +81,13 @@ public class Character : MonoBehaviour
     public new Rigidbody rigidbody { get; protected set; }
     public CharacterMovement cMovement { get; protected set; }
     public CharacterIK cIK { get; protected set; }
-    public CharacterDrag cDrag { get; protected set; }
     public CharacterPhysics cPhysics { get; protected set; }
     public CharacterInput cInput { get; protected set; }
     public CharacterWeapon cWeapon { get; protected set; }
-    public CharacterTargetMatch cTargetMatch { get; protected set; }
+    public CharacterGear cGear { get; protected set; }
+    public CharacterInteraction cInteraction { get; protected set; }
     public PlayerCameraController cCameraController { get; protected set; }
+    public Health Health { get; protected set; }
     public bool isGrounded { get; set; } = false;
 
     public new Collider collider;
@@ -94,14 +95,10 @@ public class Character : MonoBehaviour
     [SerializeField] private LayerMask walkableLayers;
     [SerializeField] private float stepHeight = 0.6f;
     [SerializeField] private float standHeight = 0.6f;
-    [SerializeField] private bool isAI = false;
     [SerializeField] private GameObject cameraPrefab;
 
-    public bool IsAI { get { return isAI; } }
-
+    public bool IsAI { get; protected set; }
     public Vehicle currentVehicle { get; protected set; } = null;
-
-    public bool isWallClimbing = false;
 
     private void Awake ()
     {
@@ -109,12 +106,14 @@ public class Character : MonoBehaviour
         cMovement = GetComponent<CharacterMovement> ();
         cPhysics = GetComponent<CharacterPhysics> ();
         cIK = GetComponent<CharacterIK> ();
-        cDrag = GetComponent<CharacterDrag> ();
         cInput = GetComponent<CharacterInput> ();
         cWeapon = GetComponent<CharacterWeapon> ();
-        cTargetMatch = GetComponent<CharacterTargetMatch> ();
+        cGear = GetComponent<CharacterGear> ();
+        cInteraction = GetComponent<CharacterInteraction> ();
+        Health = GetComponent<Health> ();
+        if (GetComponent<NPC> () != null) IsAI = true;
 
-        if (isAI) return;
+        if (IsAI) return;
 
         if (FindObjectOfType<PlayerCameraController> () == null)
             cCameraController = Instantiate ( cameraPrefab ).GetComponent<PlayerCameraController> ().SetTarget ( this.transform );
@@ -127,7 +126,12 @@ public class Character : MonoBehaviour
     {
         CheckStateUpdate ();
 
-        if (isAI) return;
+        if (IsAI) return;
+
+        if (Input.GetKeyDown ( KeyCode.Space ))
+        {
+            Health.RemoveHealth ( 5, DamageType.PlayerAttack );
+        }
 
         //if (IsAiming)
         //{
@@ -193,7 +197,6 @@ public class Character : MonoBehaviour
         {
             case State.Standing:
                 cMovement.OnUpdate ();
-                cDrag.OnUpdate ();
                 isGrounded = CheckIsGrounded ();
                 CheckCanStand ();
                 rigidbody.drag = standingDrag;
@@ -219,7 +222,6 @@ public class Character : MonoBehaviour
         {
             case State.Standing:
                 cMovement.OnFixedUpdate ();
-                cDrag.OnFixedUpdate ();
                 break;
             //case State.Crouching:
             //    break;
@@ -281,15 +283,13 @@ public class Character : MonoBehaviour
             case State.Driving:
                 canAim = false;
                 if (!cWeapon.isHolstered)
-                    cWeapon.SetHolsterState ();
+                    cWeapon.SetHolsterState ( true );
                 break;
         }
     }
 
     private bool CheckIsGrounded ()
     {
-        if (isWallClimbing) return true;
-
         Vector3 origin = transform.position;
         Vector3[] origins = new Vector3[5] { transform.position, transform.position + transform.forward * 0.25f, transform.position + transform.right * 0.25f, transform.position - transform.forward * 0.25f, transform.position - transform.right * 0.25f };
         origin.y += stepHeight;
@@ -331,8 +331,6 @@ public class Character : MonoBehaviour
             }
         }
 
-        if (cDrag.isDragging) cDrag.OnEndDrag ();
-        if (cDrag.isBeingDragged) cDrag.OnEndDragged ();
         SetCurrentState ( Character.State.Falling );
         return false;
     }

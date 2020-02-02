@@ -67,6 +67,8 @@ public class CharacterIK : MonoBehaviour
 
     private void MonitorRecoil ()
     {
+        if (recoilData == null) return;
+
         if (recoilCounter <= 1.0f)
         {
             recoilCounter += Time.deltaTime * recoilData.time;
@@ -75,7 +77,7 @@ public class CharacterIK : MonoBehaviour
         }
 
         float lerp = 10.0f;
-        float isEmptyClipMultiplier = (character.cWeapon.currentRounds > 0) ? 1.0f : 0.5f;
+        float isEmptyClipMultiplier = (character.cWeapon.currentAmmo > 0) ? 1.0f : 0.5f;
 
         rightHandRootPivot.localRotation = Quaternion.Slerp ( rightHandRootPivot.localRotation, Quaternion.Euler ( recoilData.rotationalDirection * recoilData.rotationalCurve.Evaluate ( recoilCounter ) * recoilData.visualMultiplier * isEmptyClipMultiplier ), Time.deltaTime * lerp );
         rightHandRootPivot.localPosition = Vector3.Lerp ( rightHandRootPivot.localPosition, recoilData.positionalDirection * recoilData.positionalCurve.Evaluate ( recoilCounter ) * recoilData.visualMultiplier * isEmptyClipMultiplier, Time.deltaTime * lerp );

@@ -11,6 +11,8 @@ public class Inventory
     public bool canRecieveItems = true;
     public List<ItemStack> stacks = new List<ItemStack> ();
 
+    public bool IsEmpty { get => stacks.Count <= 0; }    
+
     public ItemStack GetStackAtIndex(int index)
     {
         if (index < 0) return null;
@@ -25,12 +27,17 @@ public class Inventory
 
     public void AddCoins (int amount)
     {
-        AddItem ( 4, amount );
+        AddItem ( 3, amount );
+    }
+
+    public void ClearInventoryStacks ()
+    {
+        stacks.Clear ();
     }
 
     public void RemoveCoins (int amount)
     {
-        RemoveItem ( 4, amount );
+        RemoveItem ( 3, amount );
     }
 
     public bool CheckHasItem (int id)
@@ -42,7 +49,7 @@ public class Inventory
         return false;
     }
 
-    public bool CheckHasItem (int id, int amount)
+    public bool CheckHasItemQuantity (int id, int amount)
     {
         for (int i = 0; i < stacks.Count; i++)
         {
@@ -53,6 +60,18 @@ public class Inventory
             }
         }
         return false;
+    }
+
+    public int GetQuantityOfItem(int id)
+    {
+        int amount = 0;
+
+        for (int i = 0; i < stacks.Count; i++)
+        {
+            if (stacks[i].ID == id) amount += stacks[i].Amount;
+        }
+
+        return amount;
     }
 
     public int GetIndexOfItem(int id)
@@ -113,7 +132,6 @@ public class Inventory
                     if (stacks[i].ID == id)
                         existingStacks.Add ( stacks[i] );
                 }
-                //= stacks.Where ( x => x.ID == id ).ToList ();
 
                 for (int i = 0; i < existingStacks.Count; i++)
                 {

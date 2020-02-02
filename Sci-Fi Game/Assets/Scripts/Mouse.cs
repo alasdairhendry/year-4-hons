@@ -105,6 +105,13 @@ public class Mouse : MonoBehaviour
         return Input.GetMouseButtonDown ( index );
     }
 
+    public static bool DownRepeating (int index, bool canBeOverUI = true)
+    {
+        if (instance == null) return false;
+        if (!canBeOverUI && EventSystem.current.IsPointerOverGameObject ()) return false;
+        return Input.GetMouseButton ( index );
+    }
+
     public static void SetCursor(CursorType cursorType, bool disabled = false)
     {
         if (EventSystem.current.IsPointerOverGameObject ())
@@ -117,5 +124,11 @@ public class Mouse : MonoBehaviour
             CursorTypeData data = instance.cursorData.FirstOrDefault ( x => x.cursorType == cursorType );
             Cursor.SetCursor ( disabled ? data.disabledTexture : data.texture, data.cursorHotspot, CursorMode.Auto );
         }
+    }
+
+    public static void SetCursorState (CursorLockMode mode, bool visible)
+    {
+        Cursor.lockState = mode;
+        Cursor.visible = visible;
     }
 }

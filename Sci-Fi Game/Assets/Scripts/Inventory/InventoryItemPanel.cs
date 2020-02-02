@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class InventoryItemPanel : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
+public class InventoryItemPanel : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler, IPointerClickHandler
 {
     [SerializeField] private GameObject contentPanel;
     [SerializeField] private Image itemIcon;
@@ -42,7 +42,16 @@ public class InventoryItemPanel : MonoBehaviour, IBeginDragHandler, IDragHandler
 
         itemAmountPanel.SetActive ( true );
         itemAmountText.text = this.ItemAmount.ToString ();
-        tooltipItem.SetTooltipAction ( () => { return ItemDatabase.GetInteractionPrefix ( itemID ) + " " + ColourHelper.TagColour ( ItemDatabase.GetItem ( itemID ).Name, ColourDescription.OffWhiteText ) + "\n" + ColourHelper.TagSize ( ItemDatabase.GetItem ( itemID ).Description, 75.0f ); } );
+        tooltipItem.SetTooltipAction ( () =>
+        {
+            return ItemDatabase.GetItem ( itemID ).Name
+            + "\n"
+            + ColourHelper.TagColour ( ColourHelper.TagSize ( ItemDatabase.GetItem ( itemID ).category
+            + "\n"
+            + ItemDatabase.GetItem ( itemID ).Description, 80.0f ), ColourDescription.OffWhiteText );
+            return ItemDatabase.GetInteractionPrefix ( itemID ) + ColourHelper.TagColour ( ItemDatabase.GetItem ( itemID ).Name, ColourDescription.OffWhiteText ) + "\n" + ColourHelper.TagSize ( ItemDatabase.GetItem ( itemID ).Description, 75.0f );
+        }
+        );
     }
 
     void IBeginDragHandler.OnBeginDrag (PointerEventData eventData)
@@ -65,16 +74,6 @@ public class InventoryItemPanel : MonoBehaviour, IBeginDragHandler, IDragHandler
         DragHandler.OnDrop ( inventoryIndex, DragHandler.Master.PlayerInventory );
     }
 
-    void IPointerEnterHandler.OnPointerEnter (PointerEventData eventData)
-    {
-        InventoryItemInteraction.OnInventoryItemHovered ( ItemID );
-    }
-
-    void IPointerExitHandler.OnPointerExit (PointerEventData eventData)
-    {
-        InventoryItemInteraction.OnInventoryItemUnhovered ( ItemID );
-    }
-
     void IPointerClickHandler.OnPointerClick (PointerEventData eventData)
     {
         if (ItemID < 0) return;
@@ -93,7 +92,7 @@ public class InventoryItemPanel : MonoBehaviour, IBeginDragHandler, IDragHandler
 public static class DragHandler
 {
     public static bool isDragging = false;
-    public enum Master { PlayerInventory, ItemContainer }
+    public enum Master { PlayerInventory, ItemContainer, Hotbar }
     public static Master fromMaster = Master.PlayerInventory;
 
     public static int fromIndex = -1;
@@ -141,13 +140,24 @@ public static class DragHandler
         // This is only ever called if end drag did not hit something with a valid OnDrop interface
         if (isDragging)
         {
-            if(EventSystem.current.IsPointerOverGameObject() == false)
+            if (EventSystem.current.IsPointerOverGameObject () == false)
             {
-                EntityManager.instance.PlayerInventory.RemoveItem ( dragItemID, dragItemAmount );
+                switch (fromMaster)
+                {
+                    case Master.PlayerInventory:
+                        EntityManager.instance.PlayerInventory.RemoveItem ( dragItemID, dragItemAmount );
+                        break;
+                    case Master.ItemContainer:
+                        ItemContainerCanvas.instance.targetInventory.RemoveItem ( dragItemID, dragItemAmount );
+                        break;
+                    case Master.Hotbar:
+                        HotbarCanvas.instance.TryRemoveItem ( dragItemID, fromIndex );
+                        break;
+                }
             }
 
             Reset ();
-        }        
+        }
     }
 
     private static void Reset ()
@@ -187,7 +197,7 @@ public static class DragHandler
                     break;
                 case Master.ItemContainer:
                     ItemContainerCanvas.instance.targetInventory.SwitchIndices ( fromIndex, _toIndex );
-                    break;
+                    break;              
             }
         }
         else if (fromMaster == Master.PlayerInventory)
@@ -212,7 +222,20 @@ public static class DragHandler
                         }
                     }
                     break;
+                case Master.Hotbar:
+                    HotbarCanvas.instance.TryAddItem ( dragItemID, _toIndex );
+                    break;
             }
+        }
+        else if(fromMaster == Master.Hotbar)
+        {
+            switch (_toMaster)
+            {
+                case Master.Hotbar:
+                    HotbarCanvas.instance.TrySwitchItems ( fromIndex, _toIndex );
+                    break;
+            }
+
         }
 
         Reset ();

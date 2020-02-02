@@ -19,7 +19,7 @@ public class TooltipItemUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         DisableTooltip ();
     }
 
-    private void ShowTooltip ()
+    public void ShowTooltip ()
     {
         if (string.IsNullOrEmpty ( tooltip ) && getTooltipAction == null)
         {
@@ -40,17 +40,13 @@ public class TooltipItemUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
             tooltip = "";
         }
 
-        if (!InventoryItemInteraction.IsCurrentlyInteracting)
-        { 
-            TooltipCanvas.instance.ShowTooltip ( tooltip );
-        }
+        TooltipCanvas.instance.ShowTooltip ( tooltip );
 
         showingTooltip = true;
     }
 
-    private void DisableTooltip ()
+    public void DisableTooltip ()
     {
-        if (InventoryItemInteraction.IsCurrentlyInteracting) return;
         TooltipCanvas.instance.HideTooltip ();
         showingTooltip = false;
     }

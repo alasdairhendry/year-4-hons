@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class TooltipCanvas : MonoBehaviour
 {
@@ -27,6 +28,36 @@ public class TooltipCanvas : MonoBehaviour
     private Vector2 boundsMin = new Vector2 ( 32.0f, 32.0f );
     private Vector2 boundsMax = new Vector2 ( 1920.0f, 1080.0f );
 
+    public void Refresh ()
+    {
+        if (EventSystem.current.IsPointerOverGameObject ())
+        {
+            PointerEventData pointerData = new PointerEventData ( EventSystem.current )
+            {
+                pointerId = -1,
+            };
+
+            pointerData.position = Input.mousePosition;
+            List<RaycastResult> results = new List<RaycastResult> ();
+
+            EventSystem.current.RaycastAll ( pointerData, results );
+
+            if (results.Count > 0)
+            {
+                for (int i = 0; i < results.Count; i++)
+                {
+                    if (results[i].gameObject.GetComponent<TooltipItemUI> ())
+                    {
+                        results[i].gameObject.GetComponent<TooltipItemUI> ().ShowTooltip ();
+                        return;
+                    }
+                }
+            }
+        }
+
+        HideTooltip ();
+    }
+
     public void ShowTooltip (string message)
     {
         if (currentTooltip == message) return;
@@ -42,18 +73,10 @@ public class TooltipCanvas : MonoBehaviour
 
     private void Update ()
     {
-        if (Input.GetKeyDown ( KeyCode.F ))
-        {
-            EntityManager.instance.PlayerInventory.AddCoins ( 1 );
-        }
-
-        if (Input.GetKeyDown ( KeyCode.G ))
-        {
-            EntityManager.instance.PlayerInventory.RemoveCoins ( 1 );
-        }
-
-
         if (!isActive) return;
+
+        if (Input.GetKeyDown ( KeyCode.LeftShift )) Refresh ();
+        if (Input.GetKeyUp ( KeyCode.LeftShift )) Refresh ();
 
         boundsMax.x = canvasRect.sizeDelta.x - tooltipRect.sizeDelta.x - boundsMin.x;
         boundsMax.y = canvasRect.sizeDelta.y - tooltipRect.sizeDelta.y - boundsMin.y;

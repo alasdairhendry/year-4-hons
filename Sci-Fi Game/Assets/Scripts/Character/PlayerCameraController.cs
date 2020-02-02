@@ -73,11 +73,11 @@ public class PlayerCameraController : MonoBehaviour
 
     private void Update ()
     {
-        if (Mouse.Down ( 0, false ))
+        if (Mouse.Down ( 0, false ) || !character.cWeapon.isHolstered)
         {
             shouldRecordMovement = true;
         }
-        else if (Mouse.Up ( 0 ))
+        else if (!Mouse.DownRepeating ( 0 ) && character.cWeapon.isHolstered)
         {
             shouldRecordMovement = false;
         }

@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9898abbf7740984bbf90a68788cf513, type: 3}
+  m_Name: Pistol Sound Data
+  m_EditorClassIdentifier: 
+  audioClipFire:
+  - {fileID: 8300000, guid: cb4baf4b70b834842a9ff6fb9b3bdbd9, type: 3}
+  - {fileID: 8300000, guid: b81885637284a4a43924d429758242f2, type: 3}
+  - {fileID: 8300000, guid: 453f7eb420737e24ab458bcde9cd0ea1, type: 3}
+  - {fileID: 8300000, guid: 2d55f28af32c08b40ba9f620be720fbd, type: 3}
+  audioClipSilencedFire:
+  - {fileID: 8300000, guid: 961a09a7e50193149bbc481dbcd57204, type: 3}
+  - {fileID: 8300000, guid: 2cc98b097c5a8a74aa2c28f7561f366f, type: 3}
+  - {fileID: 8300000, guid: aa7f89cf48568aa47b0e0a84065bfb23, type: 3}
+  - {fileID: 8300000, guid: a39c6d74eeea7a54299b7e4ca497647f, type: 3}
+  audioClipReload:
+  - {fileID: 8300000, guid: ffaed0c50aca5f648b6ac39d77d97e29, type: 3}
+  - {fileID: 8300000, guid: 2673352ab09486a4eaa679ec085a71bd, type: 3}
+  - {fileID: 8300000, guid: af3e369324153e445a2fe20b9356f954, type: 3}
+  - {fileID: 8300000, guid: 898ac9134c3c3704baac7fac06eca7ef, type: 3}
+  audioClipReloadFinished:
+  - {fileID: 8300000, guid: ad928831d467c414a8c2aa3324ed1b16, type: 3}
+  - {fileID: 8300000, guid: 915e8c4e186a6db47ac62a9ed11b7fc3, type: 3}
+  audioClipEmptyFire:
+  - {fileID: 8300000, guid: abdc4189f49915a4c80097ca4b5e205c, type: 3}
+  - {fileID: 8300000, guid: 0377fe47ae8b0fa46ad09c72087a6a9e, type: 3}
+  spinUpDelayLoop: {fileID: 0}
+  spinDownDelayLoop: {fileID: 0}

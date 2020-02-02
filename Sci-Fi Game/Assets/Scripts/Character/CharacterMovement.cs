@@ -16,12 +16,6 @@ public class CharacterMovement : MonoBehaviour
         get
         {
             return 0.0f;
-            //if (character.currentState == Character.State.Aiming)
-            //    return movementData.walkSpeed * movementData.aimModifier;
-
-            //if (character.currentState == Character.State.Crouching)
-            //    return movementData.walkSpeed * movementData.crouchModifier;
-
             if (character.currentState == Character.State.Standing)
                 return character.isRunning ? movementData.walkSpeed * movementData.runModifier : movementData.walkSpeed;
 
@@ -35,35 +29,15 @@ public class CharacterMovement : MonoBehaviour
         lastMousePosition = Input.mousePosition;
     }
 
-    public Transform jumpTarget;
-
     public void OnUpdate ()
     {
         if (character.IsAI) return;
-        return;
-        if (Input.GetKeyDown ( KeyCode.Space ))
-        {
-            character.GetComponent<Animator> ().SetTrigger ( "jump-to-climb" );
-            character.cTargetMatch.SetData
-            (
-                new CharacterTargetMatch.MatchData ( jumpTarget.position, jumpTarget.rotation, AvatarTarget.LeftHand, Vector3.one, 1.0f, 0.133f, 0.421f ),
-                new CharacterTargetMatch.MatchData ( jumpTarget.position, jumpTarget.rotation, AvatarTarget.LeftFoot, Vector3.one, 0.0f, 0.519f, 0.890f )
-            );
-        }
     }
 
     public void OnFixedUpdate ()
     {
-        if (character.cDrag.isBeingDragged) return;
         if (character.IsAI) return;
-        Movement ();
         Rotation ();
-    }
-
-    private void Movement ()
-    {
-        //character.rigidbody.AddForce ( character.rawInput.x * transform.right * GetCurrentSpeed, ForceMode.VelocityChange );
-        //character.rigidbody.AddForce ( Mathf.Abs( character.rawInput.magnitude ) * transform.forward * GetCurrentSpeed, ForceMode.VelocityChange );
     }
 
     private void Rotation ()
