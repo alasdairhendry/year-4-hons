@@ -1,4 +1,4 @@
-public class ItemData_PhaserRifle : ItemGearWeapon
+public class ItemData_PhaserRifle : ItemGearWeaponGun
 {
     public ItemData_PhaserRifle (int ID) : base ( ID, "Phaser Rifle" )
     {

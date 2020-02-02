@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-[CreateAssetMenu ( menuName = "Weapons/New Weapon" )]
+[CreateAssetMenu ( menuName = "Weapons/New Gun Data" )]
 public class WeaponData : ScriptableObject
 {
     public enum WeaponType { Pistol, Rifle }

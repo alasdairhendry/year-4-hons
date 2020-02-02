@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
+﻿public enum WeaponType { Melee, Gun }
 
 public abstract class ItemGearWeapon : ItemGear
 {
-    public WeaponData weaponData;
+    public WeaponType WeaponType { get; protected set; } = WeaponType.Gun;
 
-    public ItemGearWeapon (int ID, string weaponDataResourceName) : base (ID)
+    public ItemGearWeapon (int ID) : base (ID)
     {
         AddInteractionData ( new InventoryInteractionData ( InventoryInteractionData.InteractType.Equip,
            (inventoryIndex) =>
@@ -19,6 +16,5 @@ public abstract class ItemGearWeapon : ItemGear
 
         this.category = ItemCategory.Weapon;
         this.gearSlot = GearSlot.Weapon;
-        this.weaponData = Resources.Load<WeaponData> ( weaponDataResourceName );
     }
 }
