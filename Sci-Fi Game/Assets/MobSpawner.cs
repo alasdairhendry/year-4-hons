@@ -15,6 +15,8 @@ public class MobSpawner : MonoBehaviour
     Ray ray = new Ray ();
     RaycastHit hit;
 
+    public float Radius { get => radius; set => radius = value; }
+
     private void Awake ()
     {
         if (populateOnAwake)
@@ -69,9 +71,9 @@ public class MobSpawner : MonoBehaviour
         if (currentInstances.Count >= maxInstances) return;
 
         GameObject instance = Instantiate ( mobPrefab );
-        instance.transform.SetParent ( this.transform );
 
-        Vector3 spawnPosition = Random.insideUnitSphere * radius;
+        Vector3 spawnPosition = this.transform.position + Random.insideUnitSphere * radius;
+        Debug.Log ( spawnPosition );
         ray = new Ray ( spawnPosition + (Vector3.up * radius * 4), Vector3.down );
         hit = new RaycastHit ();
 
@@ -84,17 +86,22 @@ public class MobSpawner : MonoBehaviour
             Debug.LogError ( "Error ray casting suitable terrain" );
         }
 
-        instance.transform.localPosition = spawnPosition;
+        instance.transform.position = spawnPosition;
         instance.transform.localEulerAngles = new Vector3 ( 0.0f, Random.Range ( 0.0f, 360.0f ), 0.0f );
+        instance.transform.SetParent ( this.transform );
+        instance.GetComponent<UnityEngine.AI.NavMeshAgent> ().Warp ( spawnPosition );
 
         NPC npc = instance.GetComponent<NPC> ();
+        npc.SetMobSpawner ( this );
         currentInstances.Add ( npc );
         npc.OnDeathAction += () => { OnInstanceDeath ( npc ); };
+        npc.OnDeleteAction += () => { OnInstanceDeath ( npc ); };
         currentRespawnDelay = 0.0f;
     }
 
     private void OnDrawGizmosSelected ()
     {
-        Gizmos.DrawWireSphere ( transform.position, radius );
+        Gizmos.color = new Color ( 0.0f, 1.0f, 0.0f, 0.5f );
+        Gizmos.DrawSphere ( transform.position, radius );
     }
 }

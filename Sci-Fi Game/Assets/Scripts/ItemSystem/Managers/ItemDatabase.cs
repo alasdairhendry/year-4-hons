@@ -67,8 +67,8 @@ public static class ItemDatabase
         { 50, new ItemData_Screwdriver(50) },
         { 51, new ItemData_Sword(51) },
         { 52, new ItemData_Wrench(52) },
+        { 53, new ItemData_Gmaul(53) },
 
-        //{ 53, new ItemData_Wrench(53) },
         //{ 54, new ItemData_Wrench(54) },
         //{ 55, new ItemData_Wrench(55) },
         //{ 56, new ItemData_Wrench(56) },

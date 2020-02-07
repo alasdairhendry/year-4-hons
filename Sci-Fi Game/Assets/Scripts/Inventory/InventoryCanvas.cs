@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class InventoryCanvas : MonoBehaviour
+public class InventoryCanvas : UIPanel
 {
     private Inventory targetInventory;
     [SerializeField] private List<InventoryItemPanel> inventoryPanels = new List<InventoryItemPanel> ();
@@ -22,13 +22,15 @@ public class InventoryCanvas : MonoBehaviour
         Close ();
     }
 
-    public void Open ()
+    public override void Open ()
     {
+        base.Open ();
         panel.SetActive ( true );
     }
 
-    public void Close ()
+    public override void Close ()
     {
+        base.Close ();
         panel.SetActive ( false );
     }
 

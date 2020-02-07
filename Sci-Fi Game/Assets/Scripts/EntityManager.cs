@@ -19,6 +19,8 @@ public class EntityManager : MonoBehaviour
     public Inventory PlayerInventory { get; protected set; } = new Inventory ( 12, true, true );
     public PlayerCameraController CameraController { get; protected set; }
     public Camera MainCamera { get; protected set; }
+    public InventoryCanvas InventoryCanvas { get => inventoryCanvas; protected set => inventoryCanvas = value; }
+
     [SerializeField] private InventoryCanvas inventoryCanvas;
 
     public void SetPlayerCharacter (Character character)

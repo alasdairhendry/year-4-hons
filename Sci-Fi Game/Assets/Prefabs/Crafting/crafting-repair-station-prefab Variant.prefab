@@ -1,5 +1,21 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!208 &2513760970639093894
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1854847378017315702}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 1.52, y: 0.5, z: 0.82}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!65 &1208875598
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -499,8 +515,14 @@ PrefabInstance:
     - target: {fileID: 4914687387839471991, guid: d06d7d5e79103764eacd33f24c782182,
         type: 3}
       propertyPath: m_Name
-      value: crafting-repair-station-prefab
+      value: crafting-repair-station-prefab Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 4914687387839471989, guid: d06d7d5e79103764eacd33f24c782182,
+        type: 3}
+      propertyPath: table
+      value: 
+      objectReference: {fileID: 11400000, guid: ec1c5f05577e6da4cb78cfd7b8aaf19b,
+        type: 2}
     - target: {fileID: 4914687387839471990, guid: d06d7d5e79103764eacd33f24c782182,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -556,12 +578,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4914687387839471989, guid: d06d7d5e79103764eacd33f24c782182,
-        type: 3}
-      propertyPath: table
-      value: 
-      objectReference: {fileID: 11400000, guid: ec1c5f05577e6da4cb78cfd7b8aaf19b,
-        type: 2}
     - target: {fileID: 4914687386442109289, guid: d06d7d5e79103764eacd33f24c782182,
         type: 3}
       propertyPath: interactableName
@@ -574,6 +590,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d06d7d5e79103764eacd33f24c782182, type: 3}
+--- !u!1 &1854847378017315702 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4914687387839471991, guid: d06d7d5e79103764eacd33f24c782182,
+    type: 3}
+  m_PrefabInstance: {fileID: 6740138216324254209}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1854847377825369465 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4914687387915929464, guid: d06d7d5e79103764eacd33f24c782182,

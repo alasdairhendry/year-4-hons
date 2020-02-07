@@ -34,10 +34,10 @@ public class TooltipItemUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         if (getTooltipAction != null)
         {
             tooltip = getTooltipAction ();
-        }
+        }        
         else
         {
-            tooltip = "";
+            //tooltip = "";
         }
 
         TooltipCanvas.instance.ShowTooltip ( tooltip );

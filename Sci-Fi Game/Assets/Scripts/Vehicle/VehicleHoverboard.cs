@@ -4,6 +4,7 @@ public class VehicleHoverboard : Vehicle
 {
     public Hover hover { get; protected set; }
 
+    [SerializeField] private VehicleHoverData vehicleData;
     [SerializeField] private float exitUpwardsForce = 10.0f;
     [SerializeField] private float rotationalSpeed = 10.0f;
     [SerializeField] private float pitchSpeed = 10.0f;
@@ -19,9 +20,6 @@ public class VehicleHoverboard : Vehicle
     [SerializeField] private float rideHeightRegenRate = 10.0f;
     [Space]
     [SerializeField] private float antiRollForce = 10.0f;
-    [SerializeField] private float maxSqrMagnitude = 220.0f;
-    private float currSqrMagnitude { get { return rigidbody.velocity.sqrMagnitude; } }
-    public float NormalisedSpeed { get { return Mathf.Lerp ( 0.0f, 1.0f, currSqrMagnitude / maxSqrMagnitude ); } }
 
     private float currRideHeightEnergy = 1.0f;
     private float currRideHeight = 0.75f;
@@ -54,7 +52,7 @@ public class VehicleHoverboard : Vehicle
 
     public override void OnUpdate ()
     {
-        float f = NormalisedSpeed;
+        //float f = NormalisedSpeed ( maxSqrMagnitude );
         CheckInput ();
         CheckRideHeight ();
 
@@ -121,13 +119,13 @@ public class VehicleHoverboard : Vehicle
         float dist = Mathf.Abs ( front.y - back.y );
         Vector3 forcePos = (front.y <= back.y) ? front : back;
 
-        rigidbody.AddForceAtPosition ( transform.up * antiRollForce * dist * NormalisedSpeed, forcePos, ForceMode.Acceleration );
+        rigidbody.AddForceAtPosition ( transform.up * antiRollForce * dist * NormalisedSpeed ( vehicleData.maxSqrMagnitude ), forcePos, ForceMode.Acceleration );
     }
 
     private void OnGUI ()
     {
         GUI.contentColor = Color.black;        
-        GUI.Label ( new Rect ( 32, 32, 128, 128 ), "N Speed: " + (NormalisedSpeed * 100.0f).ToString ("00")  + "%");
+        GUI.Label ( new Rect ( 32, 32, 128, 128 ), "N Speed: " + (NormalisedSpeed ( vehicleData.maxSqrMagnitude ) * 100.0f).ToString ("00")  + "%");
         GUI.Label ( new Rect ( 32, 64, 128, 128 ), "Rot Speed: " + ((rotSpeed / rotationalSpeed) * 100.0f).ToString ( "00" ) + "%" );
         //GUI.Label ( new Rect ( 32, 128, 128, 128 ), "Mag: " + rigidbody.velocity.sqrMagnitude );
     }
@@ -175,7 +173,7 @@ public class VehicleHoverboard : Vehicle
         //    rotSpeed = rotationalSpeed * 0.5f;
         //}
 
-        rotSpeed = Mathf.Lerp ( rotationalSpeed * 0.4f, rotationalSpeed, NormalisedSpeed * 4.0f );
+        rotSpeed = Mathf.Lerp ( rotationalSpeed * 0.4f, rotationalSpeed, NormalisedSpeed ( vehicleData.maxSqrMagnitude ) * 4.0f );
 
         //if (input.y > -0.9f && input.y < 0.9f)
         //    rotSpeed *= 0.2f;

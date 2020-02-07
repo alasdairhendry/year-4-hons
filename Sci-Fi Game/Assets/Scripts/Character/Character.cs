@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 
 [RequireComponent ( typeof ( Rigidbody ) )]
 [RequireComponent ( typeof ( CharacterMovement ) )]
@@ -89,6 +85,8 @@ public class Character : MonoBehaviour
     public PlayerCameraController cCameraController { get; protected set; }
     public Health Health { get; protected set; }
     public FloatingTextIndicator FloatingTextIndicator { get; protected set; }
+    public Animator Animator { get; protected set; }
+    
     public bool isGrounded { get; set; } = false;
 
     public new Collider collider;
@@ -97,9 +95,12 @@ public class Character : MonoBehaviour
     [SerializeField] private float stepHeight = 0.6f;
     [SerializeField] private float standHeight = 0.6f;
     [SerializeField] private GameObject cameraPrefab;
+    [SerializeField] private AudioClipObject deathAudioClips;
 
     public bool IsAI { get; protected set; }
     public Vehicle currentVehicle { get; protected set; } = null;
+    public bool CanMove { get; protected set; } = true;
+   [NaughtyAttributes.ShowNativeProperty]  public bool isDead { get; protected set; }
 
     private void Awake ()
     {
@@ -113,10 +114,13 @@ public class Character : MonoBehaviour
         cInteraction = GetComponent<CharacterInteraction> ();
         Health = GetComponent<Health> ();
         FloatingTextIndicator = GetComponent<FloatingTextIndicator> ();
+        Animator = GetComponent<Animator> ();
 
         if (GetComponent<NPC> () != null) IsAI = true;
 
         if (IsAI) return;
+
+        Health.onDeath += OnPlayerDeath;
 
         if (FindObjectOfType<PlayerCameraController> () == null)
             cCameraController = Instantiate ( cameraPrefab ).GetComponent<PlayerCameraController> ().SetTarget ( this.transform );
@@ -130,11 +134,6 @@ public class Character : MonoBehaviour
         CheckStateUpdate ();
 
         if (IsAI) return;
-
-        if (Input.GetKeyDown ( KeyCode.Space ))
-        {
-            Health.RemoveHealth ( 5, DamageType.PlayerAttack );
-        }
 
         //if (IsAiming)
         //{
@@ -210,8 +209,16 @@ public class Character : MonoBehaviour
                 rigidbody.drag = fallingDrag;
                 break;
             case State.Driving:
-                if (currentVehicle.engineIsOn)
-                    currentVehicle.OnUpdate ();
+                if (Input.GetKeyDown ( KeyCode.Escape ))
+                {
+                    if (currentVehicle != null)
+                        currentVehicle.Exit ( this );
+                }
+
+                if (currentVehicle != null)
+                    if (currentVehicle.engineIsOn)
+                        currentVehicle.OnUpdate ();
+
                 rigidbody.drag = fallingDrag;
                 break;
             default:
@@ -259,13 +266,7 @@ public class Character : MonoBehaviour
     //{
     //    input = new Vector2 ( Input.GetAxis ( "Horizontal" ), Input.GetAxis ( "Vertical" ) ).normalized;
     //    rawInput = new Vector2 ( Input.GetAxisRaw ( "Horizontal" ), Input.GetAxisRaw ( "Vertical" ) ).normalized;
-    //}
-
-    public void SetInput (Vector2 value)
-    {
-        cInput.input = value;
-        cInput.rawInput = value;
-    }
+    //}    
 
     public void SetCurrentState (State state)
     {
@@ -390,5 +391,27 @@ public class Character : MonoBehaviour
         }
 
         return canStand;
+    }
+
+    public void SetCanMove (bool canMove)
+    {
+        CanMove = canMove;
+    }
+
+    public void SetIsDead ()
+    {
+        isDead = true;
+    }
+
+    private void OnPlayerDeath ()
+    {
+        SoundEffect.Play3D ( deathAudioClips.GetRandom (), this.transform.position, 2, 10 );
+
+        if (Random.value > 0.65f)
+            cWeapon.Unequip ( true );
+
+        GetComponent<Animator> ().SetTrigger ( "die" );
+        CanMove = false;
+        isDead = true;
     }
 }

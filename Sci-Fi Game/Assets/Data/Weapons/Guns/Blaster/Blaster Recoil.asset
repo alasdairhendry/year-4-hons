@@ -151,5 +151,5 @@ MonoBehaviour:
     m_RotationOrder: 4
   cameraYAmount: 2
   rangeYModifier: {x: 0.8, y: 1.2}
-  visualMultiplier: 2
-  cameraMultiplier: 2
+  visualMultiplier: 1
+  cameraMultiplier: 1

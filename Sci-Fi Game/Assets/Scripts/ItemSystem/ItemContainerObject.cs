@@ -23,7 +23,8 @@ public class ItemContainerObject : MonoBehaviour
 
     public void Open ()
     {
-        ItemContainerCanvas.instance.DisplayContainer ( inventory, inventoryName );
+        ItemContainerCanvas.instance.SetContainerInventory ( inventory, inventoryName );
+        ItemContainerCanvas.instance.Open ();
         ItemContainerCanvas.instance.OnContainerClosed += Close;
 
         if(animator != null)

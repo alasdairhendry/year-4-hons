@@ -739,6 +739,7 @@ GameObject:
   - component: {fileID: 1874892647692576199}
   - component: {fileID: 1874892647692576192}
   - component: {fileID: 1874892647692576193}
+  - component: {fileID: 8266964367986210885}
   m_Layer: 0
   m_Name: vehicle-ground-muscle-rwd-prefab
   m_TagString: Untagged
@@ -777,48 +778,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ce7e6422cc17174eb4ef87f9c8e2975, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  vehicleName: 
-  driverEnterPosition: {x: -2, y: 0, z: -0.2}
-  driverEnterRotation: {x: 1, y: 0, z: 0}
-  driverMatchTarget: {x: -0.5, y: 0, z: -0.1}
   driverLocalPosition: {x: -0.5, y: 0.25, z: -0.2}
   driverLocalRotation: {x: 0, y: 0, z: 1}
   driverExitLocalPosition: {x: -2, y: 0, z: -0.2}
-  cameraOffset: {x: -2, y: 0.5, z: 0}
   engineIsOn: 0
-  doorIK: {fileID: 7205586642152092919}
   collider: {fileID: 3820447900393146402}
-  enterTargetMatchData: {fileID: 11400000, guid: a5eb285986b085d4cb426c120b6327b4,
-    type: 2}
-  exitTargetMatchData: {fileID: 11400000, guid: cec10206f1b39ce4dac9b13988456d9f,
-    type: 2}
-  onEnterVehicleMass: 500
-  onExitVehicleMass: 500
-  onEnterDriverMass: 1
-  disableCollider: 1
-  CurrentGearIndex: 1
-  maxMPH: 96
-  currentMPH: 0
-  engineTorque: 75000
-  currentEngineTorque: 0
-  brakeForce: 11250
-  drivingDrag: 0
-  airDrag: 0.2
-  maxRevs: 7000
-  currentRevs: 0
-  targetRevs: 0
-  automaticGearbox: 1
-  automaticGearboxMultiplier: 0.85
-  maxTurningAngle: 35
-  currentTurningAngle: 0
-  revLineUITransform: {fileID: 0}
-  speedLineUITransform: {fileID: 0}
-  mphText: {fileID: 0}
-  gearText: {fileID: 0}
-  timeText: {fileID: 0}
   idleSource: {fileID: 1874892647692576192}
   ignitionSource: {fileID: 1874892647692576193}
   pitches: {x: 0.4, y: 1.5}
+  onEnterVehicleMass: 500
+  onExitVehicleMass: 500
+  onEnterDriverMass: 1
+  vehicleData: {fileID: 11400000, guid: d5f0d549e1169c942868673fc6877cdd, type: 2}
   wheelAxles:
   - leftCollider: {fileID: 1874892645944278312}
     rightCollider: {fileID: 1874892646745252364}
@@ -832,8 +803,6 @@ MonoBehaviour:
     rightTransform: {fileID: 5601229106509504573}
     isTorqueWheel: 1
     isTurningWheel: 0
-  torqueWheelCount: 0
-  displayText: {fileID: 7205586641733613086}
 --- !u!54 &1874892647692576199
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1042,6 +1011,22 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!208 &8266964367986210885
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1874892647692576195}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 1.615, y: 3, z: 3.235}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 0
+  m_Center: {x: 0, y: 1, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1 &5597990245823928863
 GameObject:
   m_ObjectHideFlags: 0
@@ -2409,26 +2394,6 @@ PrefabInstance:
         type: 3}
       propertyPath: onInteractEvent.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: EnterPlayer
-      objectReference: {fileID: 0}
-    - target: {fileID: 6431832202300931810, guid: 76915df11a9b0364dbadaa5540f90a0e,
-        type: 3}
-      propertyPath: onInteractEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6431832202300931810, guid: 76915df11a9b0364dbadaa5540f90a0e,
-        type: 3}
-      propertyPath: onInteractEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
-      objectReference: {fileID: 0}
-    - target: {fileID: 6431832202300931810, guid: 76915df11a9b0364dbadaa5540f90a0e,
-        type: 3}
-      propertyPath: interactionDistance
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 6431832202300931810, guid: 76915df11a9b0364dbadaa5540f90a0e,
-        type: 3}
-      propertyPath: cursorType
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 76915df11a9b0364dbadaa5540f90a0e, type: 3}

@@ -134,15 +134,15 @@ PrefabInstance:
       propertyPath: nurtureItemRequired
       value: 32
       objectReference: {fileID: 0}
-    - target: {fileID: 5482202677789259147, guid: 86f00cf28e4260b4785b13304234c7df,
-        type: 3}
-      propertyPath: m_Center.y
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 5482202677789259144, guid: 86f00cf28e4260b4785b13304234c7df,
         type: 3}
       propertyPath: interactableName
       value: Wildflower
+      objectReference: {fileID: 0}
+    - target: {fileID: 5482202677789259147, guid: 86f00cf28e4260b4785b13304234c7df,
+        type: 3}
+      propertyPath: m_Center.y
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 86f00cf28e4260b4785b13304234c7df, type: 3}

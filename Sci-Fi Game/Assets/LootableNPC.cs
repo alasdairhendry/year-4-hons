@@ -21,7 +21,7 @@ public class LootableNPC : MonoBehaviour
         {
             if (droppedItems.IsEmpty)
             {
-                ItemContainerCanvas.instance.HideContainer ();
+                ItemContainerCanvas.instance.Close ();
                 GetComponentInParent<SelfDestruct> ().Initialise ( 3, true );
                 Destroy ( this.gameObject );
                 return;
@@ -38,7 +38,8 @@ public class LootableNPC : MonoBehaviour
 
     public void Interact ()
     {
-        ItemContainerCanvas.instance.DisplayContainer ( droppedItems, data.NpcName );
+        ItemContainerCanvas.instance.SetContainerInventory ( droppedItems, data.NpcName );
+        ItemContainerCanvas.instance.Open ();
     }
 
     private void RollDropTables ()

@@ -8,6 +8,8 @@ namespace NaughtyAttributes.Editor
     {
         public override void DrawNativeProperty(UnityEngine.Object target, PropertyInfo property)
         {
+            if (!UnityEngine.Application.isPlaying) return;
+
             object value = property.GetValue(target, null);
 
             if (value == null)

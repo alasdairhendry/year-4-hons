@@ -2,7 +2,7 @@
 using TMPro;
 using UnityEngine;
 
-public class ItemContainerCanvas : MonoBehaviour
+public class ItemContainerCanvas : UIPanel
 {
     public static ItemContainerCanvas instance;
 
@@ -17,7 +17,7 @@ public class ItemContainerCanvas : MonoBehaviour
     {
         if (instance == null) instance = this;
         else if (instance != this) { Destroy ( this.gameObject ); return; }
-        HideContainer ();
+        Close ();
     }
 
     private void Start ()
@@ -34,11 +34,38 @@ public class ItemContainerCanvas : MonoBehaviour
     {
         if(EntityManager.instance.PlayerCharacter.cInput.rawInput != Vector2.zero)
         {
-            HideContainer ();
+            Close ();
         }
     }
 
-    public void DisplayContainer(Inventory target, string name)
+    public override void Open ()
+    {
+        if (targetInventory == null) return;
+
+        EntityManager.instance.InventoryCanvas.Open ();
+        base.Open ();
+
+        cGroup.alpha = 1;
+        cGroup.blocksRaycasts = true;
+        IsActive = true;
+
+    }
+
+    public override void Close ()
+    {
+        base.Close ();
+        if (targetInventory != null)
+        {
+            targetInventory.UnregisterInventoryChanged ( OnInventoryChanged );
+        }
+
+        cGroup.alpha = 0;
+        cGroup.blocksRaycasts = false;
+        IsActive = false;
+        OnContainerClosed?.Invoke ();
+    }
+
+    public void SetContainerInventory (Inventory target, string name)
     {
         if (target == null) return;
 
@@ -51,23 +78,12 @@ public class ItemContainerCanvas : MonoBehaviour
         targetInventory = target;
         targetInventory.RegisterInventoryChanged ( OnInventoryChanged );
         OnInventoryChanged ();
-        cGroup.alpha = 1;
-        cGroup.blocksRaycasts = true;
-        IsActive = true;
     }
 
-    public void HideContainer ()
-    {
-        if (targetInventory != null)
-        {
-            targetInventory.UnregisterInventoryChanged ( OnInventoryChanged );
-        }
+    //public void DisplayContainer(Inventory target, string name)
+    //{
 
-        cGroup.alpha = 0;
-        cGroup.blocksRaycasts = false;
-        IsActive = false;
-        OnContainerClosed?.Invoke ();
-    }
+    //}
 
     private void OnInventoryChanged ()
     {

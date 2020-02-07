@@ -9747,6 +9747,22 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!208 &1830167967245020516
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7591706887247954481}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 1.105, y: 0.5, z: 0.64}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1001 &3273926795779285830
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9757,8 +9773,14 @@ PrefabInstance:
     - target: {fileID: 4914687387839471991, guid: d06d7d5e79103764eacd33f24c782182,
         type: 3}
       propertyPath: m_Name
-      value: crafting-furnace-prefab
+      value: crafting-furnace-prefab Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 4914687387839471989, guid: d06d7d5e79103764eacd33f24c782182,
+        type: 3}
+      propertyPath: table
+      value: 
+      objectReference: {fileID: 11400000, guid: e99ce840c70448e47887c019d95531b3,
+        type: 2}
     - target: {fileID: 4914687387839471990, guid: d06d7d5e79103764eacd33f24c782182,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -9814,12 +9836,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4914687387839471989, guid: d06d7d5e79103764eacd33f24c782182,
+    - target: {fileID: 6046412721934448049, guid: d06d7d5e79103764eacd33f24c782182,
         type: 3}
-      propertyPath: table
-      value: 
-      objectReference: {fileID: 11400000, guid: e99ce840c70448e47887c019d95531b3,
-        type: 2}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 4914687387915929464, guid: d06d7d5e79103764eacd33f24c782182,
         type: 3}
       propertyPath: m_LocalScale.x
@@ -9850,19 +9871,8 @@ PrefabInstance:
       propertyPath: localPosition.z
       value: 0.7
       objectReference: {fileID: 0}
-    - target: {fileID: 6046412721934448049, guid: d06d7d5e79103764eacd33f24c782182,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 3
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d06d7d5e79103764eacd33f24c782182, type: 3}
---- !u!4 &7591706887247954480 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4914687387839471990, guid: d06d7d5e79103764eacd33f24c782182,
-    type: 3}
-  m_PrefabInstance: {fileID: 3273926795779285830}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7591706886250751038 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4914687387915929464, guid: d06d7d5e79103764eacd33f24c782182,
@@ -9872,6 +9882,12 @@ Transform:
 --- !u!1 &7591706887247954481 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4914687387839471991, guid: d06d7d5e79103764eacd33f24c782182,
+    type: 3}
+  m_PrefabInstance: {fileID: 3273926795779285830}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &7591706887247954480 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4914687387839471990, guid: d06d7d5e79103764eacd33f24c782182,
     type: 3}
   m_PrefabInstance: {fileID: 3273926795779285830}
   m_PrefabAsset: {fileID: 0}

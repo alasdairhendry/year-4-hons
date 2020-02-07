@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GearCanvas : MonoBehaviour
+public class GearCanvas : UIPanel
 {
     public static GearCanvas instance;
 
@@ -31,14 +31,16 @@ public class GearCanvas : MonoBehaviour
         Close ();
     }
 
-    public void Open ()
+    public override void Open ()
     {
+        base.Open ();
         RefreshUI ( EntityManager.instance.PlayerCharacter.cGear );
         mainPanel.SetActive ( true );
     }
 
-    public void Close ()
+    public override void Close ()
     {
+        base.Close ();
         mainPanel.SetActive ( false );
     }
 

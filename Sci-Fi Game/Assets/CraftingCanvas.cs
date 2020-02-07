@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CraftingCanvas : MonoBehaviour
+public class CraftingCanvas : UIPanel
 {
     public static CraftingCanvas instance;
 
@@ -38,7 +38,7 @@ public class CraftingCanvas : MonoBehaviour
         }
     }
 
-    public void Open(CraftingTable table)
+    public void SetCraftingTable(CraftingTable table)
     {
         if (table.recipes.Count <= 0)
         {
@@ -49,14 +49,45 @@ public class CraftingCanvas : MonoBehaviour
         currentTable = table;
         UpdateRecipeButtons ();
         ShowRecipe ( table.recipes[0] );
+    }
+
+    public override void Open ()
+    {
+        base.Open ();
+
+        if(currentTable == null)
+        {
+            return;
+        }
+
+        if (currentTable.recipes.Count <= 0)
+        {
+            Debug.LogError ( "Table does not have recipes" );
+            return;
+        }
+
         panel.SetActive ( true );
     }
 
-    public void Close ()
+    public override void Close ()
     {
+        base.Close ();
         panel.SetActive ( false );
         currentTable = null;
         currentRecipe = null;
+    }
+
+    public void a(CraftingTable table)
+    {
+
+
+
+     
+    }
+
+    public void a ()
+    {
+       
     }
 
     private void UpdateRecipeButtons ()
@@ -89,12 +120,14 @@ public class CraftingCanvas : MonoBehaviour
             if (i >= currentRecipe.ingredientsRequired.Count)
             {
                 ingredientPanels[i].panel.SetActive ( false );
+                ingredientPanels[i].tooltip.SetTooltipMessage ( "" );
             }
             else
             {
                 ingredientPanels[i].panel.SetActive ( true );
                 ingredientPanels[i].iconImage.sprite = ItemDatabase.GetItem ( currentRecipe.ingredientsRequired[i].ID ).Sprite;
                 ingredientPanels[i].text.text = EntityManager.instance.PlayerInventory.GetQuantityOfItem ( currentRecipe.ingredientsRequired[i].ID ).ToString ( "0" ) + "/" + currentRecipe.ingredientsRequired[i].Amount.ToString ( "0" );
+                ingredientPanels[i].tooltip.SetTooltipMessage ( ItemDatabase.GetItem ( currentRecipe.ingredientsRequired[i].ID ).Name );
             }
         }
 
@@ -103,12 +136,14 @@ public class CraftingCanvas : MonoBehaviour
             if (i >= currentRecipe.toolsRequired.Count)
             {
                 toolPanels[i].panel.SetActive ( false );
+                toolPanels[i].tooltip.SetTooltipMessage ( "" );
             }
             else
             {
                 toolPanels[i].panel.SetActive ( true );
                 toolPanels[i].iconImage.sprite = ItemDatabase.GetItem ( currentRecipe.toolsRequired[i].ID ).Sprite;
-                toolPanels[i].text.text = EntityManager.instance.PlayerInventory.GetQuantityOfItem ( currentRecipe.toolsRequired[i].ID ).ToString ( "0" ) + "/" + currentRecipe.toolsRequired[i].Amount.ToString ( "0" );               
+                toolPanels[i].text.text = EntityManager.instance.PlayerInventory.GetQuantityOfItem ( currentRecipe.toolsRequired[i].ID ).ToString ( "0" ) + "/" + currentRecipe.toolsRequired[i].Amount.ToString ( "0" );
+                toolPanels[i].tooltip.SetTooltipMessage ( ItemDatabase.GetItem ( currentRecipe.toolsRequired[i].ID ).Name );
             }
         }
     }

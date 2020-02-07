@@ -434,7 +434,7 @@ PrefabInstance:
     - target: {fileID: 5482202678251732886, guid: 86f00cf28e4260b4785b13304234c7df,
         type: 3}
       propertyPath: m_Name
-      value: gatherable-rotten-poppy-prefab
+      value: gatherable-rotten-poppy-prefab Variant
       objectReference: {fileID: 0}
     - target: {fileID: 5482202678251732889, guid: 86f00cf28e4260b4785b13304234c7df,
         type: 3}

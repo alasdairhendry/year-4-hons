@@ -38,16 +38,16 @@ public class CharacterAnimator : MonoBehaviour
         animator.runtimeAnimatorController = overrideController;
     }
 
-    public MeleeAttackAnimation RandomiseAttackAnimation (List<MeleeAttackAnimation> possibleClips)
+    public MeleeAttackAnimation RandomiseAttackAnimation (List<MeleeAttackAnimation> possibleClips, MeleeAttackAnimation previous)
     {
-        MeleeAttackAnimation randomAnimation = possibleClips.GetRandom ();
+        MeleeAttackAnimation randomAnimation = possibleClips.GetRandom ( previous );
         overrideController["melee-attack-01"] = randomAnimation.clip;
         return randomAnimation;
     }
 
-    public MeleeAttackComboAnimation RandomiseAttackAnimation (List<MeleeAttackComboAnimation> possibleClips)
+    public MeleeAttackComboAnimation RandomiseAttackAnimation (List<MeleeAttackComboAnimation> possibleClips, MeleeAttackComboAnimation previous)
     {
-        MeleeAttackComboAnimation randomAnimation = possibleClips.GetRandom ();
+        MeleeAttackComboAnimation randomAnimation = possibleClips.GetRandom ( previous );
         overrideController["melee-attack-01"] = randomAnimation.clip;
         return randomAnimation;
     }

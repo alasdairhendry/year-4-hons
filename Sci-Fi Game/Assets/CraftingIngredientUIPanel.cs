@@ -9,4 +9,5 @@ public class CraftingIngredientUIPanel : MonoBehaviour
     public GameObject panel;
     public Image iconImage;
     public TextMeshProUGUI text;
+    public TooltipItemUI tooltip;
 }

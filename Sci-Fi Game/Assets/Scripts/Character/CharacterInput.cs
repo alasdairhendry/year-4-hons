@@ -17,21 +17,68 @@ public class CharacterInput : MonoBehaviour
 
     private void Update ()
     {
-        if (character.IsAI) return;
-        CheckAim ();
-        input = new Vector2 ( Input.GetAxis ( "Horizontal" ), Input.GetAxis ( "Vertical" ) ).normalized;
-        rawInput = new Vector2 ( Input.GetAxisRaw ( "Horizontal" ), Input.GetAxisRaw ( "Vertical" ) ).normalized;   
-
-        if (Input.GetKeyDown ( KeyCode.C ))
+        if (!character.IsAI)
         {
-            character.isCrouchingInput = !character.isCrouchingInput;
+            CheckAim ();
+
+            if (character.CanMove)
+            {
+                input = new Vector2 ( Input.GetAxis ( "Horizontal" ), Input.GetAxis ( "Vertical" ) ).normalized;
+                rawInput = new Vector2 ( Input.GetAxisRaw ( "Horizontal" ), Input.GetAxisRaw ( "Vertical" ) ).normalized;
+            }
+            else
+            {
+                input = Vector2.zero;
+                rawInput = Vector2.zero;
+            }
+
+            if (Input.GetKeyDown ( KeyCode.C ))
+            {
+                character.isCrouchingInput = !character.isCrouchingInput;
+            }
+
+            character.isRunning = Input.GetKey ( KeyCode.LeftShift );
+
+            if (Input.GetKeyDown ( KeyCode.Space ))
+            {
+                character.shouldJump = true;
+            }
         }
-
-        character.isRunning = Input.GetKey ( KeyCode.LeftShift );
-
-        if (Input.GetKeyDown ( KeyCode.Space ))
+        else
         {
-            character.shouldJump = true;
+            if (!character.CanMove)
+            {
+                input = Vector2.zero;
+                rawInput = Vector2.zero;
+            }
+        }
+    }
+
+    public void SetInput (Vector2 input)
+    {
+        if (character.CanMove)
+        {
+            this.input = input;
+            this.rawInput = input;
+        }
+        else
+        {
+            input = Vector2.zero;
+            rawInput = Vector2.zero;
+        }
+    }
+
+    public void SetInput (float x, float y)
+    {
+        if (character.CanMove)
+        {
+            this.input = new Vector2 ( x, y );
+            this.rawInput = new Vector2 ( x, y );
+        }
+        else
+        {
+            input = Vector2.zero;
+            rawInput = Vector2.zero;
         }
     }
 
@@ -45,6 +92,6 @@ public class CharacterInput : MonoBehaviour
             //return;
         //}
 
-        isAimInput = Input.GetKey ( KeyCode.V ) || Input.GetMouseButton ( 1 );
+        isAimInput = Input.GetKey ( KeyCode.V ) || Input.GetMouseButton ( 1 ) && character.isDead == false;
     }
 }

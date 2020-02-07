@@ -82,8 +82,11 @@ public class CharacterIK : MonoBehaviour
         rightHandRootPivot.localRotation = Quaternion.Slerp ( rightHandRootPivot.localRotation, Quaternion.Euler ( recoilData.rotationalDirection * recoilData.rotationalCurve.Evaluate ( recoilCounter ) * recoilData.visualMultiplier * isEmptyClipMultiplier ), Time.deltaTime * lerp );
         rightHandRootPivot.localPosition = Vector3.Lerp ( rightHandRootPivot.localPosition, recoilData.positionalDirection * recoilData.positionalCurve.Evaluate ( recoilCounter ) * recoilData.visualMultiplier * isEmptyClipMultiplier, Time.deltaTime * lerp );
 
-        FindObjectOfType<PlayerCameraController> ().SetXRecoil ( recoilData.cameraXAmount * recoilData.cameraXCurve.Evaluate ( recoilCounter ) * UnityEngine.Random.Range ( recoilData.rangeXModifier.x, recoilData.rangeXModifier.y ) * recoilData.cameraMultiplier * isEmptyClipMultiplier );
-        FindObjectOfType<PlayerCameraController> ().SetYRecoil ( recoilData.cameraYAmount * recoilData.cameraYCurve.Evaluate ( recoilCounter ) * UnityEngine.Random.Range ( recoilData.rangeYModifier.x, recoilData.rangeYModifier.y ) * recoilData.cameraMultiplier * isEmptyClipMultiplier );
+        if (!character.IsAI)
+        {
+            FindObjectOfType<PlayerCameraController> ().SetXRecoil ( recoilData.cameraXAmount * recoilData.cameraXCurve.Evaluate ( recoilCounter ) * UnityEngine.Random.Range ( recoilData.rangeXModifier.x, recoilData.rangeXModifier.y ) * recoilData.cameraMultiplier * isEmptyClipMultiplier );
+            FindObjectOfType<PlayerCameraController> ().SetYRecoil ( recoilData.cameraYAmount * recoilData.cameraYCurve.Evaluate ( recoilCounter ) * UnityEngine.Random.Range ( recoilData.rangeYModifier.x, recoilData.rangeYModifier.y ) * recoilData.cameraMultiplier * isEmptyClipMultiplier );
+        }
     }
 
     private void HandleDamping ()
@@ -155,6 +158,13 @@ public class CharacterIK : MonoBehaviour
 
     private void OnAimChanged()
     {
+        if(character.cWeapon.isEquipped == false)
+        {
+            isActiveLeftHand = false;
+            isActiveRightHand = false;
+            return;
+        }
+
         if (character.cWeapon.currentWeaponData.weaponAttackType == WeaponAttackType.Melee)
         {
             isActiveLeftHand = false;
@@ -210,8 +220,17 @@ public class CharacterIK : MonoBehaviour
     private void SetLookAtPosition ()
     {
         if (character.IsAI) return;
-        animator.SetLookAtPosition ( character.cCameraController.cameraTransform.position + character.cCameraController.cameraTransform.forward * 100.0f );
-        animator.SetLookAtWeight ( 1.0f, character.IsAiming ? 1.0f : 0.0f, 1.0f, 1.0f, 1.0f );
+
+        if (character.cWeapon.IsComboMode && character.cWeapon.comboNPCTarget != null)
+        {
+            animator.SetLookAtPosition ( character.cWeapon.comboNPCTarget.Character.Animator.GetBoneTransform ( HumanBodyBones.Head ).position );
+            animator.SetLookAtWeight ( 1.0f, 1.0f, 1.0f, 1.0f, 1.0f );
+        }
+        else
+        {
+            animator.SetLookAtPosition ( character.cCameraController.cameraTransform.position + character.cCameraController.cameraTransform.forward * 100.0f );
+            animator.SetLookAtWeight ( 1.0f, character.IsAiming ? 1.0f : 0.0f, 1.0f, 1.0f, 1.0f );
+        }        
     }
 
     private void MatchWeaponIK ()

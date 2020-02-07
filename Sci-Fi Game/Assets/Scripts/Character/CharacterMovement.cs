@@ -42,6 +42,8 @@ public class CharacterMovement : MonoBehaviour
 
     private void Rotation ()
     {
+        if (character.IsAI) return;
+
         Vector3 moveDirection = new Vector3 ( 0.0f, 0.0f, 0.0f );
 
         if (character.IsAiming)

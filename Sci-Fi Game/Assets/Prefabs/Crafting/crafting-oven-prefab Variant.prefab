@@ -4912,6 +4912,22 @@ Transform:
   m_Father: {fileID: 759434295281772896}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!208 &2628584002861471600
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 759434295281772897}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 2.155, y: 0.5, z: 0.64}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: -0.77, y: 0, z: 0.48}
+  m_TimeToStationary: 0.5
 --- !u!65 &90137281
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -6055,7 +6071,7 @@ PrefabInstance:
     - target: {fileID: 4914687387839471991, guid: d06d7d5e79103764eacd33f24c782182,
         type: 3}
       propertyPath: m_Name
-      value: crafting-oven-prefab
+      value: crafting-oven-prefab Variant
       objectReference: {fileID: 0}
     - target: {fileID: 4914687387839471990, guid: d06d7d5e79103764eacd33f24c782182,
         type: 3}
@@ -6150,6 +6166,12 @@ Transform:
 --- !u!4 &759434295281772896 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4914687387839471990, guid: d06d7d5e79103764eacd33f24c782182,
+    type: 3}
+  m_PrefabInstance: {fileID: 5674103783576520726}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &759434295281772897 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4914687387839471991, guid: d06d7d5e79103764eacd33f24c782182,
     type: 3}
   m_PrefabInstance: {fileID: 5674103783576520726}
   m_PrefabAsset: {fileID: 0}

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Generic NPC
   m_EditorClassIdentifier: 
   npcName: Generic NPC
-  maxHealth: 50
+  maxHealth: 100
   defaultHostilityLevel: 2
   damageTakenAudioClips: {fileID: 11400000, guid: 972e1bab4adcb8d45ba8d404c9ffba20,
     type: 2}
@@ -23,3 +23,6 @@ MonoBehaviour:
   accessToGlobalDropTable: 1
   accessToRareDropTable: 0
   accessToSuperRareDropTable: 0
+  combatLevel: 1
+  baseHitChanceModifier: 1
+  baseDamageModifier: 1

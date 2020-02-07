@@ -18,7 +18,7 @@ MonoBehaviour:
   offsetRotation: {x: 24.929949, y: 260.11438, z: 140.8632}
   localScale: {x: 0.1, y: 0.1, z: 0.1}
   prefab: {fileID: 8229140038241286947, guid: b7ecc9e57837a8f4496af8df30ee800d, type: 3}
-  baseDamage: 10
+  baseDamage: 25
   activeBodyPart: 18
   holsterBodyPart: 0
   holsterData: {fileID: 11400000, guid: b2e675c6e8b759541bc71811bd10a49e, type: 2}

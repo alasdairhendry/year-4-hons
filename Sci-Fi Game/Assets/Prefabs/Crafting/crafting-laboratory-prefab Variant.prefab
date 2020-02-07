@@ -97,6 +97,22 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!208 &8107301985874143611
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7707413749691550361}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.835, y: 0.5, z: 1.055}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: -0.2, y: 0, z: 0.27}
+  m_TimeToStationary: 0.5
 --- !u!65 &4057001261023939655
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -488,6 +504,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: crafting-laboratory-prefab Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 4914687387839471989, guid: d06d7d5e79103764eacd33f24c782182,
+        type: 3}
+      propertyPath: table
+      value: 
+      objectReference: {fileID: 11400000, guid: c241a1a105d0fa64b9d96b4c4a025261,
+        type: 2}
     - target: {fileID: 4914687387839471990, guid: d06d7d5e79103764eacd33f24c782182,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -543,12 +565,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4914687387839471989, guid: d06d7d5e79103764eacd33f24c782182,
-        type: 3}
-      propertyPath: table
-      value: 
-      objectReference: {fileID: 11400000, guid: c241a1a105d0fa64b9d96b4c4a025261,
-        type: 2}
     - target: {fileID: 4914687386442109289, guid: d06d7d5e79103764eacd33f24c782182,
         type: 3}
       propertyPath: interactableName

@@ -21,7 +21,8 @@ public class CraftingBench : MonoBehaviour
 
     public void Interact ()
     {
-        CraftingCanvas.instance.Open ( table );
+        CraftingCanvas.instance.SetCraftingTable ( table );
+        CraftingCanvas.instance.Open ();
     }
 
     private void RestoreEnergy ()

@@ -11,7 +11,7 @@ public class PlayerCameraController : MonoBehaviour
     [Space]
     [SerializeField] private Vector3 localOffset = new Vector3 ();
     [SerializeField] private Vector3 localEuler = new Vector3 ();
-    [Space]    
+    [Space]
     [SerializeField] private float followDamp = 5.0f;
     [SerializeField] private float smoothVelocityX;
     [SerializeField] private float smoothVelocityY;
@@ -36,8 +36,8 @@ public class PlayerCameraController : MonoBehaviour
     private float smoothX;
     private float smoothY;
 
-    private float mouseX;
-    private float mouseY;
+    [SerializeField] private float mouseX;
+    [SerializeField] private float mouseY;
     private float currentFOV = 60.0f;
 
     public Transform LookTransform { get { return yRotationRoot; } }
@@ -57,9 +57,9 @@ public class PlayerCameraController : MonoBehaviour
         cameraTransform = xRotationRoot.GetChild ( 0 ).GetChild ( 0 );
         initialCameraPosition = cameraTransform.localPosition;
         initialCameraRotation = cameraTransform.localRotation;
-    }    
+    }
 
-    public PlayerCameraController SetTarget(Transform t)
+    public PlayerCameraController SetTarget (Transform t)
     {
         this.target = t;
         this.character = t.gameObject.GetComponent<Character> ();
@@ -78,82 +78,151 @@ public class PlayerCameraController : MonoBehaviour
 
     private void Update ()
     {
-        if (CinematicComboView != null)
-        {
-            // In cinema view
-            mouseX = Mathf.Lerp ( mouseX, 0.0f, Time.deltaTime * 10 );
-            mouseY = Mathf.Lerp ( mouseY, 0.0f, Time.deltaTime * 10 );
-            return;
-        }
-
-        if (Mouse.Down ( 0, false ) || !character.cWeapon.isHolstered)
-        {
-            shouldRecordMovement = true;
-        }
-        else if (!Mouse.DownRepeating ( 0 ) && character.cWeapon.isHolstered)
-        {
-            shouldRecordMovement = false;
-        }
-
-        if (shouldRecordMovement)
+        if (character.currentVehicle != null && character.currentVehicle.CurrentVehicleMode == VehicleMode.Hover)
         {
             mouseX = Input.GetAxis ( "Mouse X" );
             mouseY = Input.GetAxis ( "Mouse Y" );
         }
-        else
+        else if (character.currentVehicle != null && character.currentVehicle.CurrentVehicleMode == VehicleMode.Drive)
         {
             mouseX = Mathf.Lerp ( mouseX, 0.0f, Time.deltaTime * 10 );
             mouseY = Mathf.Lerp ( mouseY, 0.0f, Time.deltaTime * 10 );
+        }
+        else
+        {
+            if (CinematicComboView != null)
+            {
+                // In cinema view
+                mouseX = Mathf.Lerp ( mouseX, 0.0f, Time.deltaTime * 10 );
+                mouseY = Mathf.Lerp ( mouseY, 0.0f, Time.deltaTime * 10 );
+                return;
+            }
+
+            if (Mouse.Down ( 0, false ) || !character.cWeapon.isHolstered)
+            {
+                shouldRecordMovement = true;
+            }
+            else if (!Mouse.DownRepeating ( 0 ) && character.cWeapon.isHolstered)
+            {
+                shouldRecordMovement = false;
+            }
+
+            if (shouldRecordMovement)
+            {
+                mouseX = Input.GetAxis ( "Mouse X" );
+                mouseY = Input.GetAxis ( "Mouse Y" );
+            }
+            else
+            {
+                mouseX = Mathf.Lerp ( mouseX, 0.0f, Time.deltaTime * 10 );
+                mouseY = Mathf.Lerp ( mouseY, 0.0f, Time.deltaTime * 10 );
+            }
         }
     }
 
     private void FixedUpdate ()
     {
         if (!target) return;
-        
         if (target.gameObject.activeSelf == false) { return; }
 
-        if (character)
+        if (character.currentVehicle != null)
         {
-            targetFOV = character.IsAiming && character.cWeapon.currentWeaponData.weaponAttackType == WeaponAttackType.Gun ? 40.0f : 60.0f;
-            currentFOV = Mathf.Lerp ( currentFOV, targetFOV, Time.deltaTime * fovChangeDamp );
-            camera.fieldOfView = currentFOV;
+            if (character.currentVehicle.CurrentVehicleMode == VehicleMode.Hover)
+            {
+                VehicleHover vehicleHover = character.currentVehicle as VehicleHover;
+                VehicleBaseMulti vehicleMulti = character.currentVehicle as VehicleBaseMulti;
+                VehicleHoverData vehicleData;
+                if (vehicleHover != null)
+                {
+                    vehicleData = vehicleHover.VehicleData;
+                }
+                else
+                {
+                    vehicleData = vehicleMulti.VehicleHoverData;
+                }
+
+                transform.position = Vector3.Slerp ( transform.position, character.currentVehicle.transform.TransformPoint ( vehicleData.cameraOffset ), followDamp * 4 * Time.deltaTime );
+
+                smoothX = Mathf.SmoothDamp ( smoothX, mouseX, ref smoothVelocityX, turnSmooth );
+                smoothY = Mathf.SmoothDamp ( smoothY, mouseY, ref smoothVelocityY, turnSmooth );
+
+                yLookAngle += (smoothX * rotationSpeedY);
+                xLookAngle -= (smoothY * rotationSpeedX);
+                xLookAngle = Mathf.Clamp ( xLookAngle, vehicleData.cameraXClampMin, vehicleData.cameraXClampMax );
+
+                Quaternion yRotation = Quaternion.Euler ( 0.0f, yLookAngle, 0.0f );
+                yRotationRoot.localRotation = yRotation;
+
+                Quaternion xRotation = Quaternion.Euler ( xLookAngle, 0.0f, 0.0f );
+                xRotationRoot.localRotation = xRotation;
+            }
+            else
+            {
+                NewVehicleGround vehicleGround = character.currentVehicle as NewVehicleGround;
+                VehicleBaseMulti vehicleMulti = character.currentVehicle as VehicleBaseMulti;
+                VehicleGroundData vehicleData;
+                if(vehicleGround != null)
+                {
+                    vehicleData = vehicleGround.VehicleData;
+                }
+                else 
+                {
+                    vehicleData = vehicleMulti.VehicleGroundData;
+                }
+
+                transform.rotation = Quaternion.identity;
+                transform.position = Vector3.Slerp ( transform.position, character.currentVehicle.transform.TransformPoint ( vehicleData.cameraOffset ), followDamp * 2 * Time.deltaTime );
+
+                yLookAngle = yRotationRoot.localEulerAngles.y;
+                xLookAngle = yRotationRoot.localEulerAngles.x;
+
+                Vector3 dir = character.currentVehicle.transform.position - yRotationRoot.transform.position;
+                dir.y = 0;
+                Quaternion yRotation = Quaternion.LookRotation ( dir );
+                yRotationRoot.localRotation = Quaternion.Slerp ( yRotationRoot.localRotation, yRotation, followDamp * 8 * Time.deltaTime );
+                Quaternion xRotation = Quaternion.identity;
+                xRotationRoot.localRotation = Quaternion.Slerp ( xRotationRoot.localRotation, xRotation, followDamp * 8 * Time.deltaTime );
+            }
         }
+        else
+        {
+            if (character != null && character.cWeapon != null && character.cWeapon.isEquipped == true && character.cWeapon.isHolstered == false)
+            {
+                targetFOV = character.IsAiming && character.cWeapon.currentWeaponData.weaponAttackType == WeaponAttackType.Gun ? 40.0f : 60.0f;
+                currentFOV = Mathf.Lerp ( currentFOV, targetFOV, Time.deltaTime * fovChangeDamp );
+                camera.fieldOfView = currentFOV;
+            }
 
-        transform.position = Vector3.Slerp ( transform.position, target.TransformPoint( globalOffset ), followDamp * Time.deltaTime );
+            transform.position = Vector3.Slerp ( transform.position, target.TransformPoint ( globalOffset ), followDamp * Time.deltaTime );
 
-        smoothX = Mathf.SmoothDamp ( smoothX, mouseX, ref smoothVelocityX, turnSmooth );
-        smoothY = Mathf.SmoothDamp ( smoothY, mouseY, ref smoothVelocityY, turnSmooth );
+            smoothX = Mathf.SmoothDamp ( smoothX, mouseX, ref smoothVelocityX, turnSmooth );
+            smoothY = Mathf.SmoothDamp ( smoothY, mouseY, ref smoothVelocityY, turnSmooth );
 
-        if(!DEBUG_LOCK_Y_ROT)
-        yLookAngle += (smoothX * rotationSpeedY);
-        if(!DEBUG_LOCK_X_ROT)
-        xLookAngle -= (smoothY * rotationSpeedX);
+            if (!DEBUG_LOCK_Y_ROT)
+                yLookAngle += (smoothX * rotationSpeedY);
+            if (!DEBUG_LOCK_X_ROT)
+                xLookAngle -= (smoothY * rotationSpeedX);
 
-        yLookAngle += yRecoilAngle;
-        xLookAngle += xRecoilAngle;
+            yLookAngle += yRecoilAngle;
+            xLookAngle += xRecoilAngle;
 
-        xLookAngle = Mathf.Clamp ( xLookAngle, xClampMin, xClampMax );
-        //if (!Input.GetMouseButton ( 0 ))
-        //{
-        //    yLookAngle = 0.0f;
-        //}
+            xLookAngle = Mathf.Clamp ( xLookAngle, xClampMin, xClampMax );
 
             Quaternion yRotation = Quaternion.Euler ( 0.0f, yLookAngle, 0.0f );
             yRotationRoot.localRotation = yRotation;
-        
 
             Quaternion xRotation = Quaternion.Euler ( xLookAngle, 0.0f, 0.0f );
             xRotationRoot.localRotation = xRotation;
+        }
     }
 
     private void LateUpdate ()
     {
-        if(CinematicComboView != null)
+        if (CinematicComboView != null)
         {
             // In cinema view
-            cameraTransform.position = Vector3.Slerp ( cameraTransform.position, CinematicComboView.position, Time.deltaTime * 25.0f );
-            cameraTransform.rotation = Quaternion.Slerp ( cameraTransform.rotation, CinematicComboView.rotation, Time.deltaTime * 25.0f );
+            cameraTransform.position = Vector3.Slerp ( cameraTransform.position, CinematicComboView.position, Time.deltaTime * 5.0f );
+            cameraTransform.rotation = Quaternion.Slerp ( cameraTransform.rotation, CinematicComboView.rotation, Time.deltaTime * 5.0f );
         }
         else
         {
@@ -170,10 +239,10 @@ public class PlayerCameraController : MonoBehaviour
 
     public void SetYRecoil (float x)
     {
-        yRecoilAngle= Time.deltaTime * x;
+        yRecoilAngle = Time.deltaTime * x;
     }
 
-    public void SetCinematicComboView(Transform transform)
+    public void SetCinematicComboView (Transform transform)
     {
         CinematicComboView = transform;
     }
