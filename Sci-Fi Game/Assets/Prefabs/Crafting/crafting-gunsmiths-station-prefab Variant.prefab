@@ -1,5 +1,18 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!65 &5917120368501741681
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6701314980110825399}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2.4444265, y: 0.8372772, z: 0.92963386}
+  m_Center: {x: 0, y: 0.41560256, z: -0.035183072}
 --- !u!208 &6240861316540785431
 NavMeshObstacle:
   m_ObjectHideFlags: 0
@@ -16,19 +29,21 @@ NavMeshObstacle:
   m_CarveOnlyStationary: 1
   m_Center: {x: 0, y: 0, z: -0.04}
   m_TimeToStationary: 0.5
---- !u!65 &5917120368501741681
-BoxCollider:
+--- !u!114 &9147918168467023864
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6701314980110825399}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_GameObject: {fileID: 8447930701708720835}
   m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 2.4444265, y: 0.8372772, z: 0.92963386}
-  m_Center: {x: 0, y: 0.41560256, z: -0.035183072}
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c7482b0afed6984e81ef637a87521e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mapBlipType: 11
+  registerOnAwake: 1
+  includeRotation: 0
 --- !u!1001 &3533476419327056820
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -41,12 +56,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: crafting-gunsmiths-station-prefab Variant
       objectReference: {fileID: 0}
-    - target: {fileID: 4914687387839471989, guid: d06d7d5e79103764eacd33f24c782182,
-        type: 3}
-      propertyPath: table
-      value: 
-      objectReference: {fileID: 11400000, guid: 43034e4aefac48f4885dee325efaec67,
-        type: 2}
     - target: {fileID: 4914687387839471990, guid: d06d7d5e79103764eacd33f24c782182,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -116,6 +125,17 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 1.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 4914687387839471989, guid: d06d7d5e79103764eacd33f24c782182,
+        type: 3}
+      propertyPath: table
+      value: 
+      objectReference: {fileID: 11400000, guid: 43034e4aefac48f4885dee325efaec67,
+        type: 2}
+    - target: {fileID: 4914687387839471989, guid: d06d7d5e79103764eacd33f24c782182,
+        type: 3}
+      propertyPath: craftingBenchName
+      value: Gunsmiths Station
       objectReference: {fileID: 0}
     - target: {fileID: 4914687386442109289, guid: d06d7d5e79103764eacd33f24c782182,
         type: 3}

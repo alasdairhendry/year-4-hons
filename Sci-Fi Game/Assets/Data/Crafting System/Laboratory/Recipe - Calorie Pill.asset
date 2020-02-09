@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   recipeName: Calorie Pill
   timeToCraft: 1
-  tableResourceUsage: 1
+  tableResourceUsage: 5
   ingredientsRequired:
   - ID: 28
     Amount: 1

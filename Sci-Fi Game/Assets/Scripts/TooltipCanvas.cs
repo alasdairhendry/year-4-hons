@@ -25,8 +25,8 @@ public class TooltipCanvas : MonoBehaviour
     [SerializeField] private float damping = 5.0f;
     private Vector2 targetPosition = new Vector2 ();
 
-    private Vector2 boundsMin = new Vector2 ( 32.0f, 32.0f );
-    private Vector2 boundsMax = new Vector2 ( 1920.0f, 1080.0f );
+    private Vector2 boundsMin = new Vector2 ( 32.0f, 64.0f );
+    private Vector2 boundsMax = new Vector2 ( 1920.0f, 1080.0f);
 
     public void Refresh ()
     {
@@ -79,7 +79,7 @@ public class TooltipCanvas : MonoBehaviour
         if (Input.GetKeyUp ( KeyCode.LeftShift )) Refresh ();
 
         boundsMax.x = canvasRect.sizeDelta.x - tooltipRect.sizeDelta.x - boundsMin.x;
-        boundsMax.y = canvasRect.sizeDelta.y - tooltipRect.sizeDelta.y - boundsMin.y;
+        boundsMax.y = canvasRect.sizeDelta.y - tooltipRect.sizeDelta.y - (boundsMin.y * 2);
 
         targetPosition = new Vector2 ( Input.mousePosition.x, Input.mousePosition.y ) + displayOffset;
         targetPosition.x = Mathf.Clamp ( targetPosition.x, boundsMin.x, boundsMax.x );

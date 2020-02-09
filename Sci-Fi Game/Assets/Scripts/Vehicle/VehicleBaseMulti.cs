@@ -417,6 +417,8 @@ public class VehicleBaseMulti : Vehicle
 
     public override void OnUpdate ()
     {
+        base.OnUpdate ();
+
         if (Input.GetKeyDown ( KeyCode.Space ))
         {
             SetVehicleState ( !isHovering );
@@ -494,7 +496,6 @@ public class VehicleBaseMulti : Vehicle
 
     public override void Exit (Character character)
     {
-        if (CurrSqrMagnitude >= 10) return;
         base.Exit ( character );
 
         if(CurrentVehicleMode == VehicleMode.Hover)

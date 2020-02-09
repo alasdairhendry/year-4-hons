@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   recipeName: Calorie Capsule
   timeToCraft: 1.25
-  tableResourceUsage: 1
+  tableResourceUsage: 5
   ingredientsRequired:
   - ID: 28
     Amount: 1

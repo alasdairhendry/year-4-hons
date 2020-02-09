@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   recipeName: Steel Ingot
   timeToCraft: 2.5
-  tableResourceUsage: 1
+  tableResourceUsage: 10
   ingredientsRequired:
   - ID: 16
     Amount: 2

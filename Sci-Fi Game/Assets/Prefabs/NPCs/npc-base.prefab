@@ -4401,6 +4401,7 @@ GameObject:
   - component: {fileID: 107084485}
   - component: {fileID: 107084486}
   - component: {fileID: 107084487}
+  - component: {fileID: -5961026718509425272}
   m_Layer: 0
   m_Name: npc-base
   m_TagString: NPC
@@ -4745,6 +4746,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   npc: {fileID: 8217560849017227561}
+--- !u!114 &-5961026718509425272
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1794158433244268443}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c7482b0afed6984e81ef637a87521e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mapBlipType: 1
+  registerOnAwake: 0
+  includeRotation: 0
 --- !u!1 &1794158433311667744
 GameObject:
   m_ObjectHideFlags: 0

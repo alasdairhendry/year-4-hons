@@ -47,11 +47,11 @@ public class XPTrackerUIPrefab : MonoBehaviour
     {
         if (!isActive) return;
 
-        float localXScale = Mathf.InverseLerp ( 0.0f, Skill.XPRequiredForLevel ( targetSkill.currentLevel ), targetSkill.currentXP );
-        float damp = (fillImage.localScale.x > localXScale) ? 20.0f : 5.0f;
-        fillImage.localScale = Vector3.Slerp ( fillImage.localScale, new Vector3 ( localXScale, 1.0f, 1.0f ), Time.deltaTime * damp );
-        skillLevelText.text = targetSkill.currentLevel.ToString ();
-        skillNameText.text = targetSkill.skillName;
+        //float localXScale = Mathf.InverseLerp ( 0.0f, Skill.XPRequiredForLevel ( targetSkill.currentLevel ), targetSkill.currentXP );
+        //float damp = (fillImage.localScale.x > localXScale) ? 20.0f : 5.0f;
+        //fillImage.localScale = Vector3.Slerp ( fillImage.localScale, new Vector3 ( localXScale, 1.0f, 1.0f ), Time.deltaTime * damp );
+        //skillLevelText.text = targetSkill.currentLevel.ToString ();
+        //skillNameText.text = targetSkill.skillName;
     }
 
     private void CheckShouldBeActive ()

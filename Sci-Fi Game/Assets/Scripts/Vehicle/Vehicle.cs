@@ -13,17 +13,21 @@ public class Vehicle : MonoBehaviour
     public Vector3 driverLocalPosition = new Vector3 ();
     public Vector3 driverLocalRotation = new Vector3 (0.0f, 0.0f, 1.0f);
     public Vector3 driverExitLocalPosition = new Vector3 ();
-
+    public AnimationClip idleClip;
+    [Space]
     public bool engineIsOn = false;
     public new Collider collider;
-
+    [Space]
     public AudioSource idleSource;
     public AudioSource ignitionSource;
     public Vector2 pitches = new Vector2 ();
-
+    [Space]
     [SerializeField] private float onEnterVehicleMass = 500.0f;
     [SerializeField] private float onExitVehicleMass = 500.0f;
     [SerializeField] private float onEnterDriverMass = 100.0f;
+    [Space]
+    [SerializeField] private ParticleSystem smokeParticles;
+    [SerializeField] private GameObject explosionParticles;
 
     public Character currentDriver { get; protected set; }
     public new Rigidbody rigidbody { get; protected set; }
@@ -69,12 +73,16 @@ public class Vehicle : MonoBehaviour
             else return Input.GetAxis ( "Horizontal" );
         }
     }
+    public Health health { get; protected set; }
 
     private FixedJoint currentFixedJoint;
 
     protected virtual void Awake ()
     {
         rigidbody = GetComponent<Rigidbody> ();
+        health = GetComponent<Health> ();
+        health.onHealthChanged += OnHealthRemoved;
+        health.onDeath += OnDeath;       
     }
 
     public virtual void EnterPlayer ()
@@ -91,6 +99,7 @@ public class Vehicle : MonoBehaviour
     {
         if (currentDriver) return;
         if (character.currentVehicle) return;
+        character.cAnimator.OverrideDriveIdle ( idleClip );
 
         currentDriver = character;
 
@@ -153,7 +162,10 @@ public class Vehicle : MonoBehaviour
         currentDriver = null;
     }
 
-    public virtual void OnUpdate () { }
+    public virtual void OnUpdate ()
+    {
+
+    }
 
     public virtual void OnFixedUpdate () { }
 
@@ -164,6 +176,41 @@ public class Vehicle : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawCube ( transform.TransformPoint ( driverExitLocalPosition ), Vector3.one * 0.1f );
     }
+
+    private void OnHealthRemoved ()
+    {
+        ParticleSystem.EmissionModule mod = smokeParticles.emission;
+        mod.rateOverTimeMultiplier = Mathf.Lerp ( 0.0f, 100.0f, Mathf.InverseLerp ( 0.65f, 0.25f, health.healthNormalised ) );
+        Debug.Log ( "rateOverTimeMultiplier " + mod.rateOverTimeMultiplier );
+        smokeParticles.Play ();
+    }
+
+    private void OnCollisionEnter (Collision collision)
+    {
+        if(collision.relativeVelocity.sqrMagnitude > 25.0f)
+        {
+            health.RemoveHealth ( 12.5f, DamageType.BluntForce );
+        }
+    }
+
+    private void OnDeath ()
+    {
+        if (isDead) return;
+
+        if (currentDriver != null)
+        {
+            Exit ( currentDriver );
+        }
+
+        GameObject go = Instantiate ( explosionParticles );
+        go.transform.position = transform.position;
+
+        isDead = true;
+
+        Destroy ( this.gameObject );
+    }
+
+    private bool isDead = false;
 
     public class VehicleOccupant
     {

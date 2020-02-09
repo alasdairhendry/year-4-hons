@@ -82,6 +82,7 @@ public class Character : MonoBehaviour
     public CharacterWeapon cWeapon { get; protected set; }
     public CharacterGear cGear { get; protected set; }
     public CharacterInteraction cInteraction { get; protected set; }
+    public CharacterAnimator cAnimator { get; protected set; }
     public PlayerCameraController cCameraController { get; protected set; }
     public Health Health { get; protected set; }
     public FloatingTextIndicator FloatingTextIndicator { get; protected set; }
@@ -110,6 +111,7 @@ public class Character : MonoBehaviour
         cIK = GetComponent<CharacterIK> ();
         cInput = GetComponent<CharacterInput> ();
         cWeapon = GetComponent<CharacterWeapon> ();
+        cAnimator = GetComponent<CharacterAnimator> ();
         cGear = GetComponent<CharacterGear> ();
         cInteraction = GetComponent<CharacterInteraction> ();
         Health = GetComponent<Health> ();

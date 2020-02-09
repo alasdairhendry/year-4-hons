@@ -484,14 +484,16 @@ public class CharacterWeapon : MonoBehaviour
     private void PerformHit ()
     {
         List<NPC> hitNPCs = new List<NPC> ();
+        float healthRemoved = 0;
 
         if (GetMeleeHitData(out hitNPCs))
         {
             for (int i = 0; i < hitNPCs.Count; i++)
             {
-                hitNPCs[i].Health.RemoveHealth ( currentWeaponMeleeData.baseDamage, DamageType.PlayerAttack );
+                healthRemoved += hitNPCs[i].Health.RemoveHealth ( currentWeaponMeleeData.baseDamage, DamageType.PlayerAttack );
             }
 
+            SkillManager.instance.AddXpToSkill ( SkillManager.SkillType.Combat, healthRemoved * 0.25f );
             SoundEffect.Play3D ( currentWeaponMeleeData.hitSoundData.GetRandom (), currentWeaponObject.transform.position, 1, 5 );
         }
         else
@@ -502,8 +504,8 @@ public class CharacterWeapon : MonoBehaviour
 
     private void PerformMiss ()
     {
+        SkillManager.instance.AddXpToSkill ( SkillManager.SkillType.Combat, 0.25f );
         SoundEffect.Play3D ( currentWeaponMeleeData.missSoundData.GetRandom (), currentWeaponObject.transform.position, 1, 5 );
-
     }
 
     private bool GetMeleeHitData (out List<NPC> hitNPCs)
@@ -924,16 +926,19 @@ public class CharacterWeapon : MonoBehaviour
                     float distNrm = Mathf.InverseLerp ( 0.0f, currentWeaponGunData.maxDistance, aimEnemyHit.distance );
                     float baseDamageWithFalloff = currentWeaponGunData.damageByDistanceFalloff.Evaluate ( distNrm ) * currentWeaponData.baseDamage;
 
-                    npcInSights.Health.RemoveHealth ( baseDamageWithFalloff, DamageType.PlayerAttack );
+                    float healthRemoved = npcInSights.Health.RemoveHealth ( baseDamageWithFalloff, DamageType.PlayerAttack );
 
                     GameObject go = Instantiate ( ricochetPrefab );
                     go.transform.position = aimEnemyHit.point;
                     go.transform.rotation = Quaternion.LookRotation ( -character.cCameraController.cameraTransform.forward );
 
-                    SkillManager.instance.AddXp ( SkillManager.SkillType.Shooting, 10.0f );
+                    SkillManager.instance.AddXpToSkill ( SkillManager.SkillType.Shooting, healthRemoved * 0.25f );
+                    return;
                 }
             }         
         }
+
+        SkillManager.instance.AddXpToSkill ( SkillManager.SkillType.Shooting, 0.25f );
     }
 
     public void NPC_StopFire ()

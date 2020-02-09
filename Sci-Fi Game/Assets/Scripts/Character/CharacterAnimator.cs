@@ -38,6 +38,11 @@ public class CharacterAnimator : MonoBehaviour
         animator.runtimeAnimatorController = overrideController;
     }
 
+    public void OverrideDriveIdle(AnimationClip clip)
+    {
+        overrideController["driving-idle"] = clip;
+    }
+
     public MeleeAttackAnimation RandomiseAttackAnimation (List<MeleeAttackAnimation> possibleClips, MeleeAttackAnimation previous)
     {
         MeleeAttackAnimation randomAnimation = possibleClips.GetRandom ( previous );
@@ -102,7 +107,7 @@ public class CharacterAnimator : MonoBehaviour
 
         //animator.SetFloat ( "fightstance", Mathf.Lerp ( animator.GetFloat ( "fightstance" ), character.IsAiming ? 1.0f : 0.0f, Time.deltaTime * fightStanceLerp ) );
 
-        animator.SetFloat ( "crouchstance", Mathf.Lerp ( animator.GetFloat ( "crouchstance" ), character.isCrouching ? 1.0f : 0.0f, Time.deltaTime * crouchStanceLerp ) );
+        //animator.SetFloat ( "crouchstance", Mathf.Lerp ( animator.GetFloat ( "crouchstance" ), character.isCrouching ? 1.0f : 0.0f, Time.deltaTime * crouchStanceLerp ) );
         //animator.SetBool ( "weaponEquipped", character.cWeapon.isEquipped && !character.cWeapon.isHolstered );
         animator.SetBool ( "isPistol", character.cWeapon.weaponIsPistol );
     }

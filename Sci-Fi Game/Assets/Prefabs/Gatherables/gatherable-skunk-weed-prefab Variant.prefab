@@ -1,5 +1,32 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!136 &3126014917733965880
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4941955706858227714}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  m_Radius: 0.5
+  m_Height: 1.7592435
+  m_Direction: 1
+  m_Center: {x: 0, y: -0.10142565, z: 0}
+--- !u!65 &8704067886639802668
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8127817532460803953}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1.1081135, z: 1}
+  m_Center: {x: 0, y: -0.44596946, z: 0}
 --- !u!1001 &613026945271938436
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -67,6 +94,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5482202677789259145, guid: 86f00cf28e4260b4785b13304234c7df,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 5482202678251732888, guid: 86f00cf28e4260b4785b13304234c7df,
         type: 3}
       propertyPath: itemIDGiven
@@ -82,7 +114,24 @@ PrefabInstance:
       propertyPath: interactableName
       value: Skunk Weed
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 1931293209986450647, guid: 86f00cf28e4260b4785b13304234c7df,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1480613640040298360, guid: 86f00cf28e4260b4785b13304234c7df,
+        type: 3}
+      propertyPath: interactableName
+      value: Skunk Weed
+      objectReference: {fileID: 0}
+    - target: {fileID: 1480613640040298360, guid: 86f00cf28e4260b4785b13304234c7df,
+        type: 3}
+      propertyPath: localPosition.y
+      value: 0.325
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 5482202677789259147, guid: 86f00cf28e4260b4785b13304234c7df, type: 3}
+    - {fileID: 256516386570275069, guid: 86f00cf28e4260b4785b13304234c7df, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 86f00cf28e4260b4785b13304234c7df, type: 3}
 --- !u!4 &4941955708125987783 stripped
 Transform:
@@ -90,9 +139,21 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 613026945271938436}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &4941955706858227714 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5482202677789259142, guid: 86f00cf28e4260b4785b13304234c7df,
+    type: 3}
+  m_PrefabInstance: {fileID: 613026945271938436}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &4941955707569662972 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5482202679256700536, guid: 86f00cf28e4260b4785b13304234c7df,
+    type: 3}
+  m_PrefabInstance: {fileID: 613026945271938436}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &8127817532460803953 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8667782461954562805, guid: 86f00cf28e4260b4785b13304234c7df,
     type: 3}
   m_PrefabInstance: {fileID: 613026945271938436}
   m_PrefabAsset: {fileID: 0}

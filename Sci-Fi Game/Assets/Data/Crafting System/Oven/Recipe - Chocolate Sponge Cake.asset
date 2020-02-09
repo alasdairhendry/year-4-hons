@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   recipeName: Chocolate Sponge Cake
   timeToCraft: 1.5
-  tableResourceUsage: 1
+  tableResourceUsage: 10
   ingredientsRequired:
   - ID: 6
     Amount: 1

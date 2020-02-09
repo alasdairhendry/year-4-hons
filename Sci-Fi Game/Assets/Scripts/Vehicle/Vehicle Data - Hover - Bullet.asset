@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 580e0aa2f73d9de4b9dc8fc9127dab6c, type: 3}
+  m_Name: Vehicle Data - Hover - Bullet
+  m_EditorClassIdentifier: 
+  maxSqrMagnitude: 330
+  cameraOffset: {x: 0, y: 0.5, z: -6}
+  enginePower: 100000
+  enginePowerAppreciation: 50000
+  enginePowerDepreciation: 25000
+  baseHoverHeight: 2
+  maxHoverHeight: 20
+  brakeForce: 3500
+  drivingDrag: 3
+  drivingAngularDrag: 5
+  idleDrag: 2
+  idleAngularDrag: 3
+  noDriverDrag: 10
+  noDriverAngularDrag: 10
+  turnSpeed: 2.5
+  cameraXClampMin: -45
+  cameraXClampMax: 20

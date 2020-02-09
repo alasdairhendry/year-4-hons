@@ -52,7 +52,7 @@ public class VehicleHoverboard : Vehicle
 
     public override void OnUpdate ()
     {
-        //float f = NormalisedSpeed ( maxSqrMagnitude );
+        base.OnUpdate ();
         CheckInput ();
         CheckRideHeight ();
 

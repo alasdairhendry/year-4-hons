@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9aca0d0e74ac13d4e9dfd61e65bd9c31, type: 3}
+  m_Name: All Ground Vehicles
+  m_EditorClassIdentifier: 
+  possibleVehicles:
+  - {fileID: 1874892647692576195, guid: a8b8251a6945b6a45930e915fbd8ce83, type: 3}
+  - {fileID: 184447151185505921, guid: a307f86f539fe7f4092dadee4d054656, type: 3}
+  - {fileID: 1874892647692576195, guid: 35281fa8a75947e4e9cb5dd27431048a, type: 3}
+  - {fileID: 1874892647692576195, guid: 0f5ce57ec43148c45b76ff16f63d2063, type: 3}

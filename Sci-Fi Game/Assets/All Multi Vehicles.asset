@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9aca0d0e74ac13d4e9dfd61e65bd9c31, type: 3}
+  m_Name: All Multi Vehicles
+  m_EditorClassIdentifier: 
+  possibleVehicles:
+  - {fileID: 176558232866322815, guid: dc42e9a640353c84f99e17aae519946e, type: 3}

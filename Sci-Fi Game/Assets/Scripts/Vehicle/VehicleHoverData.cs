@@ -5,8 +5,6 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Vehicles/Hover Vehicle Data")]
 public class VehicleHoverData : ScriptableObject
 {
-    public AnimationCurve engineForceByNormalisedSpeed;
-    [Space]
     public float maxSqrMagnitude = 220.0f;
     public Vector3 cameraOffset = new Vector3 ();
     [Space]

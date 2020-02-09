@@ -55,21 +55,25 @@ public class NPCStateController : MonoBehaviour
 
     public virtual void SwitchToIdleBehaviour ()
     {
+        GetComponent<WorldMapObject> ().Unregister ();
         SwitchStates ( aiStateControllerData.IdleBehaviour );
     }
 
     public virtual void SwitchToNearMissBehaviour ()
     {
+        GetComponent<WorldMapObject> ().Unregister ();
         SwitchStates ( aiStateControllerData.NearMissBehaviour );
     }
 
     public virtual void SwitchToFleeBehaviour ()
     {
+        GetComponent<WorldMapObject> ().Register ();
         SwitchStates ( aiStateControllerData.FleeBehaviour );
     }
 
     public virtual void SwitchToCombatBehaviour ()
     {
+        GetComponent<WorldMapObject> ().Register ();
         SwitchStates ( aiStateControllerData.CombatBehaviour );
     }
 }

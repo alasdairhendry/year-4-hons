@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   recipeName: Iron Ingot
   timeToCraft: 1.5
-  tableResourceUsage: 1
+  tableResourceUsage: 10
   ingredientsRequired:
   - ID: 17
     Amount: 2

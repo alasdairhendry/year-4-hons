@@ -20,6 +20,8 @@ public class VehicleHover : Vehicle
 
     public override void OnUpdate ()
     {
+        base.OnUpdate ();
+
         if (hover.DetectedHoverableSurface)
         {
             rigidbody.useGravity = true;

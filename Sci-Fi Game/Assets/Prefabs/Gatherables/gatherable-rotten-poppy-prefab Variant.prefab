@@ -1,5 +1,32 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!136 &2761632346970611020
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7705653707000700037}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  m_Radius: 0.5
+  m_Height: 1.7592435
+  m_Direction: 1
+  m_Center: {x: 0, y: -0.10142565, z: 0}
+--- !u!65 &1432224931604231882
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6823357282257581046}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1.1081135, z: 1}
+  m_Center: {x: 0, y: -0.44596946, z: 0}
 --- !u!1001 &1010513860340023479
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -491,6 +518,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5482202677789259145, guid: 86f00cf28e4260b4785b13304234c7df,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 5482202678251732888, guid: 86f00cf28e4260b4785b13304234c7df,
         type: 3}
       propertyPath: itemIDGiven
@@ -506,7 +538,34 @@ PrefabInstance:
       propertyPath: interactableName
       value: Rotten Poppy
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 5482202677789259147, guid: 86f00cf28e4260b4785b13304234c7df,
+        type: 3}
+      propertyPath: m_Radius
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 5482202677789259147, guid: 86f00cf28e4260b4785b13304234c7df,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1931293209986450647, guid: 86f00cf28e4260b4785b13304234c7df,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1480613640040298360, guid: 86f00cf28e4260b4785b13304234c7df,
+        type: 3}
+      propertyPath: interactableName
+      value: Rotten Poppy
+      objectReference: {fileID: 0}
+    - target: {fileID: 1480613640040298360, guid: 86f00cf28e4260b4785b13304234c7df,
+        type: 3}
+      propertyPath: localPosition.y
+      value: 0.325
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 5482202677789259147, guid: 86f00cf28e4260b4785b13304234c7df, type: 3}
+    - {fileID: 256516386570275069, guid: 86f00cf28e4260b4785b13304234c7df, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 86f00cf28e4260b4785b13304234c7df, type: 3}
 --- !u!4 &7705653705720026944 stripped
 Transform:
@@ -514,9 +573,21 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 2808919547705305347}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &7705653707000700037 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5482202677789259142, guid: 86f00cf28e4260b4785b13304234c7df,
+    type: 3}
+  m_PrefabInstance: {fileID: 2808919547705305347}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7705653706203234171 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5482202679256700536, guid: 86f00cf28e4260b4785b13304234c7df,
+    type: 3}
+  m_PrefabInstance: {fileID: 2808919547705305347}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &6823357282257581046 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8667782461954562805, guid: 86f00cf28e4260b4785b13304234c7df,
     type: 3}
   m_PrefabInstance: {fileID: 2808919547705305347}
   m_PrefabAsset: {fileID: 0}

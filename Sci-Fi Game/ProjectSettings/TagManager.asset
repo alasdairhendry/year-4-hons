@@ -19,7 +19,7 @@ TagManager:
   - NPCPortraitRenderLayer
   - ScreenSpaceUIOverdraw
   - Terrain
-  - 
+  - RegionCollider
   - 
   - 
   - 

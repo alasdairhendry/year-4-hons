@@ -1,5 +1,63 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!95 &2303052996610879800
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3739718142800474183}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 3f67d748d9067af43a8099f9d487dae3, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!65 &4057001261023939655
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4842765664729368557}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.4739666, y: 0.9483726, z: 0.7945076}
+  m_Center: {x: -0.7873173, y: 0.47497165, z: 0.3278337}
+--- !u!65 &6863130238989300341
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4842765664729368557}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.1812613, y: 0.89070725, z: 1.450175}
+  m_Center: {x: 0, y: 0.44375813, z: 0}
+--- !u!65 &8285344782776492176
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4842765664729368557}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.5189816, y: 0.9483726, z: 0.58404446}
+  m_Center: {x: 0, y: 0.47497165, z: 1.0053303}
 --- !u!82 &587353578
 AudioSource:
   m_ObjectHideFlags: 0
@@ -113,64 +171,21 @@ NavMeshObstacle:
   m_CarveOnlyStationary: 1
   m_Center: {x: -0.2, y: 0, z: 0.27}
   m_TimeToStationary: 0.5
---- !u!65 &4057001261023939655
-BoxCollider:
+--- !u!114 &4655853285862930721
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4842765664729368557}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_GameObject: {fileID: 7707413749691550361}
   m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.4739666, y: 0.9483726, z: 0.7945076}
-  m_Center: {x: -0.7873173, y: 0.47497165, z: 0.3278337}
---- !u!65 &6863130238989300341
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4842765664729368557}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1.1812613, y: 0.89070725, z: 1.450175}
-  m_Center: {x: 0, y: 0.44375813, z: 0}
---- !u!65 &8285344782776492176
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4842765664729368557}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.5189816, y: 0.9483726, z: 0.58404446}
-  m_Center: {x: 0, y: 0.47497165, z: 1.0053303}
---- !u!95 &2303052996610879800
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3739718142800474183}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 3f67d748d9067af43a8099f9d487dae3, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c7482b0afed6984e81ef637a87521e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mapBlipType: 8
+  registerOnAwake: 1
+  includeRotation: 0
 --- !u!1001 &375884665370268975
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -504,12 +519,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: crafting-laboratory-prefab Variant
       objectReference: {fileID: 0}
-    - target: {fileID: 4914687387839471989, guid: d06d7d5e79103764eacd33f24c782182,
-        type: 3}
-      propertyPath: table
-      value: 
-      objectReference: {fileID: 11400000, guid: c241a1a105d0fa64b9d96b4c4a025261,
-        type: 2}
     - target: {fileID: 4914687387839471990, guid: d06d7d5e79103764eacd33f24c782182,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -564,6 +573,17 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4914687387839471989, guid: d06d7d5e79103764eacd33f24c782182,
+        type: 3}
+      propertyPath: table
+      value: 
+      objectReference: {fileID: 11400000, guid: c241a1a105d0fa64b9d96b4c4a025261,
+        type: 2}
+    - target: {fileID: 4914687387839471989, guid: d06d7d5e79103764eacd33f24c782182,
+        type: 3}
+      propertyPath: craftingBenchName
+      value: Laboratory
       objectReference: {fileID: 0}
     - target: {fileID: 4914687386442109289, guid: d06d7d5e79103764eacd33f24c782182,
         type: 3}

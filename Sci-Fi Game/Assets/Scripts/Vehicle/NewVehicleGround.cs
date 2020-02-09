@@ -108,7 +108,6 @@ public class NewVehicleGround : Vehicle
 
     public override void Exit (Character character)
     {
-        if (CurrSqrMagnitude >= 10) return;
         base.Exit ( character );
     }
 
@@ -116,6 +115,9 @@ public class NewVehicleGround : Vehicle
     {
         for (int i = 0; i < wheelAxles.Count; i++)
         {
+            Physics.IgnoreCollision ( collider, wheelAxles[i].leftCollider );
+            Physics.IgnoreCollision ( collider, wheelAxles[i].rightCollider );
+
             if (wheelAxles[i].isTorqueWheel)
             {
                 torqueWheelCount += 2;
