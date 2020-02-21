@@ -246,9 +246,25 @@ public class Character : MonoBehaviour
         }
     }
 
+    [SerializeField] private float groundCheckRadialDistance = 0.25f;
+
+    private void OnDrawGizmosSelected ()
+    {
+        Vector3[] origins = new Vector3[5] { transform.position, transform.position + transform.forward * groundCheckRadialDistance, transform.position + transform.right * groundCheckRadialDistance, transform.position - transform.forward * groundCheckRadialDistance, transform.position - transform.right * groundCheckRadialDistance };
+        Vector3 dir = -Vector3.up;
+        float dist = stepHeight + 0.2f;
+        RaycastHit hit;
+
+        for (int i = 0; i < origins.Length; i++)
+        {
+            origins[i].y += stepHeight + 0.1f;
+            Debug.DrawRay ( origins[i], dir * dist );
+        }
+    }
+
     private bool CheckIsGrounded ()
     {
-        Vector3[] origins = new Vector3[5] { transform.position, transform.position + transform.forward * 0.25f, transform.position + transform.right * 0.25f, transform.position - transform.forward * 0.25f, transform.position - transform.right * 0.25f };
+        Vector3[] origins = new Vector3[5] { transform.position, transform.position + transform.forward * groundCheckRadialDistance, transform.position + transform.right * groundCheckRadialDistance, transform.position - transform.forward * groundCheckRadialDistance, transform.position - transform.right * groundCheckRadialDistance };
 
         Vector3 dir = -Vector3.up;
         float dist = stepHeight + 0.2f;
@@ -258,6 +274,7 @@ public class Character : MonoBehaviour
         for (int i = 0; i < origins.Length; i++)
         {
             origins[i].y += stepHeight + 0.1f;
+            Debug.DrawRay ( origins[i], dir * dist );
             if (Physics.Raycast ( origins[i], dir, out hit, dist, walkableLayers, QueryTriggerInteraction.Ignore ))
             {
                 Vector3 targetPosition = hit.point;

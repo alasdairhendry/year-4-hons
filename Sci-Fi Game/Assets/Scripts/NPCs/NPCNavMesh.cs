@@ -6,7 +6,7 @@ using UnityEngine.AI;
 public class NPCNavMesh : MonoBehaviour
 {
     [SerializeField] private Transform pathSeeker;
-    [SerializeField] private NPC npc;
+    private NPC npc;
 
     private Character character;
     private NavMeshHit navHit;
@@ -32,6 +32,7 @@ public class NPCNavMesh : MonoBehaviour
     private void Awake ()
     {
         character = GetComponent<Character> ();
+        npc = GetComponent<NPC> ();
         currentPath = new NavMeshPath ();
     }
 

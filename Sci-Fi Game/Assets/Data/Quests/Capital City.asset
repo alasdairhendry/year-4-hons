@@ -48,8 +48,8 @@ MonoBehaviour:
   conditionsFoldout: 0
   actionsFoldout: 1
   outputFoldout: 0
-  questLog: I knocked on the door and there was no answer.. Maybe there are some more
-    clues lying around..
+  questLog: I knocked on the door and there was no answer.. Maybe there are some
+    more clues lying around..
   conditions: []
   actions:
   - {fileID: 2404085177277590207}
@@ -120,11 +120,11 @@ MonoBehaviour:
   m_Name: Capital City
   m_EditorClassIdentifier: 
   nodes:
-  - {fileID: -7935496084781551350}
   - {fileID: 8412069100837242521}
   - {fileID: -1398613991819321752}
   - {fileID: 1377789805392180019}
   - {fileID: 3212209135020552425}
+  - {fileID: -7935496084781551350}
   - {fileID: 0}
   questID: capitalcity
   questName: Capital City
@@ -133,11 +133,11 @@ MonoBehaviour:
     mandatoryReward:
       reward:
       - itemID: 3
-        amount: 100
+        amount: 200
       - itemID: 51
         amount: 1
-      - itemID: 1
-        amount: 3
+      - itemID: 73
+        amount: 10
     decisionRewards: []
 --- !u!114 &1377789805392180019
 MonoBehaviour:
@@ -188,8 +188,8 @@ MonoBehaviour:
     outside the city, and end up being brought in.
 
 
-    He''s not sure what happened to me, but he said someone else in the city might
-    know.'
+    He''s not sure what happened
+    to me, but he said someone else in the city might know.'
   conditions: []
   actions: []
   conditionRequirementType: 0
@@ -256,8 +256,8 @@ MonoBehaviour:
   conditionsFoldout: 0
   actionsFoldout: 0
   outputFoldout: 0
-  questLog: "I've just woke up inside this doorway..\n\nWhere on earth am I? \nI should
-    search my surroundings for clues."
+  questLog: "I've just woke up inside this doorway..\n\nWhere on earth am I? \nI
+    should search my surroundings for clues."
   conditions: []
   actions: []
   conditionRequirementType: 0

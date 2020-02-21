@@ -102,8 +102,8 @@ MonoBehaviour:
   conditionsFoldout: 0
   actionsFoldout: 0
   outputFoldout: 0
-  questLog: I spoke to Sanfew and managed to increase Horviks shipment priority. I
-    should return to Horvik to collect the outlet nozzle now.
+  questLog: I spoke to Sanfew and managed to increase Horviks shipment priority.
+    I should return to Horvik to collect the outlet nozzle now.
   conditions: []
   actions: []
   conditionRequirementType: 0
@@ -205,9 +205,10 @@ MonoBehaviour:
   conditionsFoldout: 1
   actionsFoldout: 0
   outputFoldout: 0
-  questLog: "I would love to know why I'm here. In this place? \n\nWhat is going on?
-    I should really try to figure this all out."
-  conditions: []
+  questLog: "I would love to know why I'm here. In this place? \n\nWhat is going
+    on? I should really try to figure this all out."
+  conditions:
+  - {fileID: 2120286786574642481}
   actions: []
   conditionRequirementType: 0
   questReward:
@@ -369,8 +370,9 @@ MonoBehaviour:
   conditionsFoldout: 0
   actionsFoldout: 0
   outputFoldout: 0
-  questLog: Horvik told me his supplies have been running out recently. He needs me
-    to convince Sanfew in Upper Vale to increase the shipment priority to his store.
+  questLog: Horvik told me his supplies have been running out recently. He needs
+    me to convince Sanfew in Upper Vale to increase the shipment priority to his
+    store.
   conditions: []
   actions: []
   conditionRequirementType: 0
@@ -452,14 +454,33 @@ MonoBehaviour:
   - {fileID: 3792699996334711671}
   - {fileID: -6433261418784729780}
   - {fileID: -978046826338906151}
-  - {fileID: 0}
   questID: onesmallfavour
   questName: One Small Favour
   collateQuestLog: 1
   reward:
     mandatoryReward:
-      reward: []
+      reward:
+      - itemID: 3
+        amount: 250
+      - itemID: 75
+        amount: 2
+      - itemID: 2
+        amount: 10
     decisionRewards: []
+--- !u!114 &2120286786574642481
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21a051313b62d9e478d2966d4f7269d0, type: 3}
+  m_Name: QuestFlow.ConditionQuestState
+  m_EditorClassIdentifier: 
+  quest: {fileID: 11400000, guid: f669bcdf48c0f284ab62f69305b14cac, type: 2}
+  state: 2
 --- !u!114 &3792699996334711671
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -508,8 +529,8 @@ MonoBehaviour:
   conditionsFoldout: 0
   actionsFoldout: 0
   outputFoldout: 0
-  questLog: Aggie finally accepted the letter after I gave her the french fry. I should
-    return to Brian to tell him the good news.
+  questLog: Aggie finally accepted the letter after I gave her the french fry. I
+    should return to Brian to tell him the good news.
   conditions: []
   actions: []
   conditionRequirementType: 0
@@ -565,7 +586,8 @@ MonoBehaviour:
     state.
 
 
-    I need to get a french fry off Fred in Lower Vale before she''ll accept the letter.'
+    I need to get a french fry off Fred in Lower Vale before she''ll
+    accept the letter.'
   conditions: []
   actions: []
   conditionRequirementType: 0
@@ -617,8 +639,8 @@ MonoBehaviour:
   conditionsFoldout: 0
   actionsFoldout: 0
   outputFoldout: 0
-  questLog: Horvik gave me the outlet nozzle in return for his shipment priority being
-    increased. I should return this to Fred so he can fix his oven now.
+  questLog: Horvik gave me the outlet nozzle in return for his shipment priority
+    being increased. I should return this to Fred so he can fix his oven now.
   conditions: []
   actions: []
   conditionRequirementType: 0

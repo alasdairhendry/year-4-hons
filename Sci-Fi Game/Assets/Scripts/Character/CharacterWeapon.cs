@@ -288,9 +288,7 @@ public class CharacterWeapon : MonoBehaviour
         SetHolsterState ( true );
         character.cGear.SetWeaponIndexNull ();
         Unequip ( false, true );
-        //character.cGear.UnequipGear ( currentWeaponData.weaponItemID );
 
-        //EntityManager.instance.PlayerInventory.RemoveItem ( data.weaponItemID );
         EntityManager.instance.PlayerInventory.AddItem ( data.brokenVariantItemID );
     }
 
@@ -519,6 +517,8 @@ public class CharacterWeapon : MonoBehaviour
 
         for (int i = 0; i < hitNPCs.Length; i++)
         {
+            if (hitNPCs[i].NPCAttackOption == NPCAttackOption.CannotBeAttack) continue;
+
             float damage = currentWeaponMeleeData.baseDamage * SkillModifiers.MeleeDamageModifier * GetBaseHitModifier() * SkillModifiers.GLOBAL_PLAYER_DAMAGE_MODIFIER;
 
             bool isCritical = GetShouldBeCriticalHit ();
@@ -529,6 +529,9 @@ public class CharacterWeapon : MonoBehaviour
                 float factionBasedReduction = damage * 0.25f;
                 damage -= factionBasedReduction;
             }
+
+            damage = (ItemDatabase.GetItem ( currentWeaponData.weaponItemID ) as ItemGearWeapon).GetWeaponDamage ( damage, hitNPCs[i] );
+            damage = hitNPCs[i].OnBeforeDamagedByWeapon ( damage, currentWeaponData );
 
             healthRemoved += hitNPCs[i].Health.RemoveHealth ( damage, DamageType.PlayerAttack, isCritical );
         }
@@ -939,19 +942,22 @@ public class CharacterWeapon : MonoBehaviour
 
         if (currentAmmo > 0)
         {
-            if (UnityEngine.Random.value <= 1 / currentWeaponGunData.fireRate)
+            if (currentWeaponData.isBreakable)
             {
-                if (UnityEngine.Random.value <= TalentManager.instance.GetTalentModifier ( TalentType.Unbreakable ))
+                if (UnityEngine.Random.value <= 1 / currentWeaponGunData.fireRate)
                 {
-                    MessageBox.AddMessage ( "Your weapon almost broke, but your " + TalentManager.instance.GetTalent ( TalentType.Unbreakable ).talentData.talentName + " talent saved it." );
-                }
-                else
-                {
-                    OnWeaponBreak ();
-                    isFiring = false;
-                    currentBurstCooldown = 0.0f;
-                    currentBurstCounter = 0;
-                    return;
+                    if (UnityEngine.Random.value <= TalentManager.instance.GetTalentModifier ( TalentType.Unbreakable ))
+                    {
+                        MessageBox.AddMessage ( "Your weapon almost broke, but your " + TalentManager.instance.GetTalent ( TalentType.Unbreakable ).talentData.talentName + " talent saved it." );
+                    }
+                    else
+                    {
+                        OnWeaponBreak ();
+                        isFiring = false;
+                        currentBurstCooldown = 0.0f;
+                        currentBurstCounter = 0;
+                        return;
+                    }
                 }
             }
 
@@ -1040,6 +1046,9 @@ public class CharacterWeapon : MonoBehaviour
                         float factionBasedReduction = baseDamage * 0.25f;
                         baseDamage -= factionBasedReduction;
                     }
+
+                    baseDamage = (ItemDatabase.GetItem ( currentWeaponData.weaponItemID ) as ItemGearWeapon).GetWeaponDamage ( baseDamage, npcInSights );
+                    baseDamage = npcInSights.OnBeforeDamagedByWeapon ( baseDamage, currentWeaponData );
 
                     float healthRemoved = npcInSights.Health.RemoveHealth ( baseDamage, DamageType.PlayerAttack, isCritical );
 

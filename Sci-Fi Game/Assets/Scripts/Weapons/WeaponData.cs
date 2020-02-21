@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,7 +9,8 @@ public class WeaponData : ScriptableObject
     public string weaponName;
     public WeaponAttackType weaponAttackType;
     [ItemID] public int weaponItemID;
-    [ItemID] public int brokenVariantItemID;
+    public bool isBreakable = true;
+    [NaughtyAttributes.ShowIf ( "isBreakable" )] [ItemID] public int brokenVariantItemID;
     [Space]
     public Vector3 offsetPosition;
     public Vector3 offsetRotation;
@@ -23,5 +25,5 @@ public class WeaponData : ScriptableObject
     public TransformData holsterData;
     [Space]
     public AudioClipObject sheatheSoundData;
-    public AudioClipObject unsheatheSoundData;
+    public AudioClipObject unsheatheSoundData;    
 }

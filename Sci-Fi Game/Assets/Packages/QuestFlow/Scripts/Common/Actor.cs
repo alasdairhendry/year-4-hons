@@ -1,6 +1,7 @@
 ﻿using QuestFlow.DialogueEngine;
 using QuestFlow.QuestEngine;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace QuestFlow
@@ -22,11 +23,7 @@ namespace QuestFlow
         {
             SkinnedMeshRenderer smr = GetComponentInChildren<SkinnedMeshRenderer> ( false );
 
-            if (smr == null)
-            {
-                Debug.Log ( "ehh.." );
-            }
-            else
+            if (smr != null)
             {
                 actor.sprite = Resources.Load<Sprite> ( string.Format ( "ActorSprites/{0} ({1})", smr.sharedMesh.name, smr.sharedMaterial.name ) );
             }
@@ -66,16 +63,25 @@ namespace QuestFlow
                 return;
             }
 
+            List<Quest> questsWhichCanBeOffered = new List<Quest> ();
+
             for (int i = 0; i < questsGiven.Count; i++)
             {
                 if (QuestManager.instance.QuestCanBeOffered ( questsGiven[i] ))
                 {
-                    worldMapObject.Register ();
-                    return;
+                    questsWhichCanBeOffered.Add ( questsGiven[i] );
                 }
             }
 
-            worldMapObject.Unregister ();
+            if (questsWhichCanBeOffered.Count > 0)
+            {
+                worldMapObject.Register ( "Quest\n" + ColourHelper.TagColour ( ColourHelper.TagSize ( string.Join ( "\n", questsWhichCanBeOffered.Select ( x => x.questName ).ToList () ), 80 ), ColourDescription.OffWhiteText ) );
+
+            }
+            else
+            {
+                worldMapObject.Unregister ();
+            }
         }
 
         public void StartDialogue ()
@@ -90,7 +96,9 @@ namespace QuestFlow
         {
             if (npc != null && npc.isInConversation)
             {
-                Quaternion lookDir = Quaternion.LookRotation ( (EntityManager.instance.PlayerCharacter.transform.position - transform.position).normalized );
+                Vector3 dir = EntityManager.instance.PlayerCharacter.transform.position - transform.position;
+                dir.y = 0;
+                Quaternion lookDir = Quaternion.LookRotation ( dir.normalized );
                 transform.rotation = Quaternion.Slerp ( transform.rotation, lookDir, Time.deltaTime * 5.0f );
             }
         }

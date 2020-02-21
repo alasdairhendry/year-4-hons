@@ -16,7 +16,7 @@ namespace QuestFlow.QuestEngine
         [HideInInspector] public bool actionsFoldout = false;
         [HideInInspector] public bool outputFoldout = false;
 
-        [TextArea(5, 20)] public string questLog = "";
+        [TextArea ( 20, 20 )] public string questLog = "";
         [HideInInspector] public List<Condition> conditions = new List<Condition> ();
         [HideInInspector] public List<Action> actions = new List<Action> ();
         [HideInInspector] public ConditionRequirement conditionRequirementType = ConditionRequirement.All;

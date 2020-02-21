@@ -14,7 +14,6 @@ namespace QuestFlow.DialogueEngine
 
         public void BeginConversation ()
         {
-            Debug.Log ( this.name );
             Start startNode = (Start)nodes.First ( x => x is Start );
             GetNextNodeFromStatement ( startNode );
         }
@@ -71,10 +70,6 @@ namespace QuestFlow.DialogueEngine
                             OnStatementNodeBegin ( outputNode as Dialogue );
                             return;
                         }
-                    }
-                    else
-                    {
-                        Debug.Log ( "Output node is null" );
                     }
 
                     //for (int x = 0; x < groupPort.ConnectionCount; x++)
@@ -178,16 +173,10 @@ namespace QuestFlow.DialogueEngine
                 if (connection.node is Answer)
                 {
                     Answer answer = (connection.node as Answer);
-                    Debug.Log ( "Group answer id - " + answer.GetInstanceID () );
                     if (answer.ConditionsAreValid ())
                     {
-                        Debug.Log ( "Conditions valid" );
                         outputNode = connection.node;
                         return true;
-                    }
-                    else
-                    {
-                        Debug.Log ( "Answer node is invalid" );
                     }
                 }
                 else if (connection.node is Dialogue)
@@ -223,7 +212,6 @@ namespace QuestFlow.DialogueEngine
                 if (connection.node is Answer)
                 {
                     Answer answer = (connection.node as Answer);
-                    Debug.Log ( "Local answer id - " + answer.GetInstanceID () );
                     if (answer.ConditionsAreValid ())
                     {
                         validAnswers.Add ( answer as Answer );

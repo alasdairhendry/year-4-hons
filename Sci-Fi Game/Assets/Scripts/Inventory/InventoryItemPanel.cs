@@ -162,7 +162,20 @@ public static class DragHandler
                 switch (fromMaster)
                 {
                     case Master.PlayerInventory:
-                        EntityManager.instance.PlayerInventory.RemoveItem ( dragItemID, dragItemAmount );
+                        ItemBaseData item = null;
+
+                        if (ItemDatabase.GetItem ( dragItemID, out item ))
+                        {
+                            if (item.IsSoulbound)
+                            {
+                                //Debug.LogError ( "Cannot remove a soulbound item from your inventory - perhaps give a option to destroy if we implement a way to get it back garaunteed" );
+                                MessageBox.AddMessage ( "Cannot remove a soulbound item from your inventory", MessageBox.Type.Error );
+                            }
+                            else
+                            {
+                                EntityManager.instance.PlayerInventory.RemoveItem ( dragItemID, dragItemAmount );
+                            }
+                        }
                         break;
                     case Master.ItemContainer:
                         ItemContainerCanvas.instance.targetInventory.RemoveItem ( dragItemID, dragItemAmount );
@@ -233,7 +246,8 @@ public static class DragHandler
                     {
                         if (item.IsSoulbound)
                         {
-                            Debug.LogError ( "Cannot remove a soulbound item from your inventory - perhaps give a option to destroy if we implement a way to get it back garaunteed" );
+                            MessageBox.AddMessage( "Cannot remove a soulbound item from your inventory", MessageBox.Type.Error );
+                            //Debug.LogError ( "Cannot remove a soulbound item from your inventory - perhaps give a option to destroy if we implement a way to get it back garaunteed" );
                         }
                         else
                         {

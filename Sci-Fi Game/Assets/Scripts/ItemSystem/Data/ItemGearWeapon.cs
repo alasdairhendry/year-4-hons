@@ -17,4 +17,9 @@ public abstract class ItemGearWeapon : ItemGear
         this.category = ItemCategory.Weapon;
         this.gearSlot = GearSlot.Weapon;
     }
+
+    public virtual float GetWeaponDamage (float currentCalculatedDamage, NPC targetNPC)
+    {
+        return currentCalculatedDamage;
+    }
 }

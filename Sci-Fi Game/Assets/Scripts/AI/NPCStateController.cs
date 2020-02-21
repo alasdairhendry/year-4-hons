@@ -5,15 +5,14 @@ public enum NPCAiState { Idle, NearMiss, Flee, Combat }
 
 public class NPCStateController : MonoBehaviour
 {
-    [SerializeField] private NPC npc;
-    [SerializeField] private NPCStateMachine stateMachine;
     [Space]
     [SerializeField] private AIStateControllerData aiStateControllerData;
     public NPCAiState NPCAiState { get; protected set; }
 
     public AIStateControllerData AiStateControllerData { get => aiStateControllerData; protected set => aiStateControllerData = value; }
-    public NPCStateMachine StateMachine { get => stateMachine; protected set => stateMachine = value; }
+    public NPCStateMachine StateMachine { get; protected set; }
     public WeaponData ChosenWeaponData { get; protected set; } = null;
+    public NPC Npc { get; set; }
 
     private float lastAttackedByPlayerCounter = 0.0f;
     private WorldMapObject worldMapObject;
@@ -21,6 +20,8 @@ public class NPCStateController : MonoBehaviour
 
     private void Awake ()
     {
+        Npc = GetComponent<NPC> ();
+        StateMachine = GetComponent<NPCStateMachine> ();
         worldMapObject = GetComponent<WorldMapObject> ();
     }
 
@@ -39,9 +40,9 @@ public class NPCStateController : MonoBehaviour
 
             if (ChosenWeaponData != null)
             {
-                if (aiStateControllerData.WeaponAlwaysEquipped) npc.Character.cWeapon.Equip ( ChosenWeaponData );
-                if (aiStateControllerData.WeaponAlwaysUnholstered) npc.Character.cWeapon.SetHolsterState ( false );
-                else npc.Character.cWeapon.SetHolsterState ( true );
+                if (aiStateControllerData.WeaponAlwaysEquipped) Npc.Character.cWeapon.Equip ( ChosenWeaponData );
+                if (aiStateControllerData.WeaponAlwaysUnholstered) Npc.Character.cWeapon.SetHolsterState ( false );
+                else Npc.Character.cWeapon.SetHolsterState ( true );
             }
         }
     }
@@ -53,22 +54,22 @@ public class NPCStateController : MonoBehaviour
 
     private void SubscribeToEvents ()
     {
-        npc.Health.onHealthRemoved += (amount, damageType) =>
+        Npc.Health.onHealthRemoved += (amount, damageType) =>
         {
             if(damageType == DamageType.PlayerAttack)
             {
                 lastAttackedByPlayerCounter = 0.0f;
             }
 
-            if (aiStateControllerData.FleesBelowHealthPercent > 0 && npc.Health.healthNormalised <= aiStateControllerData.FleesBelowHealthPercent)
+            if (aiStateControllerData.FleesBelowHealthPercent > 0 && Npc.Health.healthNormalised <= aiStateControllerData.FleesBelowHealthPercent)
             {
-                if (stateMachine.currentState != aiStateControllerData.FleeBehaviour)
+                if (StateMachine.currentState != aiStateControllerData.FleeBehaviour)
                     SwitchToFleeBehaviour ();
                 return;
             }
             else
             {
-                if (stateMachine.currentState != aiStateControllerData.CombatBehaviour)
+                if (StateMachine.currentState != aiStateControllerData.CombatBehaviour)
                     SwitchToCombatBehaviour ();
                 return;
             }
@@ -87,7 +88,7 @@ public class NPCStateController : MonoBehaviour
     {
         if (aiStateControllerData.StopsAttackingAfterLastAttackDelay > 0)
         {
-            if (stateMachine.currentState == aiStateControllerData.CombatBehaviour)
+            if (StateMachine.currentState == aiStateControllerData.CombatBehaviour)
             {
                 lastAttackedByPlayerCounter += Time.deltaTime;
 
@@ -101,7 +102,7 @@ public class NPCStateController : MonoBehaviour
 
     private void CheckEnemyDistance ()
     {
-        if (stateMachine.currentState != aiStateControllerData.CombatBehaviour) return;
+        if (StateMachine.currentState != aiStateControllerData.CombatBehaviour) return;
 
         if (aiStateControllerData.StopsAttackingSqrDistanceIsPlayerWeaponDistance)
         {
@@ -132,8 +133,8 @@ public class NPCStateController : MonoBehaviour
 
     protected virtual void SwitchStates (AIStateBase state, NPCAiState aiState)
     {
-        if (stateMachine.currentState == state && state != null) return;
-        stateMachine.SetState ( state );
+        if (StateMachine.currentState == state && state != null) return;
+        StateMachine.SetState ( state );
         NPCAiState = aiState;
         onStateSwitch?.Invoke ( aiState );
     }
@@ -143,7 +144,7 @@ public class NPCStateController : MonoBehaviour
         if (worldMapObject != null && worldMapObject.MapBlipType == MapBlipType.Enemy)
             worldMapObject.Unregister ();
         SwitchStates ( aiStateControllerData.IdleBehaviour, NPCAiState.Idle );
-        npc.IsInCombat = false;
+        Npc.IsInCombat = false;
     }
 
     public virtual void SwitchToNearMissBehaviour ()
@@ -159,8 +160,8 @@ public class NPCStateController : MonoBehaviour
             worldMapObject.Register();
 
         SwitchStates ( aiStateControllerData.FleeBehaviour, NPCAiState.Flee );
-        MessageBox.AddMessage ( npc.NpcData.NpcName + " tries to flee", MessageBox.Type.Warning );
-        npc.IsInCombat = true;
+        MessageBox.AddMessage ( Npc.NpcData.NpcName + " tries to flee", MessageBox.Type.Warning );
+        Npc.IsInCombat = true;
     }
 
     public virtual void SwitchToCombatBehaviour ()
@@ -169,6 +170,6 @@ public class NPCStateController : MonoBehaviour
             worldMapObject.Register ();
 
         SwitchStates ( aiStateControllerData.CombatBehaviour, NPCAiState.Combat );
-        npc.IsInCombat = true;
+        Npc.IsInCombat = true;
     }
 }

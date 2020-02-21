@@ -10,6 +10,7 @@ public class MobSpawner : MonoBehaviour
     [SerializeField] private float respawnDelay = 10.0f;
     [SerializeField] private GameObject mobPrefab;
     [SerializeField] private bool populateOnAwake = true;
+    [SerializeField] private bool populateOnUpdate = true;
 
     private List<NPC> currentInstances = new List<NPC> ();
     private float currentRespawnDelay = 0.0f;
@@ -17,12 +18,22 @@ public class MobSpawner : MonoBehaviour
     RaycastHit hit;
 
     public float Radius { get => radius; set => radius = value; }
+    public bool PopulateOnAwake { get => populateOnAwake; set => populateOnAwake = value; }
+    public bool PopulateOnUpdate { get => populateOnUpdate; set => populateOnUpdate = value; }
 
     private void Awake ()
     {
         if (populateOnAwake)
         {
             SpawnMax ();
+        }
+    }
+
+    public void SpawnSetAmount(int amount)
+    {
+        for (int i = 0; i < amount; i++)
+        {
+            SpawnInstance ();
         }
     }
 
@@ -44,6 +55,7 @@ public class MobSpawner : MonoBehaviour
 
     private void Update ()
     {
+        if (populateOnUpdate == false) return;
         if (currentInstances.Count <= maxInstances - 1)
         {
             currentRespawnDelay += Time.deltaTime;

@@ -72,7 +72,6 @@ public class MiniMapCanvas : MonoBehaviour
     {
         if (blipsDict.ContainsKey ( worldMapObject ))
         {
-            Debug.LogError ( "Blip already exists" );
             return;
         }
 

@@ -10,6 +10,7 @@ public class WorldMapObject : MonoBehaviour
 
     public bool IncludeRotation { get => includeRotation; protected set => includeRotation = value; }
     public MapBlipType MapBlipType { get => mapBlipType; protected set => mapBlipType = value; }
+    public string overrideName = "";
 
     private void Start ()
     {
@@ -17,10 +18,11 @@ public class WorldMapObject : MonoBehaviour
             Register ();
     }
 
-    public void Register ()
+    public void Register (string _overrideName = "")
     {
         WorldMapCanvas.instance.RegisterWorldMapObject ( mapBlipType, this.transform, this );
         MiniMapCanvas.instance.RegisterWorldMapObject ( mapBlipType, this.transform, this );
+        overrideName = _overrideName;
     }
 
     public void Unregister ()

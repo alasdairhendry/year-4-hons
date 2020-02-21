@@ -5,23 +5,36 @@ public enum NPCAttackOption { CanBeAttacked, CannotBeAttack }
 
 public class NPC : MonoBehaviour
 {
-    [SerializeField] private NPCData npcData;
-    [SerializeField] private bool overrideDefaultAttackOption = false;
-    [NaughtyAttributes.ShowIf ( nameof ( overrideDefaultAttackOption ) )] [SerializeField] private NPCAttackOption attackOptionOverride = NPCAttackOption.CanBeAttacked;
+    [SerializeField] protected NPCData npcData;
+    [SerializeField] protected bool overrideDefaultAttackOption = false;
+    [NaughtyAttributes.ShowIf ( nameof ( overrideDefaultAttackOption ) )] [SerializeField] protected NPCAttackOption attackOptionOverride = NPCAttackOption.CanBeAttacked;
     [Space]
-    [SerializeField] private GameObject lootableNPCPrefab;
+    [SerializeField] protected GameObject lootableNPCPrefab;
     [Space]
-    [SerializeField] private Transform healthIndicatorPlaceholder;
-    [SerializeField] private bool setInteractableNameToNPCDataName = true;
+    [SerializeField] protected Transform healthIndicatorPlaceholder;
+    [SerializeField] protected bool setInteractableNameToNPCDataName = true;
 
-    public NPCAttackOption NPCAttackOption { get; protected set; }
+    public NPCAttackOption NPCAttackOption
+    {
+        get
+        {
+            if (overrideDefaultAttackOption)
+            {
+                return attackOptionOverride;
+            }
+            else
+            {
+                return npcData.DefaultAttackOption;
+            }
+        }
+    }
     public Health Health { get; protected set; }
     public FloatingTextIndicator FloatingTextIndicator { get; protected set; }
 
     public System.Action OnDeathAction;
     public System.Action OnDeleteAction;
 
-    private float healthIndicatorDisplayCounter = 0;
+    protected float healthIndicatorDisplayCounter = 0;
 
     public NPCNavMesh NPCNavMesh { get; protected set; }
     public NPCStateController NPCStateController { get; protected set; }
@@ -30,10 +43,10 @@ public class NPC : MonoBehaviour
     public NPCData NpcData { get => npcData; set => npcData = value; }
     public SkinnedMeshRenderer MeshRenderer { get; set; }
     public bool IsInCombat { get; set; } = false;
-    private HealthBarUI healthBar;
+    protected HealthBarUI healthBar;
     public bool isInConversation { get; set; } = false;
 
-    private void Awake ()
+    protected virtual void Awake ()
     {
         InitialiseData ();
         CreateHealthIndicator ();
@@ -41,22 +54,22 @@ public class NPC : MonoBehaviour
         QuestFlow.DialogueEngine.DialogueManager.instance.onConversationEnd += OnConversationEnd;
     }
 
-    private void OnConversationEnd (Conversation obj)
+    protected virtual void OnConversationEnd (Conversation obj)
     {
         isInConversation = false;
     }
 
-    private void Update ()
+    protected virtual void Update ()
     {
         CheckShouldShowHealthIndicator ();
     }
 
-    public void SetMobSpawner (MobSpawner spawner)
+    public virtual void SetMobSpawner (MobSpawner spawner)
     {
         MobSpawner = spawner;
     }
 
-    private void InitialiseData ()
+    protected virtual void InitialiseData ()
     {
         MeshRenderer = GetComponentInChildren<SkinnedMeshRenderer> ( false );
         Health = GetComponent<Health> ();
@@ -69,25 +82,16 @@ public class NPC : MonoBehaviour
 
         if (setInteractableNameToNPCDataName)
             GetComponentInChildren<Interactable> ().SetInteractName ( NpcData.NpcName + " [" + Character.cFaction.CurrentFaction.factionName + "]" );
-
-        if (overrideDefaultAttackOption)
-        {
-            NPCAttackOption = attackOptionOverride;
-        }
-        else
-        {
-            NPCAttackOption = npcData.DefaultAttackOption;
-        }
     }
 
-    private void CreateHealthIndicator ()
+    protected virtual void CreateHealthIndicator ()
     {
         healthBar = NPCHealthCanvas.instance.SpawnHealthIndicator ( healthIndicatorPlaceholder ).GetComponent<HealthBarUI> ();
         healthBar.Initialise ( Health, healthIndicatorPlaceholder );
         healthBar.SetInactive ();
     }
 
-    private void SubscribeToEvents ()
+    protected virtual void SubscribeToEvents ()
     {
         Health.onDeath += OnDeathByDamage;
         Health.onHealthChanged += OnHealthChanged;
@@ -97,7 +101,7 @@ public class NPC : MonoBehaviour
         SkillManager.instance.OnCharacterLevelIncreased += RefreshMaxHealth;
     }
 
-    private void UnsubscribeToEvents ()
+    protected virtual void UnsubscribeToEvents ()
     {
         Health.onDeath -= OnDeathByDamage;
         Health.onHealthChanged -= OnHealthChanged;
@@ -107,13 +111,13 @@ public class NPC : MonoBehaviour
         SkillManager.instance.OnCharacterLevelIncreased -= RefreshMaxHealth;
     }
 
-    private void RefreshMaxHealth ()
+    protected virtual void RefreshMaxHealth ()
     {
         Health.SetMaxHealth ( NPCCombatStats.GetMaxHealth ( NpcData ), !IsInCombat );
 
     }
 
-    private void CheckShouldShowHealthIndicator ()
+    protected virtual void CheckShouldShowHealthIndicator ()
     {
         if (healthBar == null) return;
 
@@ -127,18 +131,18 @@ public class NPC : MonoBehaviour
         }
     }
 
-    private void OnAttack (WeaponAttackType attackType)
+    protected virtual void OnAttack (WeaponAttackType attackType)
     {
         healthIndicatorDisplayCounter = 0;
         healthBar.SetActive ();
     }
 
-    private void OnHealthAdded (float amount, HealType healType)
+    protected virtual void OnHealthAdded (float amount, HealType healType)
     {
         healthBar.SetActive ();
     }
 
-    private void OnHealthRemoved (float amount, DamageType damageType)
+    protected virtual void OnHealthRemoved (float amount, DamageType damageType)
     {
         healthBar.SetActive ();
 
@@ -148,12 +152,12 @@ public class NPC : MonoBehaviour
         }
     }
 
-    private void OnHealthChanged ()
+    protected virtual void OnHealthChanged ()
     {
         healthIndicatorDisplayCounter = 0;
     }
 
-    private void OnDeathByDamage ()
+    protected virtual void OnDeathByDamage ()
     {
         UnsubscribeToEvents ();
         Character.SetIsDead ();
@@ -182,7 +186,9 @@ public class NPC : MonoBehaviour
         Destroy ( GetComponent<CapsuleCollider> () );
         Destroy ( GetComponent<CharacterIK> () );
         Destroy ( GetComponent<CharacterPhysics> () );
+        Destroy ( GetComponent<NPCPathMovement> () );
         Destroy ( GetComponent<NPCNavMesh> () );
+        Destroy ( GetComponent<QuestFlow.Actor> () );
         Destroy ( GetComponent<NPCStateController> () );
         Destroy ( GetComponent<NPCStateMachine> () );
         Destroy ( GetComponent<UnityEngine.AI.NavMeshAgent> () );
@@ -192,15 +198,20 @@ public class NPC : MonoBehaviour
         OnDeathAction?.Invoke ();
     }
 
-    public void DieImmediately ()
+    public virtual void DieImmediately ()
     {
         UnsubscribeToEvents ();
         OnDeleteAction?.Invoke ();
         Destroy ( this.gameObject );
     }
 
-    private void OnDestroy ()
+    protected virtual void OnDestroy ()
     {
         QuestFlow.DialogueEngine.DialogueManager.instance.onConversationEnd -= OnConversationEnd;
+    }
+
+    public virtual float OnBeforeDamagedByWeapon (float damage, WeaponData currentWeaponData)
+    {
+        return damage;
     }
 }

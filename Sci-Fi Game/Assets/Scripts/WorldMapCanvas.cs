@@ -53,6 +53,7 @@ public class WorldMapCanvas : UIPanel
 
         for (int i = 0; i < spriteData.Count; i++)
         {
+            if (spriteData[i].showInLegend == false) continue;
             GameObject go = Instantiate ( legendEntryPrefab );
             go.transform.SetParent ( legendPanel );
             go.transform.GetComponentInChildren<Image> ().sprite = spriteData[i].sprite;
@@ -86,16 +87,6 @@ public class WorldMapCanvas : UIPanel
         if (!isOpened) return;
         UpdateMapScale ();
         UpdateMapPosition ();
-
-
-        if (Input.GetMouseButtonDown ( 0 ))
-        {
-            Debug.Log ( EventSystem.current.currentSelectedGameObject );
-        }
-        if (Input.GetMouseButtonUp ( 0 ))
-        {
-            Debug.Log ( EventSystem.current.currentSelectedGameObject );
-        }
     }
 
     private void LateUpdate ()
@@ -128,7 +119,6 @@ public class WorldMapCanvas : UIPanel
     {
         if (blipsDict.ContainsKey ( worldMapObject ))
         {
-            Debug.LogError ( "Blip already exists" );
             return;
         }
 
@@ -137,7 +127,17 @@ public class WorldMapCanvas : UIPanel
         WorldMapBlip wmb = new WorldMapBlip ( target, worldMapObject );
 
         GameObject go = Instantiate ( blipPrefab );
-        go.GetComponent<TooltipItemUI> ().SetTooltipMessage ( data.legendTitle );
+        go.GetComponent<TooltipItemUI> ().SetTooltipAction ( () =>
+        {
+            if (string.IsNullOrEmpty ( worldMapObject.overrideName ))
+            {
+                return data.legendTitle;
+            }
+            else
+            {
+                return worldMapObject.overrideName;
+            }
+        } );
         go.transform.SetParent ( blipsParent );
         go.transform.GetComponent<RectTransform> ().sizeDelta = new Vector2 ( 32.0f, 32.0f );
         go.transform.GetComponent<Image> ().sprite = sprite;
@@ -198,4 +198,5 @@ public class MapBlipTypeSpriteData
     public MapBlipType blipType;
     public Sprite sprite;
     public string legendTitle;
+    public bool showInLegend;
 }

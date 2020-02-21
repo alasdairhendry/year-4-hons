@@ -2,8 +2,13 @@
 
 public class NPCStateMachine : MonoBehaviour
 {
-    [SerializeField] private NPC npc;
+    private NPC npc;
     public AIStateBase currentState { get; protected set; }
+
+    private void Awake ()
+    {
+        npc = GetComponent<NPC> ();
+    }
 
     public void SetState (AIStateBase state)
     {
