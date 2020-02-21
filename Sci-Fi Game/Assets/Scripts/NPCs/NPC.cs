@@ -1,98 +1,148 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using QuestFlow.DialogueEngine;
 using UnityEngine;
 
-/// <summary>
-/// Passive means the player cannot attack this NPC and they cant attack the player
-/// Retaliates means the player can attack this NPC and they will retaliate
-/// Flee means the player can attack this NPC and they will try to flee
-/// Aggressive means the player can attack this NPC, and the NPC will attack the player on sight
-/// </summary>
-public enum HostilityLevel { Passive, Retaliates, Flee, Aggressive }
+public enum NPCAttackOption { CanBeAttacked, CannotBeAttack }
 
 public class NPC : MonoBehaviour
 {
     [SerializeField] private NPCData npcData;
-    [SerializeField] private bool overrideHostilityLevel = false;
-    [NaughtyAttributes.ShowIf ( nameof ( overrideHostilityLevel ) )] [SerializeField] private HostilityLevel hostilityLevelOverride = HostilityLevel.Passive;    
+    [SerializeField] private bool overrideDefaultAttackOption = false;
+    [NaughtyAttributes.ShowIf ( nameof ( overrideDefaultAttackOption ) )] [SerializeField] private NPCAttackOption attackOptionOverride = NPCAttackOption.CanBeAttacked;
     [Space]
     [SerializeField] private GameObject lootableNPCPrefab;
     [Space]
     [SerializeField] private Transform healthIndicatorPlaceholder;
+    [SerializeField] private bool setInteractableNameToNPCDataName = true;
 
-    public bool IsAttackable { get => HostilityLevel != HostilityLevel.Passive; }
-    public HostilityLevel HostilityLevel { get; protected set; }
+    public NPCAttackOption NPCAttackOption { get; protected set; }
     public Health Health { get; protected set; }
     public FloatingTextIndicator FloatingTextIndicator { get; protected set; }
 
     public System.Action OnDeathAction;
     public System.Action OnDeleteAction;
 
-    private GameObject healthIndicatorParent;
-    private RectTransform healthIndicatorGreenFill;
-    private float timeSinceLastHealthChange = 0;
+    private float healthIndicatorDisplayCounter = 0;
 
     public NPCNavMesh NPCNavMesh { get; protected set; }
     public NPCStateController NPCStateController { get; protected set; }
     public MobSpawner MobSpawner { get; protected set; }
     public Character Character { get; protected set; }
     public NPCData NpcData { get => npcData; set => npcData = value; }
+    public SkinnedMeshRenderer MeshRenderer { get; set; }
+    public bool IsInCombat { get; set; } = false;
+    private HealthBarUI healthBar;
+    public bool isInConversation { get; set; } = false;
 
     private void Awake ()
     {
+        InitialiseData ();
+        CreateHealthIndicator ();
+        SubscribeToEvents ();
+        QuestFlow.DialogueEngine.DialogueManager.instance.onConversationEnd += OnConversationEnd;
+    }
+
+    private void OnConversationEnd (Conversation obj)
+    {
+        isInConversation = false;
+    }
+
+    private void Update ()
+    {
+        CheckShouldShowHealthIndicator ();
+    }
+
+    public void SetMobSpawner (MobSpawner spawner)
+    {
+        MobSpawner = spawner;
+    }
+
+    private void InitialiseData ()
+    {
+        MeshRenderer = GetComponentInChildren<SkinnedMeshRenderer> ( false );
         Health = GetComponent<Health> ();
+        Health.SetMaxHealth ( NPCCombatStats.GetMaxHealth ( NpcData ), true );
+
         FloatingTextIndicator = GetComponent<FloatingTextIndicator> ();
         NPCNavMesh = GetComponent<NPCNavMesh> ();
         NPCStateController = GetComponent<NPCStateController> ();
         Character = GetComponent<Character> ();
 
-        Health.SetMaxHealth ( npcData.MaxHealth, true );
+        if (setInteractableNameToNPCDataName)
+            GetComponentInChildren<Interactable> ().SetInteractName ( NpcData.NpcName + " [" + Character.cFaction.CurrentFaction.factionName + "]" );
 
-        if (overrideHostilityLevel)
+        if (overrideDefaultAttackOption)
         {
-            HostilityLevel = hostilityLevelOverride;
+            NPCAttackOption = attackOptionOverride;
         }
         else
         {
-            HostilityLevel = npcData.DefaultHostilityLevel;
+            NPCAttackOption = npcData.DefaultAttackOption;
         }
+    }
 
-        healthIndicatorParent = NPCHealthCanvas.instance.SpawnHealthIndicator ( healthIndicatorPlaceholder ).gameObject;
-        healthIndicatorGreenFill = healthIndicatorParent.transform.GetChild ( 0 ).GetChild ( 0 ).GetComponent<RectTransform> ();
-        healthIndicatorParent.SetActive ( false );
+    private void CreateHealthIndicator ()
+    {
+        healthBar = NPCHealthCanvas.instance.SpawnHealthIndicator ( healthIndicatorPlaceholder ).GetComponent<HealthBarUI> ();
+        healthBar.Initialise ( Health, healthIndicatorPlaceholder );
+        healthBar.SetInactive ();
+    }
 
-        Health.onDeath += OnDeath;
+    private void SubscribeToEvents ()
+    {
+        Health.onDeath += OnDeathByDamage;
         Health.onHealthChanged += OnHealthChanged;
         Health.onHealthAdded += OnHealthAdded;
         Health.onHealthRemoved += OnHealthRemoved;
+        Character.cWeapon.OnAttack += OnAttack;
+        SkillManager.instance.OnCharacterLevelIncreased += RefreshMaxHealth;
     }
 
-    private void Update ()
+    private void UnsubscribeToEvents ()
     {
-        if (healthIndicatorParent == null) return;
-        if (healthIndicatorParent.gameObject.activeSelf == true)
+        Health.onDeath -= OnDeathByDamage;
+        Health.onHealthChanged -= OnHealthChanged;
+        Health.onHealthAdded -= OnHealthAdded;
+        Health.onHealthRemoved -= OnHealthRemoved;
+        Character.cWeapon.OnAttack -= OnAttack;
+        SkillManager.instance.OnCharacterLevelIncreased -= RefreshMaxHealth;
+    }
+
+    private void RefreshMaxHealth ()
+    {
+        Health.SetMaxHealth ( NPCCombatStats.GetMaxHealth ( NpcData ), !IsInCombat );
+
+    }
+
+    private void CheckShouldShowHealthIndicator ()
+    {
+        if (healthBar == null) return;
+
+        if (healthBar.gameObject.activeSelf == true)
         {
-            timeSinceLastHealthChange += Time.deltaTime;
-            if (timeSinceLastHealthChange > 5.0f)
+            healthIndicatorDisplayCounter += Time.deltaTime;
+            if (healthIndicatorDisplayCounter > 5.0f)
             {
-                healthIndicatorParent.SetActive ( false );
+                healthBar.SetInactive ();
             }
         }
     }
 
-    public void SetMobSpawner(MobSpawner spawner)
+    private void OnAttack (WeaponAttackType attackType)
     {
-        MobSpawner = spawner;
+        healthIndicatorDisplayCounter = 0;
+        healthBar.SetActive ();
     }
 
     private void OnHealthAdded (float amount, HealType healType)
     {
-
+        healthBar.SetActive ();
     }
 
     private void OnHealthRemoved (float amount, DamageType damageType)
     {
-        if(Random.value > 0.85f)
+        healthBar.SetActive ();
+
+        if (Random.value < 0.65f)
         {
             SoundEffect.Play3D ( npcData.DamageTakenAudioClips.GetRandom(), this.transform.position, 2, 10 );
         }
@@ -100,13 +150,12 @@ public class NPC : MonoBehaviour
 
     private void OnHealthChanged ()
     {
-        healthIndicatorParent.gameObject.SetActive ( true );
-        healthIndicatorGreenFill.localScale = new Vector3 ( 1.0f * Health.healthNormalised, 1.0f, 1.0f );
-        timeSinceLastHealthChange = 0;
+        healthIndicatorDisplayCounter = 0;
     }
 
-    private void OnDeath ()
+    private void OnDeathByDamage ()
     {
+        UnsubscribeToEvents ();
         Character.SetIsDead ();
 
         NPCStateController.SwitchToIdleBehaviour ();
@@ -115,14 +164,14 @@ public class NPC : MonoBehaviour
             Character.cWeapon.Unequip ( true );
 
         SoundEffect.Play3D ( npcData.DeathAudioClips.GetRandom (), this.transform.position, 2, 10 );
-        Destroy ( healthIndicatorParent );
+        Destroy ( healthBar.gameObject );
 
         Destroy ( GetComponentInChildren<Interactable> ().gameObject );
 
         GameObject lootableNPC = Instantiate ( lootableNPCPrefab );        
         lootableNPC.GetComponent<LootableNPC> ().Initialise ( GetComponent<Animator> ().GetBoneTransform ( HumanBodyBones.Chest ), npcData );
 
-        GetComponent<Animator> ().SetTrigger ( "die" );
+        GetComponent<Animator> ().SetBool ( "die", true );
 
         Destroy ( GetComponent<Health> () );
         Destroy ( GetComponent<Character> () );
@@ -143,24 +192,15 @@ public class NPC : MonoBehaviour
         OnDeathAction?.Invoke ();
     }
 
-    public void Delete ()
+    public void DieImmediately ()
     {
+        UnsubscribeToEvents ();
         OnDeleteAction?.Invoke ();
         Destroy ( this.gameObject );
     }
 
-    private void LateUpdate ()
+    private void OnDestroy ()
     {
-        if (healthIndicatorParent == null) return;
-
-        if (healthIndicatorParent.gameObject.activeSelf == true)
-        {
-            healthIndicatorParent.transform.position = healthIndicatorPlaceholder.position;
-        }
-    }
-
-    public void SetHostilityLevel (HostilityLevel level)
-    {
-        HostilityLevel = level;
+        QuestFlow.DialogueEngine.DialogueManager.instance.onConversationEnd -= OnConversationEnd;
     }
 }

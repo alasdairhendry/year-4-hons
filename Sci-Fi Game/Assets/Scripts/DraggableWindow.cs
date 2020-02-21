@@ -31,7 +31,7 @@ public class DraggableWindow : MonoBehaviour, IPointerDownHandler
     private void LateUpdate ()
     {
         if (isDragging)
-            windowRect.anchoredPosition3D += new Vector3 ( Input.GetAxis ( "Mouse X" ), Input.GetAxis ( "Mouse Y" ), 0.0f ) * 2000 * Time.deltaTime;
+            windowRect.anchoredPosition3D += (new Vector3 ( Input.GetAxisRaw ( "Mouse X" ), Input.GetAxisRaw ( "Mouse Y" ), 0.0f ) ) / Time.deltaTime * 0.5f;
     }
 
     private Vector3 normaliseMousePosition (Vector3 position)

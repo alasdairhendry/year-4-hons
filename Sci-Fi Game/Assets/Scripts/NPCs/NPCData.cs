@@ -6,8 +6,8 @@ using UnityEngine;
 public class NPCData : ScriptableObject
 {
     [SerializeField] private string npcName;
-    [SerializeField] private float maxHealth;
-    [SerializeField] private HostilityLevel defaultHostilityLevel;
+    [SerializeField] private NPCAttackOption defaultAttackOption;
+    [SerializeField] private Faction faction;
     [Space]
     [SerializeField] private AudioClipObject damageTakenAudioClips;
     [SerializeField] private AudioClipObject deathAudioClips;
@@ -18,36 +18,14 @@ public class NPCData : ScriptableObject
     [SerializeField] private bool accessToRareDropTable = true;
     [SerializeField] private bool accessToSuperRareDropTable = true;
     [Space]
+    [SerializeField] private bool combatScalesWithPlayer = false;
     [SerializeField] private int combatLevel = 1;
     [SerializeField] private float baseHitChanceModifier = 1;
-    [SerializeField] private float baseDamageModifier = 1;
-
-    public float GetBaseHitChance
-    {
-        get
-        {
-            float minHitChance = 0.20f;
-            float maxHitChance = 0.90f;
-
-            float maxNPCLevel = 100.0f;
-
-            return Mathf.Lerp ( minHitChance, maxHitChance, Mathf.InverseLerp ( 1, maxNPCLevel, combatLevel ) ) * baseHitChanceModifier;
-        }
-    }
-
-    public float GetBaseDamageOutput
-    {
-        get
-        {
-            float baseLineDamage = 100.0f;
-            float maxNPCLevel = 100.0f;
-            return ((baseLineDamage * Mathf.Pow ( (float)combatLevel, 1.25f )) / maxNPCLevel) * baseDamageModifier;
-        }
-    }
+    [SerializeField] private float baseMaxHealthModifier = 1;
+    [SerializeField] private float baseDamageModifier = 1;   
 
     public string NpcName { get => npcName; set => npcName = value; }
-    public float MaxHealth { get => maxHealth; set => maxHealth = value; }
-    public HostilityLevel DefaultHostilityLevel { get => defaultHostilityLevel; set => defaultHostilityLevel = value; }
+    public NPCAttackOption DefaultAttackOption { get => defaultAttackOption; set => defaultAttackOption = value; }
     public DropTable UniqueDropTable { get => uniqueDropTable; set => uniqueDropTable = value; }
     public bool AccessToCoinsDropTable { get => accessToCoinsDropTable; set => accessToCoinsDropTable = value; }
     public bool AccessToGlobalDropTable { get => accessToGlobalDropTable; set => accessToGlobalDropTable = value; }
@@ -55,7 +33,31 @@ public class NPCData : ScriptableObject
     public bool AccessToSuperRareDropTable { get => accessToSuperRareDropTable; set => accessToSuperRareDropTable = value; }
     public AudioClipObject DamageTakenAudioClips { get => damageTakenAudioClips; set => damageTakenAudioClips = value; }
     public AudioClipObject DeathAudioClips { get => deathAudioClips; set => deathAudioClips = value; }
-    public int CombatLevel { get => combatLevel; set => combatLevel = value; }
+    public int CombatLevel
+    {
+        get
+        {
+            if (combatScalesWithPlayer)
+            {
+                if(SkillManager.instance == null)
+                {
+                    return combatLevel;
+                }
+
+                return (int)SkillManager.instance.CombatLevel;
+            }
+            else
+            {
+                return combatLevel;
+            }
+        }
+        protected set
+        {
+            combatLevel = value;
+        }
+    }
     public float BaseHitChanceModifier { get => baseHitChanceModifier; set => baseHitChanceModifier = value; }
+    public float BaseMaxHealthModifier { get => baseMaxHealthModifier; set => baseMaxHealthModifier = value; }
     public float BaseDamageModifier { get => baseDamageModifier; set => baseDamageModifier = value; }
+    public Faction Faction { get => faction; set => faction = value; }
 }

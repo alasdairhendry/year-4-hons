@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public enum ColourDescription { OffWhiteText, DarkYellowText, GreyText, DarkGreyText, Black, White, MessageBoxInfo, MessageBoxWarning, MessageBoxError }
+public enum ColourDescription { OffWhiteText, DarkYellowText, GreyText, DarkGreyText, Black, White, MessageBoxInfo, MessageBoxWarning, MessageBoxError, None }
 
 
 public class ColourHelper : MonoBehaviour

@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class MessageBox : MonoBehaviour
+public class MessageBox : UIPanel
 {
-    private static MessageBox instance;
+    public static MessageBox instance;
 
     public enum Type { Info, Warning, Error }
     [SerializeField] private TextMeshProUGUI textField;
@@ -18,26 +18,21 @@ public class MessageBox : MonoBehaviour
     {
         if (instance == null) instance = this;
         else if (instance != this) { Destroy ( this.gameObject ); return; }
-
+        Open ();
         AddMessage ( "Welcome to the game." );
     }
 
-    public void Open ()
+    public override void Open ()
     {
         panel.SetActive ( true );
+        isOpened = true;
     }
 
-    public void Close ()
+    public override void Close ()
     {
         panel.SetActive ( false );
+        isOpened = false;
     }
-
-    public void Trigger ()
-    {
-        if (panel.activeSelf) Close ();
-        else Open ();
-    }
-
 
     public static void AddMessage (string message, Type type = Type.Info)
     {

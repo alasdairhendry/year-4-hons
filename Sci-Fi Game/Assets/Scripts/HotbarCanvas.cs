@@ -23,49 +23,49 @@ public class HotbarCanvas : MonoBehaviour
         }
     }
 
-    private void Update ()
+    public void OnHotkeyPressed (KeyCode keyCode, bool isShift, bool isControl, bool isAlt)
     {
-        if (Input.GetKeyDown ( KeyCode.Alpha1 ) || Input.GetKeyDown ( KeyCode.Keypad1 ))
+        if (keyCode == KeyCode.Alpha1)
         {
             OnHotkeyPressed ( 0 );
         }
 
-        if (Input.GetKeyDown ( KeyCode.Alpha2 ) || Input.GetKeyDown ( KeyCode.Keypad2 ))
+        if (keyCode == KeyCode.Alpha2)
         {
             OnHotkeyPressed ( 1 );
         }
 
-        if (Input.GetKeyDown ( KeyCode.Alpha3 ) || Input.GetKeyDown ( KeyCode.Keypad3 ))
+        if (keyCode == KeyCode.Alpha3)
         {
             OnHotkeyPressed ( 2 );
         }
 
-        if (Input.GetKeyDown ( KeyCode.Alpha4 ) || Input.GetKeyDown ( KeyCode.Keypad4 ))
+        if (keyCode == KeyCode.Alpha4)
         {
             OnHotkeyPressed ( 3 );
         }
 
-        if (Input.GetKeyDown ( KeyCode.Alpha5 ) || Input.GetKeyDown ( KeyCode.Keypad5 ))
+        if (keyCode == KeyCode.Alpha5)
         {
             OnHotkeyPressed ( 4 );
         }
 
-        if (Input.GetKeyDown ( KeyCode.Alpha6 ) || Input.GetKeyDown ( KeyCode.Keypad6 ))
+        if (keyCode == KeyCode.Alpha6)
         {
             OnHotkeyPressed ( 5 );
         }
 
-        if (Input.GetKeyDown ( KeyCode.Alpha7 ) || Input.GetKeyDown ( KeyCode.Keypad7 ))
+        if (keyCode == KeyCode.Alpha7)
         {
             OnHotkeyPressed ( 6 );
         }
 
-        if (Input.GetKeyDown ( KeyCode.Alpha8 ) || Input.GetKeyDown ( KeyCode.Keypad8 ))
+        if (keyCode == KeyCode.Alpha8)
         {
             OnHotkeyPressed ( 7 );
         }
 
-        if (Input.GetKeyDown ( KeyCode.Alpha9 ) || Input.GetKeyDown ( KeyCode.Keypad9 ))
+        if (keyCode == KeyCode.Alpha9)
         {
             OnHotkeyPressed ( 8 );
         }

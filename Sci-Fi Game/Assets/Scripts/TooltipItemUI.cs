@@ -11,6 +11,8 @@ public class TooltipItemUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     void IPointerEnterHandler.OnPointerEnter (PointerEventData eventData)
     {
+        if (Cursor.visible == false) return;
+        if (Cursor.lockState == CursorLockMode.Locked) return;
         ShowTooltip ();
     }
 

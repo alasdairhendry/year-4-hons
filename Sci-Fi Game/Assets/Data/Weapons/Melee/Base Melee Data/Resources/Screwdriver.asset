@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponName: Screwdriver
   weaponAttackType: 0
+  weaponItemID: 50
+  brokenVariantItemID: 66
   offsetPosition: {x: 0.0105, y: 0.0029, z: -0.0031}
   offsetRotation: {x: 13.602488, y: 269.51877, z: 98.54014}
   localScale: {x: 0.1, y: 0.1, z: 0.1}

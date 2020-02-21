@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace QuestFlow.QuestEngine
@@ -32,33 +33,26 @@ namespace QuestFlow.QuestEngine
                 questDataByID.Add ( quests[i].questID, _questData );
                 questData.Add ( _questData );
             }
-
-            StartQuest ( quests[0] );
-
-            onQuestStateChanged += (q, qs) => { Debug.Log ( string.Format ( "Quest {0} has changed to state {1}", q.questID, qs ) ); };
-            onQuestSubStateChanged += (q) => { Debug.Log ( string.Format ( "Quest {0} has changed to a new substate", q.questID ) ); };
-            onQuestStarted += (q) => { Debug.Log ( string.Format ( "Quest {0} has been started", q.questID ) ); };
-            onQuestComplete += (q) => { Debug.Log ( string.Format ( "Quest {0} has been complete", q.questID ) ); };
-            onQuestFailed += (q) => { Debug.Log ( string.Format ( "Quest {0} has been failed", q.questID ) ); };
         }
 
         private void Update ()
         {
-            for (int i = 0; i < questData.Count; i++)
-            {
-                if (questData[i].currentQuestState == QuestState.InProgress)
-                {
-                    if (questData[i].currentNode.conditions.Count > 0)
-                    {
-                        NodeBase nextNode = null;
 
-                        if (questData[i].quest.GetNextNodeFromCurrent ( questData[i].currentNode, out nextNode ))
-                        {
-                            SetQuestSubstate ( questData[i].quest, nextNode );
-                        }
-                    }
-                }
-            }
+            //for (int i = 0; i < questData.Count; i++)
+            //{
+            //    if (questData[i].currentQuestState == QuestState.InProgress)
+            //    {
+            //        if (questData[i].currentNode.conditions.Count > 0)
+            //        {
+            //            NodeBase nextNode = null;
+
+            //            if (questData[i].quest.GetNextNodeFromCurrent ( questData[i].currentNode, out nextNode ))
+            //            {
+            //                SetQuestSubstate ( questData[i].quest, nextNode );
+            //            }
+            //        }
+            //    }
+            //}
         }
 
         public QuestData GetQuestDataByID(string id)
@@ -101,6 +95,7 @@ namespace QuestFlow.QuestEngine
                 }
 
                 onQuestStarted?.Invoke ( quest );
+                MessageBox.AddMessage ( "You have just started the quest " + quest.questName );
                 return true;
             }
             else
@@ -124,6 +119,7 @@ namespace QuestFlow.QuestEngine
         {
             SetQuestState ( quest, QuestState.Completed );
             onQuestComplete?.Invoke ( quest );
+            MessageBox.AddMessage ( "Congratulations. You have just completed " + quest.questName );
         }
 
         private void FailQuest (Quest quest)
@@ -140,8 +136,6 @@ namespace QuestFlow.QuestEngine
 
         public void SetQuestSubstate (Quest quest, NodeBase subState)
         {
-            Debug.Log ( "SetQuestSubstate" );
-
             if (quest == null)
             {
                 Debug.LogError ( "aefaf" );
@@ -166,7 +160,7 @@ namespace QuestFlow.QuestEngine
             }
         }
 
-        public string GetQuestLogEntry(string questID)
+        public string GetQuestLogEntry(string questID, string currentLog)
         {
             Quest quest = GetQuestDataByID ( questID ).quest;
 
@@ -176,12 +170,28 @@ namespace QuestFlow.QuestEngine
                 return "";
             }
 
-            return GetQuestLogEntry ( quest );
+            return GetQuestLogEntry ( quest, currentLog );
         }
 
-        public string GetQuestLogEntry(Quest quest)
+        public string GetQuestLogEntry(Quest quest, string currentLog)
         {
-            return questDataByID[quest.questID].currentNode.questLog;
+            if (quest.collateQuestLog)
+            {
+                string breaks = "\n\n";
+
+                if (string.IsNullOrEmpty ( currentLog ))
+                    breaks = "";
+
+                if (QuestManager.instance.GetQuestDataByID ( quest.questID ).currentNode is Success)
+                    return "<s>" + currentLog.Replace ( "<s>", "" ).Replace ( "</s>", "" ) + "</s>" + breaks + questDataByID[quest.questID].currentNode.questLog + "\n\n" + "<align=\"center\">------ QUEST COMPLETE ------</align>";
+                else
+                    return "<s>" + currentLog.Replace ( "<s>", "" ).Replace ( "</s>", "" ) + "</s>" + breaks + questDataByID[quest.questID].currentNode.questLog;
+
+            }
+            else
+            {
+                return questDataByID[quest.questID].currentNode.questLog;
+            }
         }
 
         private void OnDestroy ()

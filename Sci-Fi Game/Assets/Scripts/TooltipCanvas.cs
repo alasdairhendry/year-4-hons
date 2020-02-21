@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -75,8 +76,7 @@ public class TooltipCanvas : MonoBehaviour
     {
         if (!isActive) return;
 
-        if (Input.GetKeyDown ( KeyCode.LeftShift )) Refresh ();
-        if (Input.GetKeyUp ( KeyCode.LeftShift )) Refresh ();
+        CheckInput (); 
 
         boundsMax.x = canvasRect.sizeDelta.x - tooltipRect.sizeDelta.x - boundsMin.x;
         boundsMax.y = canvasRect.sizeDelta.y - tooltipRect.sizeDelta.y - (boundsMin.y * 2);
@@ -86,6 +86,29 @@ public class TooltipCanvas : MonoBehaviour
         targetPosition.y = Mathf.Clamp ( targetPosition.y, boundsMin.y, boundsMax.y );
 
         tooltipRect.anchoredPosition = Vector2.Lerp ( tooltipRect.anchoredPosition, targetPosition, Time.deltaTime * damping );
+    }
+
+    private void CheckInput ()
+    {
+        if (Input.GetKeyDown ( KeyCode.LeftShift )) Refresh ();
+        if (Input.GetKeyUp ( KeyCode.LeftShift )) Refresh ();
+
+        if (Input.GetKeyDown ( KeyCode.LeftControl )) Refresh ();
+        if (Input.GetKeyUp ( KeyCode.LeftControl )) Refresh ();
+
+        if (Input.GetKeyDown ( KeyCode.LeftAlt )) Refresh ();
+        if (Input.GetKeyUp ( KeyCode.LeftAlt )) Refresh ();
+
+        if (Input.GetKeyDown ( KeyCode.Space )) Refresh ();
+        if (Input.GetKeyUp ( KeyCode.Space )) Refresh ();
+
+        if (Input.GetMouseButtonDown ( 0 )) Refresh ();
+        if (Input.GetMouseButtonDown ( 1 )) Refresh ();
+        if (Input.GetMouseButtonDown ( 2 )) Refresh ();
+
+        if (Input.GetMouseButtonUp ( 0 )) Refresh ();
+        if (Input.GetMouseButtonUp ( 1 )) Refresh ();
+        if (Input.GetMouseButtonUp ( 2 )) Refresh ();
     }
 
     public void HideTooltip ()

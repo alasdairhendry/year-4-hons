@@ -3,7 +3,7 @@
     [System.Serializable]
     public class ItemAmountPair
     {
-        public int itemID;
-        public float amount;
+        [ItemID] public int itemID = 0;
+        public int amount = 1;
     }
 }

@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponName: Granite Maul
   weaponAttackType: 0
+  weaponItemID: 53
+  brokenVariantItemID: 69
   offsetPosition: {x: 0.00732, y: 0.00644, z: 0.00759}
   offsetRotation: {x: 46.252373, y: 62.666077, z: 232.148}
   localScale: {x: 0.075, y: 0.075, z: 0.075}

@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 227382194171789761}
   - component: {fileID: 239015056471309987}
   - component: {fileID: 251516076063445311}
+  - component: {fileID: 3111385273168251345}
   m_Layer: 0
   m_Name: SM_Bld_Section_Door_05_Glass
   m_TagString: Untagged
@@ -78,6 +79,20 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!64 &3111385273168251345
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 228955558215223189}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Convex: 0
+  m_CookingOptions: 14
+  m_Mesh: {fileID: 4300002, guid: 80614f8bf14ff3e4292ee9a2b75de99f, type: 3}
 --- !u!1 &229475972050760481
 GameObject:
   m_ObjectHideFlags: 0
@@ -90,7 +105,6 @@ GameObject:
   - component: {fileID: 242807917197707579}
   - component: {fileID: 251005320564736447}
   - component: {fileID: 229475972050760511}
-  - component: {fileID: 229475972050760510}
   m_Layer: 0
   m_Name: building-section-door-05
   m_TagString: Untagged
@@ -173,19 +187,3 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 14
   m_Mesh: {fileID: 4300000, guid: 80614f8bf14ff3e4292ee9a2b75de99f, type: 3}
---- !u!208 &229475972050760510
-NavMeshObstacle:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 229475972050760481}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Shape: 1
-  m_Extents: {x: 2.559, y: 1.5000001, z: 2.559}
-  m_MoveThreshold: 0.1
-  m_Carve: 1
-  m_CarveOnlyStationary: 1
-  m_Center: {x: -2.5, y: 1.5000001, z: -2.5}
-  m_TimeToStationary: 0.5

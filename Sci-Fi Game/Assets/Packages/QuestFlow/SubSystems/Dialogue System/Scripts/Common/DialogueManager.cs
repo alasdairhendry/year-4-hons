@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -13,6 +14,7 @@ namespace QuestFlow.DialogueEngine
 
         [SerializeField] private ActorData playerActor;
         public ActorData GetPlayerActor { get => playerActor; }
+        public bool ConversationIsActive { get => conversationIsActive; protected set => conversationIsActive = value; }
 
         private bool conversationIsActive = false;
         private Conversation currentConversation;
@@ -31,6 +33,52 @@ namespace QuestFlow.DialogueEngine
         {
             if (instance == null) instance = this;
             else if (instance != this) { Destroy ( this.gameObject ); return; }
+        }
+
+        public void OnHotkeyPressed (KeyCode keyCode, bool isShift, bool isControl, bool isAlt)
+        {
+            if (currentConversation != null)
+            {
+                if (keyCode == KeyCode.Space)
+                {
+                    switch (currentState)
+                    {
+                        case DialogueState.None:
+                            break;
+                        case DialogueState.Statement:
+                            OnClickContinue ();
+                            break;
+                        case DialogueState.Answer:
+                            if (currentAnswerNodes.Count == 1)
+                                OnClickAnswer ( 0 );
+                            break;
+                    }
+                }
+
+                if (currentState == DialogueState.Answer)
+                {
+                    if (currentAnswerNodes.Count > 1)
+                    {
+                        if (keyCode == KeyCode.Alpha1)
+                            OnClickAnswer ( 0 );
+
+                        if (keyCode == KeyCode.Alpha2)
+                            OnClickAnswer ( 1 );
+
+                        if (keyCode == KeyCode.Alpha3)
+                            OnClickAnswer ( 2 );
+
+                        if (keyCode == KeyCode.Alpha4)
+                            OnClickAnswer ( 3 );
+
+                        if (keyCode == KeyCode.Alpha5)
+                            OnClickAnswer ( 4 );
+
+                        if (keyCode == KeyCode.Alpha6)
+                            OnClickAnswer ( 5 );
+                    }
+                }
+            }
         }
 
         public void StartConversation (Conversation conversation)
@@ -59,6 +107,7 @@ namespace QuestFlow.DialogueEngine
 
         public void OnClickAnswer (int index)
         {
+            if (index >= currentAnswerNodes.Count) return;
             Answer answer = currentAnswerNodes[index];
             currentAnswerNodes.Clear ();
             currentConversation.OnSelectAnswer ( answer );

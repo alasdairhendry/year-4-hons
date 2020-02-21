@@ -38,7 +38,6 @@ public class WorldMapCanvas : UIPanel
     private float targetScale = 1.0f;
     private Vector3 currentPosition = new Vector3 ();
     private Vector3 targetPosition = new Vector3 ();
-    private bool isOpen = false;
 
     private Dictionary<WorldMapObject, WorldMapBlip> blipsDict = new Dictionary<WorldMapObject, WorldMapBlip> ();
     private List<WorldMapBlip> blipsList = new List<WorldMapBlip> ();
@@ -64,7 +63,7 @@ public class WorldMapCanvas : UIPanel
     public override void Open ()
     {
         base.Open ();
-        isOpen = true;
+        isOpened = true;
         mainPanel.SetActive ( true );
 
         toHide.alpha = 0.0f;
@@ -75,28 +74,16 @@ public class WorldMapCanvas : UIPanel
     public override void Close ()
     {
         base.Close ();
-        isOpen = false;
+        isOpened = false;
         mainPanel.SetActive ( false );
         toHide.alpha = 1.0f;
         toHide.interactable = true;
         toHide.blocksRaycasts = true;
     }
 
-    public void Trigger ()
-    {
-        if (isOpen)
-        {
-            Close ();
-        }
-        else
-        {
-            Open ();
-        }
-    }
-
     private void Update ()
     {
-        if (!isOpen) return;
+        if (!isOpened) return;
         UpdateMapScale ();
         UpdateMapPosition ();
 
@@ -113,7 +100,7 @@ public class WorldMapCanvas : UIPanel
 
     private void LateUpdate ()
     {
-        if (!isOpen) return;
+        if (!isOpened) return;
         UpdateBlipPositions ();
     }
 
@@ -121,12 +108,6 @@ public class WorldMapCanvas : UIPanel
     {
         targetScale += Input.GetAxis ( "Mouse ScrollWheel" ) * scaleSpeed * Time.deltaTime * currentScale;
         targetScale = Mathf.Clamp ( targetScale, scaleRange.x, scaleRange.y );
-
-        //float positionModifier = Input.GetAxis ( "Mouse ScrollWheel" ) * scaleSpeed * Time.deltaTime * scalePosModifier;
-        //float posXModifier = Mathf.Sign ( targetPosition.x );
-        //float posYModifier = Mathf.Sign ( targetPosition.y );
-        //Debug.Log ( positionModifier );
-        //targetPosition += new Vector3 ( positionModifier * posXModifier * targetPosition.x, positionModifier * posYModifier * targetPosition.y, 0.0f );
 
         currentScale = Mathf.Lerp ( currentScale, targetScale, Time.deltaTime * scaleDamping );
         regionParentTransform.localScale = new Vector3 ( currentScale, currentScale, 1.0f );

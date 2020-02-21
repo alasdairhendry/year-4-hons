@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 500953c2eb148e142a5ccadef698c749, type: 3}
+  m_Name: Talent Data - Haste
+  m_EditorClassIdentifier: 
+  talentName: Haste
+  talentDescription: Global cooldown is decreased
+  talentSprite: {fileID: 21300000, guid: cf681ba4c719cbf4daec88de3772392f, type: 3}
+  maxLevels: 10
+  talentType: 7

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public enum MapBlipType { Player, Enemy, TollBarrier, Quest, GeneralShop, WeaponShop, IngredientShop, Furnace, Laboratory, Oven, RepairBench, GunsmithsStation }
+public enum MapBlipType { Player, Enemy, TollBarrier, Quest, GeneralShop, WeaponShop, IngredientShop, Furnace, Laboratory, Oven, RepairBench, GunsmithsStation, AttachmentShop, ToolShop, MedicalShop }
 
 public class WorldMapObject : MonoBehaviour
 {

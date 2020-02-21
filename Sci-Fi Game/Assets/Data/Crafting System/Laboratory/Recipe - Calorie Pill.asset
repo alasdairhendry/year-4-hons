@@ -15,6 +15,7 @@ MonoBehaviour:
   recipeName: Calorie Pill
   timeToCraft: 1
   tableResourceUsage: 5
+  resultSprite: {fileID: 21300000, guid: d01bc00ccdabb6c49a8e1cfa14a45831, type: 3}
   ingredientsRequired:
   - ID: 28
     Amount: 1

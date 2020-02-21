@@ -3,7 +3,9 @@
 public class Gatherable : MonoBehaviour
 {
     [SerializeField] [ItemID] private int itemIDGiven;
-    [SerializeField] private Vector2 itemGivenRangeAmount = new Vector2 ();
+    //[SerializeField] private Vector2 itemGivenRangeAmount = new Vector2 ();
+    [SerializeField] private int baseAmountGiven = 1;
+    [SerializeField] private int maxAmountWithLevelModifier = 10;
     [Space]
     [SerializeField] private bool growsBack = true;
     [SerializeField] private bool startsGrown;
@@ -78,7 +80,14 @@ public class Gatherable : MonoBehaviour
                     }
                     else
                     {
-                        OnNurture ();
+                        if (Random.value <= SkillModifiers.GatheringCompostChance)
+                        {
+                            OnNurtureSuccess ();
+                        }
+                        else
+                        {
+                            OnNurtureFail ();                            
+                        }
                     }
                 }
                 else
@@ -95,36 +104,47 @@ public class Gatherable : MonoBehaviour
 
     private void OnHarvest ()
     {
-        int amountGathered = Random.Range ( (int)itemGivenRangeAmount.x, (int)(itemGivenRangeAmount.y + 1) );
-        if (itemGivenRangeAmount.x == itemGivenRangeAmount.y) amountGathered = (int)itemGivenRangeAmount.x;
-        int bonusAmountGathered = 0;
+        int amountGathered = baseAmountGiven;
+        int levelBonusAmount = 0;
+        int compostBonusAmount = 0;
+
+        float levelBonusRandom = Random.value;
+
+        while(levelBonusRandom < SkillModifiers.GatheringYieldChance && amountGathered + levelBonusAmount < maxAmountWithLevelModifier)
+        {
+            levelBonusAmount++;
+            levelBonusRandom = Random.value;
+        }
 
         if (hasBeenNurtured)
         {
-            for (int i = 0; i < amountGathered; i++)
-            {
-                if (Random.value > 0.5f)
-                {
-                    bonusAmountGathered++;
-                }
-            }
+            float compostBonusRandom = Random.value;
 
-            amountGathered += bonusAmountGathered;
+            while(compostBonusRandom < 0.33f)
+            {
+                compostBonusAmount++;
+                compostBonusRandom = Random.value;
+            }
         }
 
-        int x = EntityManager.instance.PlayerInventory.AddItem ( itemIDGiven, amountGathered );
+        int totalAmountGathered = amountGathered + levelBonusAmount + compostBonusAmount;
+
+        int x = EntityManager.instance.PlayerInventory.AddItem ( itemIDGiven, totalAmountGathered );
 
         if (x != 0)
         {
             // Player inventory too full
-            EntityManager.instance.PlayerInventory.RemoveItem ( amountGathered - x );
+            EntityManager.instance.PlayerInventory.RemoveItem ( totalAmountGathered - x );
             return;
         }
 
-        SkillManager.instance.AddXpToSkill ( SkillManager.SkillType.Gathering, amountGathered * 15.0f );
+        SkillManager.instance.AddXpToSkill ( SkillType.Gathering, totalAmountGathered * 15.0f );
 
-        if (bonusAmountGathered > 0)
-            MessageBox.AddMessage ( "You recieved an extra " + bonusAmountGathered.ToString ( "0" ) + " resources because this item was cultivated.", MessageBox.Type.Info );
+        if (levelBonusAmount > 0)
+            MessageBox.AddMessage ( "You recieved an extra " + levelBonusAmount.ToString ( "0" ) + " resources because of your gathering level.", MessageBox.Type.Info );
+
+        if (compostBonusAmount > 0)
+            MessageBox.AddMessage ( "You recieved an extra " + compostBonusAmount.ToString ( "0" ) + " resources because this item was cultivated.", MessageBox.Type.Info );
 
         SetState ( false );
 
@@ -139,19 +159,40 @@ public class Gatherable : MonoBehaviour
         }
     }
 
-    private void OnNurture ()
+    private void OnNurtureSuccess ()
     {
         hasBeenNurtured = true;
         harvestableInteractable.SetInteractType ( "" );
-        SkillManager.instance.AddXpToSkill ( SkillManager.SkillType.Gathering, 30.0f );
-        MessageBox.AddMessage ( "You cultivate the resources, allowing it to grow back sooner.", MessageBox.Type.Info );        
+        SkillManager.instance.AddXpToSkill ( SkillType.Gathering, 30.0f );
+        MessageBox.AddMessage ( "You cultivate the resources, allowing it to grow back sooner.", MessageBox.Type.Info );
+
+        if (Random.value <= TalentManager.instance.GetTalentModifier ( TalentType.GreenFingers ))
+        {
+            EntityManager.instance.PlayerInventory.AddItem ( nurtureItemRequired, 1 );
+            MessageBox.AddMessage ( "Your " + TalentManager.instance.GetTalent ( TalentType.GreenFingers ).talentData.talentName + " talent saves the " + ItemDatabase.GetItem ( nurtureItemRequired ).Name + " from being consumed" );
+        }
+    }
+
+    private void OnNurtureFail ()
+    {
+        int randomMessage = Random.Range ( 0, 3 );
+
+        if (randomMessage == 0)
+            MessageBox.AddMessage ( "Your hand slips and the compost falls everywhere.", MessageBox.Type.Warning );
+        else if (randomMessage == 1)
+            MessageBox.AddMessage ( "You accidentally place the compost on the ground.", MessageBox.Type.Warning );
+        else if (randomMessage == 2)
+        {
+            MessageBox.AddMessage ( "The compost chemically burns your hand and you drop it.", MessageBox.Type.Warning );
+            EntityManager.instance.PlayerCharacter.Health.RemoveHealth ( EntityManager.instance.PlayerCharacter.Health.MaxHealth * 0.05f, DamageType.CompostDamage );
+        }
     }
 
     private void OnGrownBack ()
     {
         if (hasBeenNurtured)
         {
-            SkillManager.instance.AddXpToSkill ( SkillManager.SkillType.Gathering, 15.0f );
+            SkillManager.instance.AddXpToSkill ( SkillType.Gathering, 15.0f );
             MessageBox.AddMessage ( "A resource you cultivated has now grown.", MessageBox.Type.Info );
         }
 
@@ -165,8 +206,8 @@ public class Gatherable : MonoBehaviour
 
         if (!currentState)
         {
-            currentGrowTime += Time.deltaTime * (hasBeenNurtured ? 3.5f : 1.0f);
-            timeUntilReady = (growTime - currentGrowTime) / (hasBeenNurtured ? 3.5f : 1.0f);
+            currentGrowTime += Time.deltaTime * (hasBeenNurtured ? 3.5f : 1.0f) * SkillModifiers.GatheringGrowthSpeedModifier;
+            timeUntilReady = (growTime - currentGrowTime) / (hasBeenNurtured ? 3.5f : 1.0f) / SkillModifiers.GatheringGrowthSpeedModifier;
 
             harvestableInteractable.SetInteractName ( harvestableInteractable.initialInteractableName + " " + "[" + timeUntilReady.ToString ( "0.0" ) + "]" );
 
@@ -195,6 +236,15 @@ public class Gatherable : MonoBehaviour
             harvestedGraphics.SetActive ( true );
             currentGrowTime = 0.0f;
             hasBeenNurtured = false;
+
+            if (growsBack)
+            {
+                if (Random.value <= TalentManager.instance.GetTalentModifier ( TalentType.Supply ))
+                {
+                    currentGrowTime = growTime * 0.5f;
+                    MessageBox.AddMessage ( "Your " + TalentManager.instance.GetTalent ( TalentType.Supply ).talentData.talentName + " talent halves the growth time for " + ItemDatabase.GetItem ( itemIDGiven ).Name );
+                }
+            }
         }
     }
 

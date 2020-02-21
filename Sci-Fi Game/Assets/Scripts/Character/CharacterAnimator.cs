@@ -111,4 +111,10 @@ public class CharacterAnimator : MonoBehaviour
         //animator.SetBool ( "weaponEquipped", character.cWeapon.isEquipped && !character.cWeapon.isHolstered );
         animator.SetBool ( "isPistol", character.cWeapon.weaponIsPistol );
     }
+
+    public void OnFootStep ()
+    {
+        //if (character.IsAI) return;
+        SoundEffect.Play3D ( EntityManager.instance.footStepSoundEffects.GetRandom (), transform.position, 1, 5 );
+    }
 }

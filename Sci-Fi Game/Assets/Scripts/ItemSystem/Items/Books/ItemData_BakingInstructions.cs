@@ -14,10 +14,9 @@ public class ItemData_BakingInstructions : ItemBaseDataBook
         base.IsSoulbound = false;
         base.IsUnique = false;
 
-        base.MaxStack = int.MaxValue;
+        base.IsStackable = true;
         base.RelatedQuestIDs = new string[] { "CooksApprentice" };
-
-        base.SellPrice = 0;
+        
         base.BuyPrice = 0;
         base.FetchSprite ();
 
@@ -26,27 +25,27 @@ public class ItemData_BakingInstructions : ItemBaseDataBook
         this.InsertHeader ( "Step One" );
         this.InsertBreak ();
         this.InsertParagraph ( "Mix the flour with the milk to create a light, fluffy mixture." );
-        this.InsertSpace ();
+        this.InsertBreak ( 2 );
 
         this.InsertHeader ( "Step Two" );
         this.InsertBreak ();
         this.InsertParagraph ( "Whisk in the egg to form a sweet batter." );
-        this.InsertSpace ();
+        this.InsertBreak ( 2 );
 
         this.InsertHeader ( "Step Three" );
         this.InsertBreak ();
         this.InsertParagraph ( "Pour the mixture into a cake tin, and bake in an oven." );
-        this.InsertSpace ();
+        this.InsertBreak ( 2 );
 
         this.InsertHeader ( "Step Four" );
         this.InsertBreak ();
         this.InsertParagraph ( "Create some chocolate shavings by using a knife on a chocolate bar." );
-        this.InsertSpace ();
+        this.InsertBreak ( 2 );
 
         this.InsertHeader ( "Step Five" );
         this.InsertBreak ();
         this.InsertParagraph ( "Sprinkle the chocolate onto the cake." );
-        this.InsertSpace ();
+        this.InsertBreak ( 2 );
 
         this.InsertHeader ( "Step Six" );
         this.InsertBreak ();

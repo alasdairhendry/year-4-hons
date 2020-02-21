@@ -1,4 +1,7 @@
-﻿using System.Collections;
+﻿using QuestFlow;
+using QuestFlow.DialogueEngine;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -27,12 +30,15 @@ public class Mouse : MonoBehaviour
         else if (instance != this) { Destroy ( this.gameObject ); return; }
 
         SetCursor ( CursorType.Default );
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
     }
 
     private static Vector3 leftMousePosition = new Vector3 ();
     private static Vector3 rightMousePosition = new Vector3 ();
     private static Vector3 middleMousePosition = new Vector3 ();
     private static Vector3 previousMousePosition = new Vector3 ();
+    private List<KeyCode> hotkeyNumbers = new List<KeyCode> { KeyCode.Alpha1, KeyCode.Alpha2, KeyCode.Alpha3, KeyCode.Alpha4, KeyCode.Alpha5, KeyCode.Alpha6, KeyCode.Alpha7, KeyCode.Alpha8, KeyCode.Alpha9, KeyCode.Alpha0 };
 
     private void Update ()
     {
@@ -49,6 +55,78 @@ public class Mouse : MonoBehaviour
         if (Input.GetMouseButtonDown ( 2 ))
         {
             middleMousePosition = Input.mousePosition;
+        }
+
+        CheckNumberedHotkeys ();
+        CheckLetteredHotkeys ();
+    }
+
+    private void CheckLetteredHotkeys ()
+    {
+        if (Input.GetKeyDown ( KeyCode.G ))
+            GearCanvas.instance.Trigger ();
+
+        if (Input.GetKeyDown ( KeyCode.I ))
+            EntityManager.instance.InventoryCanvas.Trigger ();
+
+        if (Input.GetKeyDown ( KeyCode.J ))
+            QuestLogCanvas.instance.Trigger ();
+
+        if (Input.GetKeyDown ( KeyCode.K ))
+            SkillsCanvas.instance.Trigger ();
+
+        if (Input.GetKeyDown ( KeyCode.C ))
+            MessageBox.instance.Trigger ();
+
+        if (Input.GetKeyDown ( KeyCode.M ))
+            WorldMapCanvas.instance.Trigger ();
+
+        if (Input.GetKeyDown ( KeyCode.N ))
+            TalentCanvas.instance.Trigger ();
+
+        //if (Input.GetKeyDown ( KeyCode.H ))
+        //    GearCanvas.instance.Trigger ();
+
+        //if (Input.GetKeyDown ( KeyCode.P ))
+        //    GearCanvas.instance.Trigger ();
+    }
+
+    private void CheckNumberedHotkeys ()
+    {
+        if (DialogueManager.instance.ConversationIsActive)
+        {
+            for (int i = 0; i < hotkeyNumbers.Count; i++)
+            {
+                if (Input.GetKeyDown ( hotkeyNumbers[i] ))
+                {
+                    DialogueManager.instance.OnHotkeyPressed ( hotkeyNumbers[i], Input.GetKey ( KeyCode.LeftShift ), Input.GetKey ( KeyCode.LeftControl ), Input.GetKey ( KeyCode.LeftAlt ) );
+                }
+            }
+
+            if (Input.GetKeyDown ( KeyCode.Space ))
+            {
+                DialogueManager.instance.OnHotkeyPressed ( KeyCode.Space, Input.GetKey ( KeyCode.LeftShift ), Input.GetKey ( KeyCode.LeftControl ), Input.GetKey ( KeyCode.LeftAlt ) );
+            }
+        }
+        else if (TeleportCanvas.instance.isOpened)
+        {
+            for (int i = 0; i < hotkeyNumbers.Count; i++)
+            {
+                if (Input.GetKeyDown ( hotkeyNumbers[i] ))
+                {
+                    TeleportCanvas.instance.OnHotkeyPressed ( hotkeyNumbers[i], Input.GetKey ( KeyCode.LeftShift ), Input.GetKey ( KeyCode.LeftControl ), Input.GetKey ( KeyCode.LeftAlt ) );
+                }
+            }
+        }
+        else
+        {
+            for (int i = 0; i < hotkeyNumbers.Count; i++)
+            {
+                if (Input.GetKeyDown ( hotkeyNumbers[i] ))
+                {
+                    HotbarCanvas.instance.OnHotkeyPressed ( hotkeyNumbers[i], Input.GetKey ( KeyCode.LeftShift ), Input.GetKey ( KeyCode.LeftControl ), Input.GetKey ( KeyCode.LeftAlt ) );
+                }
+            }
         }
     }
 

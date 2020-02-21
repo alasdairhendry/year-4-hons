@@ -5,7 +5,7 @@ public class AIStateBaseCombat : AIStateBase
 {
     public override void OnEnter (NPC npc)
     {
-        npc.NPCNavMesh.ResetCurrentPath ();
+        npc.NPCNavMesh.ClearCurrentPath ();
 
         if (npc.NPCStateController.ChosenWeaponData != null)
         {
@@ -20,9 +20,43 @@ public class AIStateBaseCombat : AIStateBase
     {
         Character playerCharacter = EntityManager.instance.PlayerCharacter;
 
-        RotateTowardsPlayer ( npc, playerCharacter );
-        HandleGunMechanics ( npc, playerCharacter );
-        HandleMeleeMechanics ( npc );
+        if (CheckCanSeePlayer ( npc ))
+        {
+            RotateTowardsPlayer ( npc, playerCharacter );
+            HandleGunMechanics ( npc, playerCharacter );
+            HandleMeleeMechanics ( npc );
+            npc.NPCNavMesh.ClearCurrentPath ();
+            npc.Character.isRunning = false;
+        }
+        else
+        {
+            npc.Character.cWeapon.NPC_StopFire ();
+            npc.Character.isRunning = true;
+
+            if (!npc.NPCNavMesh.HasPath)
+            {
+                npc.NPCNavMesh.SetDestination ( EntityManager.instance.PlayerCharacter.transform.position, false, true );
+            }
+        }
+    }
+
+    private bool CheckCanSeePlayer (NPC npc)
+    {
+        Transform headTransform = npc.Character.Animator.GetBoneTransform ( HumanBodyBones.Head );
+        Vector3 origin = headTransform.position + (headTransform.forward * 0.25f);
+        Vector3 direction = EntityManager.instance.PlayerCharacter.collider.bounds.center - origin;
+
+        Ray ray = new Ray ( origin, direction );
+        RaycastHit hit;
+
+        Debug.DrawRay ( origin, direction * 150.0f );
+
+        if (Physics.Raycast ( ray, out hit, 150 ))
+        {
+            return hit.collider == EntityManager.instance.PlayerCharacter.collider;
+        }
+
+        return false;
     }
 
     private void RotateTowardsPlayer (NPC npc, Character playerCharacter)
@@ -91,7 +125,7 @@ public class AIStateBaseCombat : AIStateBase
 
     public override void OnExit (NPC npc)
     {
-        npc.NPCNavMesh.ResetCurrentPath ();
+        npc.NPCNavMesh.ClearCurrentPath ();
         npc.Character.cWeapon.NPC_StopFire ();
 
         if (npc.Character.isDead) return;

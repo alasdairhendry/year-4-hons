@@ -110,9 +110,9 @@ public class CharacterGear : MonoBehaviour
         else
         {
             EntityManager.instance.PlayerInventory.RemoveItem ( itemID, 1 );
-            int added = EntityManager.instance.PlayerInventory.AddItem ( slot, 1 );
+            int notAddedAmount = EntityManager.instance.PlayerInventory.AddItem ( slot, 1 );
 
-            if (added == 1)
+            if (notAddedAmount == 1)
             {
                 EntityManager.instance.PlayerInventory.AddItem ( itemID, 1 );
                 return;
@@ -122,15 +122,9 @@ public class CharacterGear : MonoBehaviour
         }
     }
 
-    private void TryUnequip (ref int slot)
+    public void SetWeaponIndexNull ()
     {
-        if (slot != -1)
-        {
-            int added = EntityManager.instance.PlayerInventory.AddItem ( slot, 1 );
-            if (added == 1) return;
-
-            slot = -1;
-        }
+        weaponSlotID = -1;
     }
 
     public void UnequipGear (int itemID)
@@ -143,8 +137,10 @@ public class CharacterGear : MonoBehaviour
         switch (slot)
         {
             case GearSlot.Weapon:
-                TryUnequip ( ref weaponSlotID );
-                SetCharacterWeaponData ( -1 );
+                if (TryUnequip ( ref weaponSlotID ))
+                {
+                    SetCharacterWeaponData ( -1 );
+                }
                 break;
             case GearSlot.Head:
                 TryUnequip ( ref headSlotID );
@@ -191,11 +187,27 @@ public class CharacterGear : MonoBehaviour
         GearCanvas.instance.RefreshUI ( this );
     }
 
+    private bool TryUnequip (ref int slot)
+    {
+        if (slot != -1)
+        {
+            int added = EntityManager.instance.PlayerInventory.AddItem ( slot, 1 );
+            if (added == 1) return false;
+
+            slot = -1;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     private void SetCharacterWeaponData (int itemID)
     {
         if (weaponSlotID == -1)
         {
-            EntityManager.instance.PlayerCharacter.cWeapon.Unequip ();
+            EntityManager.instance.PlayerCharacter.cWeapon.Unequip ( bypassAnimationDelay: true );
         }
         else
         {

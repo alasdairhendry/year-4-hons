@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponName: Wrench
   weaponAttackType: 0
+  weaponItemID: 52
+  brokenVariantItemID: 68
   offsetPosition: {x: 0.0108, y: 0.0022, z: -0.0069}
   offsetRotation: {x: 13.836017, y: 269.1475, z: 90.64801}
   localScale: {x: 0.1, y: 0.1, z: 0.1}

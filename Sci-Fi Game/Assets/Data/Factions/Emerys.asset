@@ -13,9 +13,11 @@ MonoBehaviour:
   m_Name: Emerys
   m_EditorClassIdentifier: 
   factionName: Emerys
+  factionAdjective: Emerian
   factionDescription: 
+  factionSprite: {fileID: 21300000, guid: 535a239ae7b20b644b09d5d5835f85d4, type: 3}
   factionType: 0
   specialisationName: Diplomacy
-  specialisationDescription: Improves relations with every faction by 25%
+  specialisationDescription: Decreases faction-based price differences by 25%
   nativeRegion: Emeryton
   opposingFaction: {fileID: 11400000, guid: 487a90f23d164224ab412aa4bd7e6fd4, type: 2}

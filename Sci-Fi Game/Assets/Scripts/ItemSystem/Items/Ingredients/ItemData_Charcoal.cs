@@ -10,11 +10,10 @@ public class ItemData_Charcoal : ItemBaseData
         base.IsSoulbound = false;
         base.IsUnique = false;
 
-        base.MaxStack = int.MaxValue;
+        base.IsStackable = true; 
         base.RelatedQuestIDs = new string[] { };
 
-        base.SellPrice = 5;
-        base.BuyPrice = 60;
+        base.BuyPrice = 15;
         base.FetchSprite ();
     }
 }

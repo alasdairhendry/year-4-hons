@@ -6,21 +6,41 @@ using UnityEngine;
 public class Skill
 {
     public string skillName;
+    public SkillType skillType;
     public string skillDescription;
 
     public float currentXP = 0.0f;
     public int currentLevel = 1;
 
-    public Skill (string skillName, string skillDescription)
+    /// <summary>
+    /// arg1 = amount of xp gained
+    /// </summary>
+    public System.Action<float, SkillType> onXPGained;
+
+    /// <summary>
+    /// arg1 = new level
+    /// </summary>
+    public System.Action<int, SkillType> onLevelUp;
+
+    public Skill (string skillName, string skillDescription, SkillType skillType)
     {
         this.skillName = skillName;
-        this.skillDescription = skillDescription;      
+        this.skillType = skillType;
+        this.skillDescription = skillDescription;
+
+        if (SkillManager.instance.DEBUG_LEVEL_TO_991)
+        {
+            currentXP = SkillManager.instance.XpRatesByLevel[98];
+            currentLevel = 99;
+        }
     }
 
     public void AddXp (float amount)
     {
+        if (currentLevel >= SkillModifiers.MAX_SKILL_LEVEL) return;
+
         currentXP += amount;
-        Debug.Log ( "Added xp " + amount + " to " + skillName + " - Now have " + currentXP );
+        onXPGained?.Invoke ( amount, skillType );
 
         if (currentXP >= SkillManager.instance.GetXPRequirementForLevel ( currentLevel ))
         {
@@ -28,20 +48,37 @@ public class Skill
         }
     }
 
-    public float GetXPRemaining ()
+    public float GetProgressToNextLevelNormalised ()
+    {
+        return Mathf.InverseLerp ( SkillManager.instance.GetXPRequirementForLevel ( currentLevel - 1 ), SkillManager.instance.GetXPRequirementForLevel ( currentLevel ), currentXP );
+    }
+
+    public float GetRelativeCurrentXP ()
+    {
+        return currentXP - SkillManager.instance.GetXPRequirementForLevel ( currentLevel - 1 );
+    }
+
+    public float GetXPRemainingUntilLevelUp ()
     {
         return SkillManager.instance.GetXPRequirementForLevel ( currentLevel ) - currentXP;
     }
 
-    public float GetNextLevelTotalXP ()
+    public float GetNextLevelRelativeXPRequirement ()
+    {
+        return SkillManager.instance.GetXPRequirementForLevel ( currentLevel ) - SkillManager.instance.GetXPRequirementForLevel ( currentLevel - 1 );
+    }
+
+    public float GetNextLevelTotalXPRequirement ()
     {
         return SkillManager.instance.GetXPRequirementForLevel ( currentLevel );
     }
 
-    public void OnLevelUp ()
+    private void OnLevelUp ()
     {
-        Debug.Log ( "Level up" );
-        currentLevel++;
+        if (currentLevel >= SkillModifiers.MAX_SKILL_LEVEL) return;
+
+        currentLevel++;        
+        onLevelUp?.Invoke ( currentLevel, skillType );
     }
 
     //[System.Serializable]

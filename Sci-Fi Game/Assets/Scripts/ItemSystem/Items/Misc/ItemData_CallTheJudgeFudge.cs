@@ -10,10 +10,9 @@ public class ItemData_CallTheJudgeFudge : ItemBaseData
         base.IsSoulbound = false;
         base.IsUnique = false;
 
-        base.MaxStack = int.MaxValue;
+        base.IsStackable = true; 
         base.RelatedQuestIDs = new string[] { "CallTheJudge" };
 
-        base.SellPrice = 0;
         base.BuyPrice = 0;
         base.FetchSprite ();
     }

@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponName: Blaster Rifle
   weaponAttackType: 1
+  weaponItemID: 25
+  brokenVariantItemID: 57
   offsetPosition: {x: 0.0112, y: 0.0015, z: -0.0023}
   offsetRotation: {x: -0.00016392455, y: 90.00003, z: 263.84988}
   localScale: {x: 0.1, y: 0.1, z: 0.10000002}

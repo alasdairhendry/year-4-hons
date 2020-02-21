@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static class SoundEffect
 {
-    public static AudioSource Play (AudioClip clip, bool selfDestruct)
+    public static AudioSource Play (AudioClip clip, bool selfDestruct = true)
     {
         GameObject go = new GameObject ( "Audio Source - 2D" );
         AudioSource src = go.AddComponent<AudioSource> ();

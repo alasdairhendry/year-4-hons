@@ -6,8 +6,10 @@ public enum FactionType { Emerys, Graesen, Kyrish, Sylas, Wallon, Xavix}
 public class Faction : ScriptableObject
 {
     public string factionName;
+    public string factionAdjective;
     [NaughtyAttributes.ResizableTextArea] public string factionDescription;
     [Space]
+    public Sprite factionSprite;
     public FactionType factionType;
     [Space]
     public string specialisationName;

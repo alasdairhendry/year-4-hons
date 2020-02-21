@@ -58,7 +58,7 @@ public class Character : MonoBehaviour
                 return true;
             }
 
-            if (!isCrouchingInput && !canStand)
+            if (!isCrouchingInput)
             {
                 return true;
             }
@@ -69,7 +69,6 @@ public class Character : MonoBehaviour
     public bool isRunning { get; set; }
     public bool shouldJump { get; set; }
 
-    public bool canStand { get; set; }
     public bool isCrouchingInput { get; set; }
 
     public System.Action OnAimChanged;
@@ -83,6 +82,7 @@ public class Character : MonoBehaviour
     public CharacterGear cGear { get; protected set; }
     public CharacterInteraction cInteraction { get; protected set; }
     public CharacterAnimator cAnimator { get; protected set; }
+    public CharacterFaction cFaction { get; protected set; }
     public PlayerCameraController cCameraController { get; protected set; }
     public Health Health { get; protected set; }
     public FloatingTextIndicator FloatingTextIndicator { get; protected set; }
@@ -101,10 +101,17 @@ public class Character : MonoBehaviour
     public bool IsAI { get; protected set; }
     public Vehicle currentVehicle { get; protected set; } = null;
     public bool CanMove { get; protected set; } = true;
-   [NaughtyAttributes.ShowNativeProperty]  public bool isDead { get; protected set; }
+   [NaughtyAttributes.ShowNativeProperty] public bool isDead { get; protected set; }
 
     private void Awake ()
     {
+        if (GetComponent<NPC> () != null) IsAI = true;
+
+        if (!IsAI)
+        {
+            EntityManager.instance.SetPlayerCharacter ( this );
+        }
+
         rigidbody = GetComponent<Rigidbody> ();
         cMovement = GetComponent<CharacterMovement> ();
         cPhysics = GetComponent<CharacterPhysics> ();
@@ -114,80 +121,36 @@ public class Character : MonoBehaviour
         cAnimator = GetComponent<CharacterAnimator> ();
         cGear = GetComponent<CharacterGear> ();
         cInteraction = GetComponent<CharacterInteraction> ();
+        cFaction = GetComponent<CharacterFaction> ();
         Health = GetComponent<Health> ();
         FloatingTextIndicator = GetComponent<FloatingTextIndicator> ();
         Animator = GetComponent<Animator> ();
 
-        if (GetComponent<NPC> () != null) IsAI = true;
-
         if (IsAI) return;
+
+        if (SkillManager.instance.DEBUG_LEVEL_TO_991)
+        {
+            Health.SetMaxHealth ( SkillModifiers.maxHealth, true );
+        }
+        else
+        {
+            if (EntityManager.instance.PlayerCharacter.cFaction.CurrentFaction.factionType == FactionType.Sylas)
+                EntityManager.instance.PlayerCharacter.Health.SetMaxHealth ( SkillModifiers.GetMaxHealth () * 1.35f, true );
+            else
+                EntityManager.instance.PlayerCharacter.Health.SetMaxHealth ( SkillModifiers.GetMaxHealth (), true );
+
+        }
 
         Health.onDeath += OnPlayerDeath;
 
         if (FindObjectOfType<PlayerCameraController> () == null)
             cCameraController = Instantiate ( cameraPrefab ).GetComponent<PlayerCameraController> ().SetTarget ( this.transform );
         else cCameraController = FindObjectOfType<PlayerCameraController> ().SetTarget ( this.transform );
-
-        EntityManager.instance.SetPlayerCharacter ( this );
     }
 
     private void Update ()
     {
         CheckStateUpdate ();
-
-        if (IsAI) return;
-
-        //if (IsAiming)
-        //{
-        //    Cursor.lockState = CursorLockMode.Locked;
-        //    Cursor.visible = false;
-        //}
-        //else
-        //{
-        //    if (Input.GetKeyDown ( KeyCode.L ))
-        //    {
-        //        if (Cursor.lockState == CursorLockMode.Locked)
-        //        {
-        //            Cursor.lockState = CursorLockMode.None;
-        //            Cursor.visible = true;
-        //        }
-        //        else
-        //        {
-        //            Cursor.lockState = CursorLockMode.Locked;
-        //            Cursor.visible = false;
-        //        }
-        //    }
-        //}
-        
-
-        //if (Input.GetKeyDown ( KeyCode.E ))
-        //{
-        //    if (FindObjectOfType<Vehicle> ())
-        //    {
-        //        SetCurrentState ( State.Driving );
-        //        FindObjectOfType<Vehicle> ().Enter ( this );
-        //    }
-
-        //}
-        //if (Input.GetKeyDown ( KeyCode.F ))
-        //{
-        //    if (currentVehicle != null)
-        //    {
-        //        //currentState = State.Standing;
-        //        FindObjectOfType<Vehicle> ().Exit ( this );
-        //    }
-        //}
-
-        if (isCrouching)
-        {
-            GetComponent<CapsuleCollider> ().center = new Vector3 ( 0.0f, 0.75f, 0.0f );
-            GetComponent<CapsuleCollider> ().height = 1.0f;
-        }
-        else
-        {
-            GetComponent<CapsuleCollider> ().center = new Vector3 ( 0.0f, 1.1f, 0.0f );
-            GetComponent<CapsuleCollider> ().height = 1.4f;
-        }
     }
 
     private void FixedUpdate ()
@@ -202,7 +165,6 @@ public class Character : MonoBehaviour
             case State.Standing:
                 cMovement.OnUpdate ();
                 isGrounded = CheckIsGrounded ();
-                CheckCanStand ();
                 rigidbody.drag = standingDrag;
                 break;
             case State.Falling:
@@ -235,10 +197,6 @@ public class Character : MonoBehaviour
             case State.Standing:
                 cMovement.OnFixedUpdate ();
                 break;
-            //case State.Crouching:
-            //    break;
-            //case State.Aiming:
-            //    break;
             case State.Falling:
                 cMovement.OnFixedUpdate ();
                 break;
@@ -263,12 +221,6 @@ public class Character : MonoBehaviour
             SetCurrentState ( State.Driving );
         }
     }
-
-    //private void CheckInput ()
-    //{
-    //    input = new Vector2 ( Input.GetAxis ( "Horizontal" ), Input.GetAxis ( "Vertical" ) ).normalized;
-    //    rawInput = new Vector2 ( Input.GetAxisRaw ( "Horizontal" ), Input.GetAxisRaw ( "Vertical" ) ).normalized;
-    //}    
 
     public void SetCurrentState (State state)
     {
@@ -296,18 +248,16 @@ public class Character : MonoBehaviour
 
     private bool CheckIsGrounded ()
     {
-        Vector3 origin = transform.position;
         Vector3[] origins = new Vector3[5] { transform.position, transform.position + transform.forward * 0.25f, transform.position + transform.right * 0.25f, transform.position - transform.forward * 0.25f, transform.position - transform.right * 0.25f };
-        origin.y += stepHeight;
 
         Vector3 dir = -Vector3.up;
-        float dist = stepHeight + 0.1f;
+        float dist = stepHeight + 0.2f;
 
         RaycastHit hit;
 
         for (int i = 0; i < origins.Length; i++)
         {
-            origins[i].y += stepHeight;
+            origins[i].y += stepHeight + 0.1f;
             if (Physics.Raycast ( origins[i], dir, out hit, dist, walkableLayers, QueryTriggerInteraction.Ignore ))
             {
                 Vector3 targetPosition = hit.point;
@@ -341,60 +291,6 @@ public class Character : MonoBehaviour
         return false;
     }
 
-    private bool CheckCanStand ()
-    {
-        Vector3 origin = transform.position;
-
-        Vector2 inputDir = cInput.rawInput;
-
-        //origin += transform.forward * inputDir.y;
-        //origin += transform.right * inputDir.x;
-
-        if (canStand)
-        {
-
-        }
-        else
-        {
-            //origin -= transform.forward * inputDir.y;
-            //origin -= transform.right * inputDir.x;
-        }
-
-        origin.y += 0.5f;
-
-        Vector3 dir = Vector3.up;
-
-        Ray ray = new Ray ( origin, dir );
-        RaycastHit hit;
-
-        if (Physics.Raycast ( ray, out hit, standHeight - 0.5f, walkableLayers ))
-        {
-            if (canStand)
-            {
-                //isCrouching = true;
-            }
-
-            if (hit.distance > 1.5f - 0.5f)
-                canStand = false;
-            else
-            {
-                canStand = true;
-            }
-        }
-        else
-        {
-            if (!canStand)
-            {
-                //isCrouching = false;
-                //Debug.Log ( "hello" );
-            }
-
-            canStand = true;
-        }
-
-        return canStand;
-    }
-
     public void SetCanMove (bool canMove)
     {
         CanMove = canMove;
@@ -409,11 +305,21 @@ public class Character : MonoBehaviour
     {
         SoundEffect.Play3D ( deathAudioClips.GetRandom (), this.transform.position, 2, 10 );
 
-        if (Random.value > 0.65f)
-            cWeapon.Unequip ( true );
+        cWeapon.SetHolsterState ( true );
 
-        GetComponent<Animator> ().SetTrigger ( "die" );
+        GetComponent<Animator> ().SetBool ( "die", true );
         CanMove = false;
         isDead = true;
+
+        Invoke ( nameof ( Revive ), 3.0f );
+    }
+
+    private void Revive ()
+    {
+        transform.position = Vector3.zero;
+        GetComponent<Animator> ().SetBool ( "die", false );
+
+        isDead = false;
+        CanMove = true;
     }
 }

@@ -20,9 +20,9 @@ TagManager:
   - ScreenSpaceUIOverdraw
   - Terrain
   - RegionCollider
-  - 
-  - 
-  - 
+  - Environment
+  - NPCRoot
+  - NavMeshModifiers
   - 
   - 
   - 

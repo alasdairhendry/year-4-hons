@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponName: Saber
   weaponAttackType: 0
+  weaponItemID: 49
+  brokenVariantItemID: 65
   offsetPosition: {x: 0.01074, y: 0.00224, z: -0.00359}
   offsetRotation: {x: 24.929949, y: 260.11438, z: 140.8632}
   localScale: {x: 0.1, y: 0.1, z: 0.1}

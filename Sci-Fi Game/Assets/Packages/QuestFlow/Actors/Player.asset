@@ -13,4 +13,5 @@ MonoBehaviour:
   m_Name: Player
   m_EditorClassIdentifier: 
   actorID: Player
-  actorName: Player
+  actorName: You
+  sprite: {fileID: 0}

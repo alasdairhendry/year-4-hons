@@ -10,11 +10,10 @@ public class ItemData_CakeTin : ItemBaseData
         base.IsSoulbound = false;
         base.IsUnique = false;
 
-        base.MaxStack = 1;
+        base.IsStackable = false;
         base.RelatedQuestIDs = new string[] { };
 
-        base.SellPrice = 50;
-        base.BuyPrice = 350;
+        base.BuyPrice = 25;
         base.FetchSprite ();
     }
 }

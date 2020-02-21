@@ -13,6 +13,7 @@ public class HotbarEntryPanel : MonoBehaviour, IBeginDragHandler, IDragHandler, 
     public void Initialise (int index)
     {
         this.index = index;
+        GetComponent<Button> ().onClick.AddListener ( () => { Interact (); } );
         RemoveItem ();
     }
 

@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class BookDisplayCanvas : MonoBehaviour
+public class BookDisplayCanvas : UIPanel
 {
     public static BookDisplayCanvas instance;
 
@@ -19,13 +19,19 @@ public class BookDisplayCanvas : MonoBehaviour
         if (instance == null) instance = this;
         else if (instance != this) { Destroy ( this.gameObject ); return; }
 
-        Hide ();
+        Close ();
     }
 
-    public void Show (string bookTitle, string bookText)
+    public void SetBook (string bookTitle, string bookText)
     {
         this.bookTitle.text = bookTitle;
         this.bookText.text = bookText;
+    }
+
+    public override void Open ()
+    {
+        base.Open ();
+        isOpened = true;
 
         scrollRect.verticalNormalizedPosition = 1;
 
@@ -33,6 +39,16 @@ public class BookDisplayCanvas : MonoBehaviour
         cGroup.blocksRaycasts = true;
         pageText.text = "Page 1";
         this.bookText.pageToDisplay = 1;
+    }
+
+    public override void Close ()
+    {
+        base.Close ();
+        isOpened = true;
+        this.bookTitle.text = "";
+        this.bookText.text = "";
+        cGroup.alpha = 0;
+        cGroup.blocksRaycasts = false;
     }
 
     public void OnClickPreviousPage ()
@@ -49,11 +65,4 @@ public class BookDisplayCanvas : MonoBehaviour
         bookText.pageToDisplay = x;
     }
 
-    public void Hide ()
-    {
-        this.bookTitle.text = "";
-        this.bookText.text = "";
-        cGroup.alpha = 0;
-        cGroup.blocksRaycasts = false;
-    }
 }

@@ -69,28 +69,28 @@ public static class ItemDatabase
         { 52, new ItemData_Wrench(52) },
         { 53, new ItemData_Gmaul(53) },
 
-        //{ 54, new ItemData_Wrench(54) },
-        //{ 55, new ItemData_Wrench(55) },
-        //{ 56, new ItemData_Wrench(56) },
-        //{ 57, new ItemData_Wrench(57) },
-        //{ 58, new ItemData_Wrench(58) },
-        //{ 59, new ItemData_Wrench(59) },
+        { 54, new ItemData_PistolBroken(54) },
+        { 55, new ItemData_RifleBroken(55) },
+        { 56, new ItemData_BlasterBroken(56) },
+        { 57, new ItemData_BlasterRifleBroken(57) },
+        { 58, new ItemData_PhaserBroken(58) },
+        { 59, new ItemData_PhaserRifleBroken(59) },
 
-        //{ 60, new ItemData_Wrench(60) },
-        //{ 61, new ItemData_Wrench(61) },
-        //{ 62, new ItemData_Wrench(62) },
-        //{ 63, new ItemData_Wrench(63) },
-        //{ 64, new ItemData_Wrench(64) },
-        //{ 65, new ItemData_Wrench(65) },
-        //{ 66, new ItemData_Wrench(66) },
-        //{ 67, new ItemData_Wrench(67) },
-        //{ 68, new ItemData_Wrench(68) },
-        //{ 69, new ItemData_Wrench(69) },
+        { 60, new ItemData_HammerWeaponBroken(60) },
+        { 61, new ItemData_ChiselWeaponBroken(61) },
+        { 62, new ItemData_FlamingoBroken(62) },
+        { 63, new ItemData_MalletBroken(63) },
+        { 64, new ItemData_PanBroken(64) },
+        { 65, new ItemData_SaberBroken(65) },
+        { 66, new ItemData_ScrewdriverBroken(66) },
+        { 67, new ItemData_SwordBroken(67) },
+        { 68, new ItemData_WrenchBroken(68) },
+        { 69, new ItemData_GmaulBroken(69) },
 
-        //{ 70, new ItemData_Wrench(70) },
-        //{ 71, new ItemData_Wrench(71) },
-        //{ 72, new ItemData_Wrench(72) },
-        //{ 73, new ItemData_Wrench(73) },
+        { 70, new ItemData_LetterToAggie(70) },
+        { 71, new ItemData_OutletNozzle(71) },
+        { 72, new ItemData_FrenchFry(72) },
+        { 73, new ItemData_PortalGem(73) },
         //{ 74, new ItemData_Wrench(74) },
         //{ 75, new ItemData_Wrench(75) },
         //{ 76, new ItemData_Wrench(76) },
@@ -144,19 +144,9 @@ public static class ItemDatabase
             Debug.LogWarning ( string.Format ( "Item [{0} : {1}] is flagged as soulbound and sellable", item.ID, item.Name ) );
         }
 
-        if (item.IsUnique && item.MaxStack > 1)
+        if (item.IsUnique && item.IsStackable)
         {
             Debug.LogWarning ( string.Format ( "Item [{0} : {1}] is flagged as unique and has a max stack greater than 1", item.ID, item.Name ) );
-        }
-
-        if (!item.IsSellable && item.SellPrice > 1)
-        {
-            Debug.LogWarning ( string.Format ( "Item [{0} : {1}] is not flagged as sellable but has a sell price assigned", item.ID, item.Name ) );
-        }
-
-        if (item.MaxStack < 1)
-        {
-            Debug.LogWarning ( string.Format ( "Item [{0} : {1}] can not be assigned to an inventory as it has a max stack of less than 1", item.ID, item.Name ) );
         }
 
         if (string.IsNullOrEmpty ( item.Name ))
@@ -220,7 +210,7 @@ public static class ItemDatabase
 
         if (item == null) return "Null Item";
 
-        if (ItemContainerCanvas.instance.IsActive)
+        if (ItemContainerCanvas.instance.isOpened)
         {
             if (item.IsSoulbound || !ItemContainerCanvas.instance.targetInventory.canRecieveItems)
             {
@@ -233,6 +223,13 @@ public static class ItemDatabase
                 else
                     return "Store ";
             }
+        }
+        else if (StoreCanvas.instance.isOpened)
+        {
+            if (Input.GetKey ( KeyCode.LeftShift ))
+                return "Sell All ";
+            else
+                return "Sell ";
         }
         else
         {
@@ -250,7 +247,7 @@ public static class ItemDatabase
 
         Inventory playerInventory = EntityManager.instance.PlayerInventory;
 
-        if (ItemContainerCanvas.instance.IsActive)
+        if (ItemContainerCanvas.instance.isOpened)
         {
             if (item.IsSoulbound)
             {
@@ -266,9 +263,21 @@ public static class ItemDatabase
                     playerInventory.SendTo ( ItemContainerCanvas.instance.targetInventory, item.ID, 1 );
             }
         }
+        else if (StoreCanvas.instance.isOpened)
+        {
+            int shiftClick = playerInventory.GetStackAtIndex ( inventoryIndex ).Amount;
+
+            if (Input.GetKey ( KeyCode.LeftShift ))
+                StoreCanvas.instance.currentShopkeeper.TrySellItem ( item.ID, shiftClick );
+            else
+                StoreCanvas.instance.currentShopkeeper.TrySellItem ( item.ID, 1 );
+        }
         else
         {
-            item.GetDefaultInteractionData ().onInteract?.Invoke (inventoryIndex);
+            item.GetDefaultInteractionData ().onInteract?.Invoke ( inventoryIndex );
         }
     }
+
+    public const float GLOBAL_ITEM_SELL_MODIFER = 0.4f;
+    public const float GLOBAL_ITEM_BUY_MODIFER = 1.0f;
 }

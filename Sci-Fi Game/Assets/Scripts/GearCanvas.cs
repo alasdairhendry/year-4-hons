@@ -34,6 +34,7 @@ public class GearCanvas : UIPanel
     public override void Open ()
     {
         base.Open ();
+        isOpened = true;
         RefreshUI ( EntityManager.instance.PlayerCharacter.cGear );
         mainPanel.SetActive ( true );
     }
@@ -42,12 +43,7 @@ public class GearCanvas : UIPanel
     {
         base.Close ();
         mainPanel.SetActive ( false );
-    }
-
-    public void Trigger ()
-    {
-        if (mainPanel.activeSelf) Close ();
-        else Open ();
+        isOpened = false;
     }
 
     public void RefreshUI (CharacterGear cGear)

@@ -11,11 +11,10 @@ public class ItemData_Chisel : ItemBaseData
         base.IsUnique = false;
         base.category = ItemCategory.Tool;
 
-        base.MaxStack = 1;
+        base.IsStackable = false;
         base.RelatedQuestIDs = new string[] { };
 
-        base.SellPrice = 25;
-        base.BuyPrice = 60;
+        base.BuyPrice = 25;
         base.FetchSprite ();
     }
 }

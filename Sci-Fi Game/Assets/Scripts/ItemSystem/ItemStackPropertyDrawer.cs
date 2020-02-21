@@ -6,32 +6,31 @@ public class ItemStackPropertyDrawer : PropertyDrawer
 {
     public override void OnGUI (Rect position, SerializedProperty property, GUIContent label)
     {
-        // Using BeginProperty / EndProperty on the parent property means that
-        // prefab override logic works on the entire property.
         EditorGUI.BeginProperty ( position, label, property );
 
         // Draw label
+        position = EditorGUI.PrefixLabel ( position, GUIUtility.GetControlID ( FocusType.Passive ), label );
 
         // Don't make child fields be indented
         var indent = EditorGUI.indentLevel;
-        //EditorGUI.indentLevel = 0;
-        
-        int i = property.FindPropertyRelative ( "ID" ).intValue;
+        EditorGUI.indentLevel = 0;
 
-        GUILayout.BeginVertical ("Box");
-        EditorGUILayout.BeginHorizontal ();
-        EditorGUILayout.PropertyField ( property.FindPropertyRelative ( "ID" ), new GUIContent ( "ID" ) );
-        int x = EditorGUILayout.Popup ( property.FindPropertyRelative ( "ID" ).intValue, ItemDatabase.GetStrings () );
-        EditorGUILayout.EndHorizontal();
-        EditorGUILayout.PropertyField ( property.FindPropertyRelative ( "Amount" ) );
+        Rect filterButton = new Rect ( position.x, position.y, position.width - 56, position.height );
+        Rect amountRect = new Rect ( position.x + position.width - 48, position.y, 48, position.height );
 
-        if (i != x)
+        EditorGUI.PropertyField ( amountRect, property.FindPropertyRelative ( "Amount" ), GUIContent.none );
+
+        if (EditorGUI.DropdownButton ( filterButton, new GUIContent ( ItemDatabase.GetStrings ()[property.FindPropertyRelative ( "ID" ).intValue] ), FocusType.Keyboard ))
         {
-            property.FindPropertyRelative ( "ID" ).intValue = x;
-        }
+            PopupFilterWindow window = EditorWindow.GetWindow<PopupFilterWindow> ();
 
-        GUILayout.EndVertical ();
-        EditorGUILayout.Space ();
+            window.Open ( ItemDatabase.GetStrings (), "Item", filterButton, (i) =>
+            {
+                property.serializedObject.Update ();
+                property.FindPropertyRelative ( "ID" ).intValue = i;
+                property.serializedObject.ApplyModifiedProperties ();
+            } );
+        }
 
         // Set indent back to what it was
         EditorGUI.indentLevel = indent;

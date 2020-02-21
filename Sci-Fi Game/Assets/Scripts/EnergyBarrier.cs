@@ -49,10 +49,15 @@ public class EnergyBarrier : MonoBehaviour
 
     public void Pay ()
     {
-        if (disabledCounter > 0) return;
+        if (disabledCounter > 0)
+        {
+            MessageBox.AddMessage ( "The toll has already been paid.", MessageBox.Type.Warning );
+            return;
+        }
 
         if(EntityManager.instance.PlayerInventory.CheckHasItemQuantity(3, tollCost ))
         {
+            MessageBox.AddMessage ( "The pay the toll of 10 crowns to pass through.", MessageBox.Type.Info );
             EntityManager.instance.PlayerInventory.RemoveCoins ( tollCost );
 
             for (int i = 0; i < barriers.Count; i++)
@@ -60,6 +65,10 @@ public class EnergyBarrier : MonoBehaviour
                 barriers[i].SetActive ( false );
                 disabledCounter = 5.0f;
             }
+        }
+        else
+        {
+            MessageBox.AddMessage ( "The toll costs 10 crowns to pass.", MessageBox.Type.Warning );
         }
     }
 }

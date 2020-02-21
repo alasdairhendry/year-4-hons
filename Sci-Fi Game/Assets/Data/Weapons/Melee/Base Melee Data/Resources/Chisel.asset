@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponName: Chisel
   weaponAttackType: 0
+  weaponItemID: 45
+  brokenVariantItemID: 61
   offsetPosition: {x: 0.0101, y: 0.0047, z: -0.0037}
   offsetRotation: {x: 284.713, y: 258.17517, z: 100.5813}
   localScale: {x: 0.1, y: 0.1, z: 0.1}

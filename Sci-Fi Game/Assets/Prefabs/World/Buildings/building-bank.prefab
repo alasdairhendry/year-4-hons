@@ -124,6 +124,7 @@ GameObject:
   - component: {fileID: 6253058586172534450}
   - component: {fileID: 6242411034666042456}
   - component: {fileID: 6235107085783240002}
+  - component: {fileID: 5255713100274321784}
   m_Layer: 0
   m_Name: SM_Bld_Bank_Door_Top_01
   m_TagString: Untagged
@@ -192,6 +193,19 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!65 &5255713100274321784
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6256241500080501060}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.9708383, y: 1.4273263, z: 0.14620924}
+  m_Center: {x: 0.00000014901161, y: 0, z: 0}
 --- !u!1 &6256293536478600482
 GameObject:
   m_ObjectHideFlags: 0
@@ -203,6 +217,7 @@ GameObject:
   - component: {fileID: 6253223297525705696}
   - component: {fileID: 6242163892354220964}
   - component: {fileID: 6234386956653211406}
+  - component: {fileID: 6870187695988007915}
   m_Layer: 0
   m_Name: SM_Bld_Bank_01_Glass
   m_TagString: Untagged
@@ -270,6 +285,19 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!65 &6870187695988007915
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6256293536478600482}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 9.526489, y: 1.0183479, z: 0.052176476}
+  m_Center: {x: -10, y: 1.5225239, z: -5.036138}
 --- !u!1 &6256450595893635362
 GameObject:
   m_ObjectHideFlags: 0
@@ -281,6 +309,7 @@ GameObject:
   - component: {fileID: 6257811585973961028}
   - component: {fileID: 6242177944264716222}
   - component: {fileID: 6233630640084126516}
+  - component: {fileID: 5595200653485234840}
   m_Layer: 0
   m_Name: SM_Bld_Bank_Door_Top_01_Glass
   m_TagString: Untagged
@@ -348,6 +377,19 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!65 &5595200653485234840
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6256450595893635362}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.568779, y: 0.78453267, z: 0.034858704}
+  m_Center: {x: -10.0231495, y: 1.8078156, z: -5.146055}
 --- !u!1 &6256584055984151694
 GameObject:
   m_ObjectHideFlags: 0
@@ -359,6 +401,7 @@ GameObject:
   - component: {fileID: 6252974374199063794}
   - component: {fileID: 6242316519148392280}
   - component: {fileID: 6234661238168580368}
+  - component: {fileID: 4511742381916154858}
   m_Layer: 0
   m_Name: SM_Bld_Bank_Door_Bottom_01
   m_TagString: Untagged
@@ -427,6 +470,19 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!65 &4511742381916154858
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6256584055984151694}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.9708383, y: 1.2916414, z: 0.14620924}
+  m_Center: {x: 0.00000014901161, y: 0, z: 0}
 --- !u!1 &6257079553272501660
 GameObject:
   m_ObjectHideFlags: 0
@@ -438,6 +494,7 @@ GameObject:
   - component: {fileID: 6253034443469179274}
   - component: {fileID: 6242150043676067486}
   - component: {fileID: 6234633242969946334}
+  - component: {fileID: 2982341826534131307}
   m_Layer: 0
   m_Name: SM_Bld_Bank_Door_Bottom_01_Glass
   m_TagString: Untagged
@@ -505,3 +562,16 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!65 &2982341826534131307
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6257079553272501660}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.5342646, y: 0.86338115, z: 0.032576084}
+  m_Center: {x: -10.023148, y: 0.6257162, z: -5.14417}

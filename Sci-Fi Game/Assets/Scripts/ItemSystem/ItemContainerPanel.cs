@@ -25,7 +25,9 @@ public class ItemContainerPanel : MonoBehaviour, IBeginDragHandler, IDragHandler
 
     public void Disable ()
     {
-        contentPanel.SetActive ( false );
+        itemIcon.sprite = null;
+        itemIcon.color = new Color ( 0, 0, 0, 0 );
+        itemAmountText.text = "";
         this.ItemID = -1;
         this.ItemAmount = -1;
         tooltipItem.SetTooltipAction ( null );
@@ -33,11 +35,11 @@ public class ItemContainerPanel : MonoBehaviour, IBeginDragHandler, IDragHandler
 
     public void SetContent (Sprite sprite, int itemID, int amount)
     {
-        contentPanel.SetActive ( true );
         this.ItemID = itemID;
         this.ItemAmount = amount;
 
         itemIcon.sprite = sprite;
+        itemIcon.color = new Color ( 1, 1, 1, 1 );
 
         itemAmountPanel.SetActive ( true );
         itemAmountText.text = this.ItemAmount.ToString ();

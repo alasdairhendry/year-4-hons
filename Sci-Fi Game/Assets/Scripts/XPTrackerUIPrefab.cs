@@ -7,7 +7,7 @@ using UnityEngine;
 public class XPTrackerUIPrefab : MonoBehaviour
 {
     public Animator animator;
-    public SkillManager.SkillType skillType;
+    public SkillType skillType;
 
     private float delay = 2.5f;
     private float currentTime = 0.0f;
@@ -25,7 +25,7 @@ public class XPTrackerUIPrefab : MonoBehaviour
         }
     }
 
-    public XPTrackerUIPrefab Initialise(SkillManager.SkillType skillType)
+    public XPTrackerUIPrefab Initialise(SkillType skillType)
     {
         this.skillType = skillType;
         return this;

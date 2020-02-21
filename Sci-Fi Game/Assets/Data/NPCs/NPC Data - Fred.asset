@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18e058adc300213489ad94a5f429fe16, type: 3}
+  m_Name: NPC Data - Fred
+  m_EditorClassIdentifier: 
+  npcName: Fred
+  defaultAttackOption: 1
+  faction: {fileID: 11400000, guid: 49feedc8fa1e89241aba015f742c78ad, type: 2}
+  travelsOnNavMesh: 0
+  damageTakenAudioClips: {fileID: 11400000, guid: 972e1bab4adcb8d45ba8d404c9ffba20,
+    type: 2}
+  deathAudioClips: {fileID: 11400000, guid: 2c1ef71e4dc04c74d90755ad47da9419, type: 2}
+  uniqueDropTable: {fileID: 11400000, guid: 4137bd11efd320d4c8d52ba2b6549bd6, type: 2}
+  accessToCoinsDropTable: 0
+  accessToGlobalDropTable: 0
+  accessToRareDropTable: 0
+  accessToSuperRareDropTable: 0
+  combatScalesWithPlayer: 0
+  combatLevel: 1
+  baseHitChanceModifier: 1
+  baseMaxHealthModifier: 1
+  baseDamageModifier: 1

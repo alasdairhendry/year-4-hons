@@ -12,8 +12,11 @@ public class NPCStateMachine : MonoBehaviour
             currentState.OnExit ( npc );
         }
 
-        currentState = state;
-        state.OnEnter ( npc );
+        if (state != null)
+        {
+            currentState = state;
+            state.OnEnter ( npc );
+        }
     }
 
     private void Update ()

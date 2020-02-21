@@ -7,6 +7,8 @@ public class WeaponData : ScriptableObject
     [Header ( "Base Weapon Data" )]
     public string weaponName;
     public WeaponAttackType weaponAttackType;
+    [ItemID] public int weaponItemID;
+    [ItemID] public int brokenVariantItemID;
     [Space]
     public Vector3 offsetPosition;
     public Vector3 offsetRotation;

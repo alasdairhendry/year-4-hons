@@ -19,31 +19,43 @@ namespace QuestFlow.DialogueEngine
 
         [HideInInspector] public ConditionRequirementType conditionRequirementType = ConditionRequirementType.All;
 
-        [HideInInspector] public List<Condition> conditions = new List<Condition> ();
+        public List<Condition> conditions = new List<Condition> ();
         [HideInInspector] public List<Action> actions = new List<Action> ();
 
-        public bool ConditionsAreValid ()
+        public virtual bool ConditionsAreValid ()
         {
-            if (conditions.Count <= 0) return true;
+            //Debug.Log ( "Checking conditions" );
+
+            if (conditions.Count <= 0)
+            {
+                //Debug.Log ( "No conditions available" );
+                return true;
+            }
 
             switch (conditionRequirementType)
             {
                 case ConditionRequirementType.All:
 
+                    //Debug.Log ( "Condition Type - All" );
+
                     for (int i = 0; i < conditions.Count; i++)
                     {
+                        //Debug.Log ( "Condition Check - " + i );
                         if (conditions[i] == null)
                         {
+                            //Debug.Log ( "Condition is null" );
                             Debug.Log ( "Dialogue Entry has null conditions", this );
                             continue;
                         }
 
                         if (conditions[i].GetResult () == false)
                         {
+                            //Debug.Log ( "Condition result was false" );
                             return false;
                         }
                     }
 
+                    //Debug.Log ( "Condition result was true" );
                     return true;
 
                 case ConditionRequirementType.Any:

@@ -90,7 +90,7 @@ public class MiniMapCanvas : MonoBehaviour
 
         go.transform.GetComponent<RectTransform> ().sizeDelta = new Vector2 ( 32.0f, 32.0f );
         go.transform.GetComponent<Image> ().sprite = sprite;
-        go.transform.localScale = Vector3.one;
+        go.transform.localScale = Vector3.one * 0.75f;
         go.transform.localEulerAngles = Vector3.zero;
         go.GetComponent<RectTransform> ().anchoredPosition3D = Vector3.zero;
         wmb.blipGameObject = go;

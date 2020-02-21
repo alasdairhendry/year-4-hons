@@ -23,8 +23,9 @@ public class InventoryItemPanel : MonoBehaviour, IBeginDragHandler, IDragHandler
 
     public void Disable ()
     {
-        //if (contentPanel.activeSelf == false) return;
-        contentPanel.SetActive ( false );
+        itemIcon.sprite = null;
+        itemIcon.color = new Color ( 0, 0, 0, 0 );
+        itemAmountText.text = "";
         this.ItemID = -1;
         this.ItemAmount = -1;
         tooltipItem.SetTooltipAction ( null );
@@ -32,11 +33,17 @@ public class InventoryItemPanel : MonoBehaviour, IBeginDragHandler, IDragHandler
 
     public void SetContent (Sprite sprite, int itemID, int amount)
     {
-        //if (contentPanel.activeSelf == true) return;
-
-        contentPanel.SetActive ( true );
         this.ItemID = itemID;
         this.ItemAmount = amount;
+
+        if(sprite == null)
+        {
+            itemIcon.color = new Color ( 0.0f, 0.0f, 0.0f, 0.0f );
+        }
+        else
+        {
+            itemIcon.color = new Color ( 1.0f, 1.0f, 1.0f, 1.0f );
+        }
 
         itemIcon.sprite = sprite;
 
@@ -44,12 +51,22 @@ public class InventoryItemPanel : MonoBehaviour, IBeginDragHandler, IDragHandler
         itemAmountText.text = this.ItemAmount.ToString ();
         tooltipItem.SetTooltipAction ( () =>
         {
-            return ItemDatabase.GetItem ( itemID ).Name
-            + "\n"
-            + ColourHelper.TagColour ( ColourHelper.TagSize ( ItemDatabase.GetItem ( itemID ).category
-            + "\n"
-            + ItemDatabase.GetItem ( itemID ).Description, 80.0f ), ColourDescription.OffWhiteText );
-            return ItemDatabase.GetInteractionPrefix ( itemID ) + ColourHelper.TagColour ( ItemDatabase.GetItem ( itemID ).Name, ColourDescription.OffWhiteText ) + "\n" + ColourHelper.TagSize ( ItemDatabase.GetItem ( itemID ).Description, 75.0f );
+            if (string.IsNullOrEmpty ( ItemDatabase.GetInteractionPrefix ( itemID ) ))
+            {
+                return ItemDatabase.GetItem ( itemID ).Name
+                + "\n"
+                + ColourHelper.TagColour ( ColourHelper.TagSize ( ItemDatabase.GetItem ( itemID ).category
+                + "\n"
+                + ItemDatabase.GetItem ( itemID ).Description, 80.0f ), ColourDescription.OffWhiteText );
+            }
+            else
+            {
+                return ItemDatabase.GetInteractionPrefix ( itemID ) + ColourHelper.TagColour ( ItemDatabase.GetItem ( itemID ).Name
+                + "\n"
+                + ColourHelper.TagSize ( ItemDatabase.GetItem ( itemID ).category
+                + "\n"
+                + ItemDatabase.GetItem ( itemID ).Description, 80.0f ), ColourDescription.OffWhiteText );
+            }
         }
         );
     }
@@ -154,6 +171,8 @@ public static class DragHandler
                         HotbarCanvas.instance.TryRemoveItem ( dragItemID, fromIndex );
                         break;
                 }
+
+                SoundEffect.Play ( EntityManager.instance.dropItemSoundEffects.GetRandom () );
             }
 
             Reset ();

@@ -106,10 +106,12 @@ public class SlotMachine : MonoBehaviour
     {
         EntityManager.instance.PlayerInventory.AddItem ( roll.ID, roll.Amount );
         SoundEffect.Play3D ( winAudioClip, transform.position, 1, 5 );
+        MessageBox.AddMessage ( "You won " + roll.Amount + " crowns on the machine!", MessageBox.Type.Info );
     }
 
     private void OnLose ()
     {
         SoundEffect.Play3D ( loseAudioClip, transform.position, 1, 5 );
+        MessageBox.AddMessage ( "You didn't win anything.", MessageBox.Type.Error );
     }
 }

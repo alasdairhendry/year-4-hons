@@ -15,6 +15,7 @@ MonoBehaviour:
   recipeName: Calorie Shake
   timeToCraft: 1.75
   tableResourceUsage: 5
+  resultSprite: {fileID: 21300000, guid: 177bc481f6092534396c51c08742dcca, type: 3}
   ingredientsRequired:
   - ID: 28
     Amount: 1

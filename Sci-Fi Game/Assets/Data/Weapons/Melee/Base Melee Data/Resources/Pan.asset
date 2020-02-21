@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponName: Pan
   weaponAttackType: 0
+  weaponItemID: 48
+  brokenVariantItemID: 64
   offsetPosition: {x: 0.00961, y: 0.00303, z: 0.00157}
   offsetRotation: {x: 347.4613, y: 68.91947, z: 273.02313}
   localScale: {x: 0.1, y: 0.1, z: 0.1}

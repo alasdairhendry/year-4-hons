@@ -7,12 +7,8 @@ using UnityEngine.Events;
 [RequireComponent ( typeof ( Collider ) )]
 public class Interactable : MonoBehaviour
 {
-    public enum InteractableType { NPC, Cooker, Gatherable, CraftingBench }
-    [SerializeField] private InteractableType interactableType = InteractableType.NPC;
     [SerializeField] private Mouse.CursorType cursorType = Mouse.CursorType.Interact;
-
     public Mouse.CursorType GetCursorType { get => cursorType; }
-    public InteractableType GetInteractableType { get => interactableType; }
 
     [SerializeField] private string interactType = "Talk to";
     [SerializeField] private string interactableName = "Interactable Object";
@@ -25,7 +21,7 @@ public class Interactable : MonoBehaviour
     [SerializeField] private Vector3 localPosition = new Vector3 ();
     [SerializeField] private bool isInteractable = true;
 
-    public System.Action OnInteractAction { get; protected set; }
+    public System.Action OnInteractAction { get;  set; }
 
     public string GetDescriptiveName { get { return "<b>" + interactType + "</b>" + " " + interactableName; } }
     public string GetName { get { return interactableName; } }

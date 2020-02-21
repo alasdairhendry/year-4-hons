@@ -22,7 +22,7 @@ public class CharacterWeapon : MonoBehaviour
     public WeaponGunData.FireType currentFireType { get; protected set; }
     public Transform muzzlePoint { get; protected set; }
 
-    public bool isHolstered { get; protected set; }
+    public bool isHolstered { get; protected set; } = true;
     public bool isEquipped { get { return currentWeaponData != null; } }
     public bool weaponIsPistol
     {
@@ -82,22 +82,17 @@ public class CharacterWeapon : MonoBehaviour
 
     private float currentMeleeAnimationLength = 0;
     private float nextAttackAnimationDelay = 0;
+    public System.Action<WeaponAttackType> OnAttack;
 
     private void Awake ()
     {
         character = GetComponent<Character> ();
-        if (allWeaponData.Count > 0)
-            Equip ( allWeaponData[0] );
-        SetHolsterState ( true );
-
         spinUpDelaySource = SoundEffect.Create ( this, 1.0f, parent: this.transform );
         spinDownDelaySource = SoundEffect.Create ( this, 1.0f, parent: this.transform );
     }
 
     private void Update ()
     {
-        //if (character.IsAI) return;
-
         if(currentWeaponData != null)
         {
             if (currentWeaponData.weaponAttackType == WeaponAttackType.Gun)
@@ -117,7 +112,6 @@ public class CharacterWeapon : MonoBehaviour
         }        
 
         CheckShouldAim ();
-        CheckWeaponSwitch ();
 
         if (character.IsAI) return;
 
@@ -129,6 +123,13 @@ public class CharacterWeapon : MonoBehaviour
 
     private void CheckShouldAim ()
     {
+        if (isHolstered)
+        {
+            shouldAimCooldown = 0.0f;
+            ShouldAim = false;
+            return;
+        }
+
         if (shouldAimCooldown > 0.0f)
         {
             shouldAimCooldown -= Time.deltaTime;
@@ -137,37 +138,6 @@ public class CharacterWeapon : MonoBehaviour
                 shouldAimCooldown = 0.0f;
                 ShouldAim = false;
             }
-        }
-    }
-
-    private void CheckWeaponSwitch ()
-    {
-        if (character.IsAI) return;
-        if (Input.GetKeyDown ( KeyCode.Alpha1 ))
-        {
-            Equip ( allWeaponData[0] );
-        }
-        if (Input.GetKeyDown ( KeyCode.Alpha2 ))
-        {
-            Equip ( allWeaponData[1] );
-        }
-
-        if (Input.GetKeyDown ( KeyCode.Alpha3 ))
-        {
-            Equip ( allWeaponData[2] );
-        }
-        if (Input.GetKeyDown ( KeyCode.Alpha4 ))
-        {
-            Equip ( allWeaponData[3] );
-        }
-
-        if (Input.GetKeyDown ( KeyCode.Alpha5 ))
-        {
-            Equip ( allWeaponData[4] );
-        }
-        if (Input.GetKeyDown ( KeyCode.Alpha6 ))
-        {
-            Equip ( allWeaponData[5] );
         }
     }
 
@@ -186,12 +156,16 @@ public class CharacterWeapon : MonoBehaviour
 
         if (isHolstered)
         {
-            Mouse.SetCursorState ( CursorLockMode.None, true );
+            if (character.IsAI == false)
+            {
+                Mouse.SetCursorState ( CursorLockMode.None, true );
+                AimingCanvas.instance.SetReticle ( ReticleType.Off );
+            }
+
             currentWeaponObject.transform.SetParent ( GetComponent<Animator> ().GetBoneTransform ( currentWeaponData.holsterBodyPart ) );
             currentWeaponData.holsterData.SetLocal ( currentWeaponObject.transform );
 
             onWeaponHolstered?.Invoke ( currentWeaponData );
-            AimingCanvas.instance.SetReticle ( ReticleType.Off );
 
             if (currentWeaponData.sheatheSoundData.AudioClips.Count > 0)
                 SoundEffect.Play3D ( currentWeaponData.sheatheSoundData.GetRandom (), transform.position + (Vector3.up), 1, 5 );
@@ -200,14 +174,18 @@ public class CharacterWeapon : MonoBehaviour
         }
         else
         {
-            Mouse.SetCursorState ( CursorLockMode.Locked, false );
+            if (character.IsAI == false)
+            {
+                Mouse.SetCursorState ( CursorLockMode.Locked, false );
+                AimingCanvas.instance.SetReticle ( ReticleType.CanFire );
+            }
+
             currentWeaponObject.transform.SetParent ( GetComponent<Animator> ().GetBoneTransform ( currentWeaponData.activeBodyPart ).Find ( "weapon-holder" ) );
             currentWeaponObject.transform.localPosition = currentWeaponData.offsetPosition;
             currentWeaponObject.transform.localEulerAngles = currentWeaponData.offsetRotation;
             currentWeaponObject.transform.localScale = currentWeaponData.localScale;
 
             onWeaponUnholstered?.Invoke ( currentWeaponData );
-            AimingCanvas.instance.SetReticle ( ReticleType.CanFire );
 
             SoundEffect.Play3D ( currentWeaponData.unsheatheSoundData.GetRandom (), transform.position + (Vector3.up), 1, 5 );
             currentWeaponObject.GetComponent<WeaponObject> ().OnUnholstered ();
@@ -266,12 +244,11 @@ public class CharacterWeapon : MonoBehaviour
         }
     }
 
-    [NaughtyAttributes.Button]
-    public void Unequip (bool dropWeaponMeshOnGround = false)
+    public void Unequip (bool dropWeaponMeshOnGround = false, bool bypassAnimationDelay = false)
     {
         if (currentWeaponData == null) return;
 
-        if (currentMeleeAnimationLength > 0 || nextAttackAnimationDelay > 0)
+        if ((currentMeleeAnimationLength > 0 || nextAttackAnimationDelay > 0) && bypassAnimationDelay == false)
             return;
 
         WeaponData w = currentWeaponData;
@@ -295,6 +272,26 @@ public class CharacterWeapon : MonoBehaviour
         }
 
         onWeaponUnequiped?.Invoke ( w );
+    }
+
+    private void OnWeaponBreak ()
+    {
+        if (currentWeaponData == null)
+        {
+            Debug.LogError ( "How can a null object break!?" );
+            return;
+        }
+
+        MessageBox.AddMessage ( "Your weapon has broken and will need to be repaired.", MessageBox.Type.Error );
+
+        WeaponData data = currentWeaponData;
+        SetHolsterState ( true );
+        character.cGear.SetWeaponIndexNull ();
+        Unequip ( false, true );
+        //character.cGear.UnequipGear ( currentWeaponData.weaponItemID );
+
+        //EntityManager.instance.PlayerInventory.RemoveItem ( data.weaponItemID );
+        EntityManager.instance.PlayerInventory.AddItem ( data.brokenVariantItemID );
     }
 
     #region Melee
@@ -339,8 +336,6 @@ public class CharacterWeapon : MonoBehaviour
     private void MeleeAttack ()
     {
         float attackTypeRoll = UnityEngine.Random.value;
-        float baseSpecialChance = 0.1f;
-        float baseComboChance = 0.025f;
 
         EntityManager.instance.CameraController.SetCinematicComboView ( null );
         currentMeleeAnimationLength = 0;
@@ -353,16 +348,16 @@ public class CharacterWeapon : MonoBehaviour
         }
         else
         {
-            if (attackTypeRoll <= baseSpecialChance)
+            if (attackTypeRoll <= SkillModifiers.MeleeSpecialChance)
             {
                 // Attack is a special attack
                 DoSpecialMeleeAttack ();
             }
             else
             {
-                attackTypeRoll -= baseSpecialChance;
+                attackTypeRoll -= SkillModifiers.MeleeSpecialChance;
 
-                if (attackTypeRoll <= baseComboChance)
+                if (attackTypeRoll <= SkillModifiers.MeleeComboChance)
                 {
                     // Attack is a combo attack
                     comboNPCTarget = potentialTarget;
@@ -377,6 +372,49 @@ public class CharacterWeapon : MonoBehaviour
         }
     }
 
+    public enum MeleeAttackType { Generic, Special, Combo }
+
+    private IEnumerator DoAttackDelayed(float delay, MeleeAttackType attackType)
+    {
+        yield return new WaitForSeconds ( delay );
+        List<NPC> hitNPCs = new List<NPC> ();
+
+        switch (attackType)
+        {
+            case MeleeAttackType.Generic:
+                if (GetMeleeHitData ( out hitNPCs ) && DetermineMeleeHitChance())
+                {
+                    PerformHit ( hitNPCs.ToArray () );
+                }
+                else
+                {
+                    PerformMiss ();
+                }
+                break;
+            case MeleeAttackType.Special:
+                if (GetMeleeHitData ( out hitNPCs ))
+                {
+                    PerformHit ( hitNPCs.ToArray () );
+                }
+                else
+                {
+                    PerformMiss ();
+                }
+                break;
+            case MeleeAttackType.Combo:
+                if (comboNPCTarget != null)
+                {
+                    PerformHit ( comboNPCTarget );
+                }
+                else
+                {
+                    PerformMiss ();
+                }
+                break;
+        }
+
+    }
+
     private void DoGenericMeleeAttack ()
     {
         MeleeAttackAnimation selectedClip = GetComponent<CharacterAnimator> ().RandomiseAttackAnimation ( currentWeaponMeleeData.genericAnimationClips, previousGernericAttackAnimation );
@@ -385,7 +423,8 @@ public class CharacterWeapon : MonoBehaviour
         character.cMovement.SnapCharacterRotationToCamera ();
 
         SoundEffect.Play3D ( currentWeaponMeleeData.swingSoundData.GetRandom (), currentWeaponObject.transform.position, 1, 5, delay: selectedClip.swingAudioDelay / 60.0f );
-        Invoke ( nameof ( DetermineMeleeHitChance ), selectedClip.resultAudioDelay / 60.0f );
+        StartCoroutine ( DoAttackDelayed ( selectedClip.resultAudioDelay / 60.0f, MeleeAttackType.Generic ) );
+        //Invoke ( nameof ( DetermineMeleeHitChance ), selectedClip.resultAudioDelay / 60.0f );
         nextAttackAnimationDelay = Mathf.Min ( (selectedClip.resultAudioDelay / 60.0f) + 0.25f, selectedClip.clipLength / 60.0f );
         currentMeleeAnimationLength = selectedClip.clipLength / 60.0f;
     }
@@ -398,11 +437,12 @@ public class CharacterWeapon : MonoBehaviour
         character.cMovement.SnapCharacterRotationToCamera ();
 
         SoundEffect.Play3D ( currentWeaponMeleeData.swingSoundData.GetRandom (), currentWeaponObject.transform.position, 1, 5, delay: selectedClip.swingAudioDelay / 60.0f );
-        Invoke ( nameof ( PerformHit ), selectedClip.resultAudioDelay / 60.0f );
+        StartCoroutine ( DoAttackDelayed ( selectedClip.resultAudioDelay / 60.0f, MeleeAttackType.Special ) );
+        //Invoke ( nameof ( PerformHit ), selectedClip.resultAudioDelay / 60.0f );
         nextAttackAnimationDelay = Mathf.Min ( (selectedClip.resultAudioDelay / 60.0f) + 0.25f, selectedClip.clipLength / 60.0f );
         currentMeleeAnimationLength = selectedClip.clipLength / 60.0f;
 
-        character.FloatingTextIndicator.CreateText ( "SPECIAL", FloatingTextType.Info );
+        character.FloatingTextIndicator.CreateInfoText ( "SPECIAL", ColourDescription.White );
     }
 
     private void DoComboMeleeAttack ()
@@ -429,7 +469,8 @@ public class CharacterWeapon : MonoBehaviour
         for (int i = 0; i < selectedClip.data.Count; i++)
         {
             SoundEffect.Play3D ( currentWeaponMeleeData.swingSoundData.GetRandom (), currentWeaponObject.transform.position, 1, 5, delay: selectedClip.data[i].swingAudioDelay / 60.0f );
-            Invoke ( nameof ( PerformComboHit ), selectedClip.data[i].resultAudioDelay / 60.0f );
+            StartCoroutine ( DoAttackDelayed ( selectedClip.data[i].resultAudioDelay / 60.0f, MeleeAttackType.Combo ) );
+            //Invoke ( nameof ( PerformComboHit ), selectedClip.data[i].resultAudioDelay / 60.0f );
         }
 
 
@@ -437,38 +478,27 @@ public class CharacterWeapon : MonoBehaviour
 
         nextAttackAnimationDelay = Mathf.Min ( (selectedClip.data[selectedClip.data.Count - 1].resultAudioDelay / 60.0f) + 0.25f, selectedClip.clipLength / 60.0f );
         currentMeleeAnimationLength = selectedClip.clipLength / 60.0f;
-        character.FloatingTextIndicator.CreateText ( "COMBO", FloatingTextType.Info, true );
+        character.FloatingTextIndicator.CreateInfoText ( "COMBO", ColourDescription.White );
         EntityManager.instance.CameraController.SetCinematicComboView ( comboViews.GetRandom () );
     }
 
-    private void DetermineMeleeHitChance ()
+    private bool DetermineMeleeHitChance ()
     {
-        if (UnityEngine.Random.value < 0.75f)
+        if (UnityEngine.Random.value <= SkillModifiers.MeleeHitChance)
         {
-            PerformHit ();
+            return true;
         }
         else
         {
-            PerformMiss ();
+            return false;
         }
     }
 
     [SerializeField] private float meleeStrikeDistance;
+    public float MeleeStrikeDistance { get => meleeStrikeDistance; set => meleeStrikeDistance = value; }
+
     RaycastHit[] attackSphereHit;
     public NPC comboNPCTarget { get; protected set; }
-
-    private void PerformComboHit ()
-    {
-        if (comboNPCTarget != null)
-        {
-            comboNPCTarget.Health.RemoveHealth ( currentWeaponMeleeData.baseDamage, DamageType.PlayerAttack );
-            SoundEffect.Play3D ( currentWeaponMeleeData.hitSoundData.GetRandom (), currentWeaponObject.transform.position, 1, 5 );
-        }
-        else
-        {
-            PerformMiss ();
-        }
-    }
 
     private void FinishComboMode ()
     {
@@ -481,31 +511,72 @@ public class CharacterWeapon : MonoBehaviour
         character.SetCanMove ( true );
     }
 
-    private void PerformHit ()
+    private void PerformHit (params NPC[] hitNPCs)
     {
-        List<NPC> hitNPCs = new List<NPC> ();
+        OnAttack?.Invoke ( WeaponAttackType.Melee );
+
         float healthRemoved = 0;
 
-        if (GetMeleeHitData(out hitNPCs))
+        for (int i = 0; i < hitNPCs.Length; i++)
         {
-            for (int i = 0; i < hitNPCs.Count; i++)
+            float damage = currentWeaponMeleeData.baseDamage * SkillModifiers.MeleeDamageModifier * GetBaseHitModifier() * SkillModifiers.GLOBAL_PLAYER_DAMAGE_MODIFIER;
+
+            bool isCritical = GetShouldBeCriticalHit ();
+            if (isCritical) damage *= GetCriticalHitDamageModifier ();
+
+            if (EntityManager.instance.PlayerCharacter.cFaction.CurrentFaction.factionType == FactionType.Sylas)
             {
-                healthRemoved += hitNPCs[i].Health.RemoveHealth ( currentWeaponMeleeData.baseDamage, DamageType.PlayerAttack );
+                float factionBasedReduction = damage * 0.25f;
+                damage -= factionBasedReduction;
             }
 
-            SkillManager.instance.AddXpToSkill ( SkillManager.SkillType.Combat, healthRemoved * 0.25f );
-            SoundEffect.Play3D ( currentWeaponMeleeData.hitSoundData.GetRandom (), currentWeaponObject.transform.position, 1, 5 );
+            healthRemoved += hitNPCs[i].Health.RemoveHealth ( damage, DamageType.PlayerAttack, isCritical );
         }
-        else
+
+        if (character.cFaction.CurrentFaction.factionType == FactionType.Xavix)
         {
-            PerformMiss ();
+            character.Health.AddHealth ( healthRemoved * 0.05f, HealType.FactionEffect );
         }
+
+        SkillManager.instance.AddXpToSkill ( SkillType.Melee, healthRemoved * 0.25f );
+        SoundEffect.Play3D ( currentWeaponMeleeData.hitSoundData.GetRandom (), currentWeaponObject.transform.position, 1, 5 );
     }
 
     private void PerformMiss ()
     {
-        SkillManager.instance.AddXpToSkill ( SkillManager.SkillType.Combat, 0.25f );
+        OnAttack?.Invoke ( WeaponAttackType.Melee );
+        SkillManager.instance.AddXpToSkill ( SkillType.Melee, 0.25f );
         SoundEffect.Play3D ( currentWeaponMeleeData.missSoundData.GetRandom (), currentWeaponObject.transform.position, 1, 5 );
+    }
+
+    private float GetBaseHitModifier ()
+    {
+        return UnityEngine.Random.Range ( 0.75f, 1.25f );
+    }
+
+    private bool GetShouldBeCriticalHit ()
+    {
+        float baseLine = UnityEngine.Random.value;
+        float modifiedLine = baseLine - (baseLine * TalentManager.instance.GetTalentModifier ( TalentType.BigShot ));
+
+        if(baseLine <= SkillModifiers.CriticalHitChance)
+        {
+            Debug.Log ( string.Format ( "{0} - {1} - {2}", baseLine.ToString ( "0.0000" ), modifiedLine.ToString ( "0.0000" ), SkillModifiers.CriticalHitChance.ToString ( "0.0000" ) ) );
+            return true;
+        }
+        else if(modifiedLine <= SkillModifiers.CriticalHitChance)
+        {
+            Debug.Log ( string.Format ( "{0} - {1} - {2}", baseLine.ToString ( "0.0000" ), modifiedLine.ToString ( "0.0000" ), SkillModifiers.CriticalHitChance.ToString ( "0.0000" ) ) );
+            MessageBox.AddMessage ( "You perform a critical hit because of your " + TalentManager.instance.GetTalent ( TalentType.BigShot ).talentData.talentName + " talent." );
+            return true;
+        }
+
+        return false;
+    }
+
+    private float GetCriticalHitDamageModifier ()
+    {
+        return UnityEngine.Random.Range ( 1.1f, 1.5f );
     }
 
     private bool GetMeleeHitData (out List<NPC> hitNPCs)
@@ -548,6 +619,8 @@ public class CharacterWeapon : MonoBehaviour
     #region Gun
     public void CheckAimPosition ()
     {
+        if (currentWeaponData == null) return;
+
         if (character.IsAI)
         {
             AimPosition = EntityManager.instance.PlayerCharacter.Animator.GetBoneTransform ( HumanBodyBones.Head ).position;
@@ -600,7 +673,7 @@ public class CharacterWeapon : MonoBehaviour
 
             if (!setHit)
             {
-                if (!isHolstered)
+                if (!isHolstered && character.IsAI == false)
                     AimingCanvas.instance.SetReticle ( ReticleType.CanFire );
                 npcInSights = null;
                 aimEnemyHit = new RaycastHit ();
@@ -608,9 +681,9 @@ public class CharacterWeapon : MonoBehaviour
             }
             else
             {
-                if (npcInSights?.HostilityLevel == HostilityLevel.Passive)
+                if (npcInSights?.NPCAttackOption == NPCAttackOption.CannotBeAttack)
                 {
-                    if (!isHolstered)
+                    if (!isHolstered && character.IsAI == false)
                         AimingCanvas.instance.SetReticle ( ReticleType.CantFire );
                 }
             }
@@ -847,7 +920,7 @@ public class CharacterWeapon : MonoBehaviour
     {
         if (currentReloadTime > 0.0f) return;
         if (isHolstered || currentWeaponData == null) { return; }
-        currentReloadTime = currentWeaponGunData.reloadTime;
+        currentReloadTime = currentWeaponGunData.reloadTime - (currentWeaponGunData.reloadTime * TalentManager.instance.GetTalentModifier ( TalentType.SleightOfHand ));
         SoundEffect.Play ( currentWeaponGunData.weaponSoundData.audioClipReload.GetRandom (), true );
     }
 
@@ -856,18 +929,51 @@ public class CharacterWeapon : MonoBehaviour
         if (character.isDead) { isFiring = false; }
         if (!isFiring) return;
 
-        if (npcInSights != null && npcInSights.HostilityLevel == HostilityLevel.Passive)
+        if (npcInSights != null && npcInSights.NPCAttackOption == NPCAttackOption.CannotBeAttack)
         {
             isFiring = false;
             return;
         }
 
+        OnAttack?.Invoke ( WeaponAttackType.Gun );
+
         if (currentAmmo > 0)
         {
+            if (UnityEngine.Random.value <= 1 / currentWeaponGunData.fireRate)
+            {
+                if (UnityEngine.Random.value <= TalentManager.instance.GetTalentModifier ( TalentType.Unbreakable ))
+                {
+                    MessageBox.AddMessage ( "Your weapon almost broke, but your " + TalentManager.instance.GetTalent ( TalentType.Unbreakable ).talentData.talentName + " talent saved it." );
+                }
+                else
+                {
+                    OnWeaponBreak ();
+                    isFiring = false;
+                    currentBurstCooldown = 0.0f;
+                    currentBurstCounter = 0;
+                    return;
+                }
+            }
+
             SoundEffect.Play3D ( currentWeaponGunData.weaponSoundData.audioClipFire.GetRandom (), muzzlePoint.position, 10, 100 );
             character.cIK.AddRecoil ( currentWeaponGunData.recoilData );
-            currentAmmo--;
+
+            if(UnityEngine.Random.value <= TalentManager.instance.GetTalentModifier ( TalentType.SecondChance ))
+            {
+                MessageBox.AddMessage ( "Your bullet is not consumed because of your " + TalentManager.instance.GetTalent ( TalentType.SecondChance ).talentData.talentName + " talent." );
+            }
+            else
+            {
+                currentAmmo--;
+            }
+
             RayBullet ();
+
+            if (UnityEngine.Random.value <= TalentManager.instance.GetTalentModifier ( TalentType.EagleEye ))
+            {
+                RayBullet ();
+                MessageBox.AddMessage ( "You performed an extra hit on your enemy because of your " + TalentManager.instance.GetTalent ( TalentType.EagleEye ).talentData.talentName + " talent." );
+            }
 
             GameObject ps = Instantiate ( currentWeaponGunData.muzzlePrefab );
             ps.transform.SetParent ( muzzlePoint );
@@ -915,7 +1021,7 @@ public class CharacterWeapon : MonoBehaviour
         {
             if(npcInSights != null)
             {
-                if(npcInSights.HostilityLevel == HostilityLevel.Passive)
+                if(npcInSights.NPCAttackOption == NPCAttackOption.CannotBeAttack)
                 {
                     return;
                 }
@@ -923,22 +1029,36 @@ public class CharacterWeapon : MonoBehaviour
                 {
                     if (aimEnemyHit.distance > currentWeaponGunData.maxDistance) return;
 
-                    float distNrm = Mathf.InverseLerp ( 0.0f, currentWeaponGunData.maxDistance, aimEnemyHit.distance );
-                    float baseDamageWithFalloff = currentWeaponGunData.damageByDistanceFalloff.Evaluate ( distNrm ) * currentWeaponData.baseDamage;
+                    float damageFalloff = currentWeaponGunData.damageByDistanceFalloff.Evaluate ( Mathf.InverseLerp ( 0.0f, currentWeaponGunData.maxDistance, aimEnemyHit.distance ) );
+                    float baseDamage = currentWeaponData.baseDamage * SkillModifiers.ShootingDamageModifier * GetBaseHitModifier () * SkillModifiers.GLOBAL_PLAYER_DAMAGE_MODIFIER * damageFalloff;
 
-                    float healthRemoved = npcInSights.Health.RemoveHealth ( baseDamageWithFalloff, DamageType.PlayerAttack );
+                    bool isCritical = GetShouldBeCriticalHit ();
+                    if (isCritical) baseDamage *= GetCriticalHitDamageModifier ();
+
+                    if (EntityManager.instance.PlayerCharacter.cFaction.CurrentFaction.factionType == FactionType.Sylas)
+                    {
+                        float factionBasedReduction = baseDamage * 0.25f;
+                        baseDamage -= factionBasedReduction;
+                    }
+
+                    float healthRemoved = npcInSights.Health.RemoveHealth ( baseDamage, DamageType.PlayerAttack, isCritical );
+
+                    if(character.cFaction.CurrentFaction.factionType == FactionType.Xavix)
+                    {
+                        character.Health.AddHealth ( healthRemoved * 0.05f, HealType.FactionEffect );
+                    }
 
                     GameObject go = Instantiate ( ricochetPrefab );
                     go.transform.position = aimEnemyHit.point;
                     go.transform.rotation = Quaternion.LookRotation ( -character.cCameraController.cameraTransform.forward );
 
-                    SkillManager.instance.AddXpToSkill ( SkillManager.SkillType.Shooting, healthRemoved * 0.25f );
+                    SkillManager.instance.AddXpToSkill ( SkillType.Shooting, healthRemoved * 0.25f );
                     return;
                 }
             }         
         }
 
-        SkillManager.instance.AddXpToSkill ( SkillManager.SkillType.Shooting, 0.25f );
+        SkillManager.instance.AddXpToSkill ( SkillType.Shooting, 0.25f );
     }
 
     public void NPC_StopFire ()
@@ -961,6 +1081,8 @@ public class CharacterWeapon : MonoBehaviour
     private void NPC_Fire ()
     {
         if (character.isDead) { isFiring = false; }
+
+        OnAttack?.Invoke ( WeaponAttackType.Gun );
 
         if (currentAmmo > 0)
         {
@@ -1007,14 +1129,15 @@ public class CharacterWeapon : MonoBehaviour
 
     private void NPC_Bullet ()
     {
-        if(UnityEngine.Random.value <= GetComponent<NPC>().NpcData.GetBaseHitChance)
+        NPC npc = GetComponent<NPC> ();
+
+        if (UnityEngine.Random.value <= NPCCombatStats.GetGunHitChance ( npc.NpcData ))
         {
-            float damage = GetComponent<NPC> ().NpcData.BaseDamageModifier * currentWeaponData.baseDamage * UnityEngine.Random.Range ( 0.9f, 1.1f );
+            float damage = NPCCombatStats.GetGunDamageOutput ( npc.NpcData ) * UnityEngine.Random.Range ( 0.9f, 1.1f );
             EntityManager.instance.PlayerCharacter.Health.RemoveHealth ( damage, DamageType.EnemyAttack );
         }
     }
 
-    [NaughtyAttributes.Button]
     public void ToggleFireType ()
     {
         int index = currentWeaponGunData.fireTypes.IndexOf ( currentFireType );

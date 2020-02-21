@@ -15,6 +15,7 @@ MonoBehaviour:
   recipeName: Pistol
   timeToCraft: 30
   tableResourceUsage: 25
+  resultSprite: {fileID: 21300000, guid: 53ffecd6075519b41afa3f0f1ccd9631, type: 3}
   ingredientsRequired:
   - ID: 16
     Amount: 8

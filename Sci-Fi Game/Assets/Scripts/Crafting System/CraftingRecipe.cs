@@ -21,13 +21,13 @@ public class CraftingRecipe : ScriptableObject
             }
             else
             {
-                Debug.LogError ( "Need to update this to handle multiple items oops" );
                 return ItemDatabase.GetItem ( resultingItems[0].ID ).Description;
             }
         }
     }
     public float timeToCraft = 1.0f;
     public float tableResourceUsage = 1.0f;
+    public Sprite resultSprite;
     public List<Inventory.ItemStack> ingredientsRequired = new List<Inventory.ItemStack> ();
     public List<Inventory.ItemStack> toolsRequired = new List<Inventory.ItemStack> ();
     public List<Inventory.ItemStack> resultingItems = new List<Inventory.ItemStack> ();

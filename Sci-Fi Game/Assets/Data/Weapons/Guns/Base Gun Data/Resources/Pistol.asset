@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponName: Pistol
   weaponAttackType: 1
+  weaponItemID: 23
+  brokenVariantItemID: 54
   offsetPosition: {x: 0.0123, y: 0.0029, z: -0.0015}
   offsetRotation: {x: 348.52664, y: 76.296906, z: 258.73965}
   localScale: {x: 0.1, y: 0.1, z: 0.1}

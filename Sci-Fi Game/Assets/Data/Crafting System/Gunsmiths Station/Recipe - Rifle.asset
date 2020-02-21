@@ -15,6 +15,7 @@ MonoBehaviour:
   recipeName: Rifle
   timeToCraft: 60
   tableResourceUsage: 50
+  resultSprite: {fileID: 21300000, guid: 632efb2f99517b14bb6a1e58a147f32c, type: 3}
   ingredientsRequired:
   - ID: 18
     Amount: 5

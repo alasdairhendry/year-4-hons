@@ -14,6 +14,7 @@ namespace QuestFlow.DialogueEngine
 
         public void BeginConversation ()
         {
+            Debug.Log ( this.name );
             Start startNode = (Start)nodes.First ( x => x is Start );
             GetNextNodeFromStatement ( startNode );
         }
@@ -53,12 +54,74 @@ namespace QuestFlow.DialogueEngine
                 {
                     Group group = (connection.node as Group);
 
-                    if (group.ConditionsAreValid ())
+                    NodePort groupPort = group.GetOutputPort ( "output" );
+                    Node outputNode;
+                    GetRecursiveFirstGroupChildNode ( port, out outputNode );
+
+                    if(outputNode != null)
                     {
-                        // The first valid item we found was dialogue, so we'll display that to the user
-                        OnGroupNodeBegin ( group );
-                        return;
+                        if(outputNode is Answer)
+                        {
+                            GetAnswers ( port );
+                            return;
+                        }
+                        else if(outputNode is Dialogue)
+                        {
+                            // The first valid item we found was dialogue, so we'll display that to the user
+                            OnStatementNodeBegin ( outputNode as Dialogue );
+                            return;
+                        }
                     }
+                    else
+                    {
+                        Debug.Log ( "Output node is null" );
+                    }
+
+                    //for (int x = 0; x < groupPort.ConnectionCount; x++)
+                    //{
+                    //    NodePort groupConnection = port.GetConnection ( x );
+
+
+                    //    if (groupConnection.node is Dialogue)
+                    //    {
+                    //        Dialogue dialogue = (groupConnection.node as Dialogue);
+
+                    //        if (dialogue.ConditionsAreValid ())
+                    //        {
+                    //            // The first valid item we found was dialogue, so we'll display that to the user
+                    //            OnStatementNodeBegin ( dialogue );
+                    //            return;
+                    //        }
+                    //    }
+                    //    else if (groupConnection.node is Answer)
+                    //    {
+                    //        Answer answer = (groupConnection.node as Answer);
+
+                    //        if (answer.ConditionsAreValid ())
+                    //        {
+                    //            // The first valid item we found is an answer, so we'll compile all answers to display to the user
+                    //            List<Answer> validAnswerConnections = new List<Answer> ();
+                    //            List<Group> validGroupConnections = new List<Group> ();
+                    //            GetAnswersRecursively ( ref validAnswerConnections, ref validGroupConnections, port );
+
+                    //            for (int g = 0; g < validGroupConnections.Count; g++)
+                    //            {
+                    //                OnGroupNodeBegin ( validGroupConnections[g] );
+                    //            }
+
+                    //            OnAnswerNodeBegin ( validAnswerConnections );
+                    //            return;
+                    //        }
+                    //    }
+
+                    //}
+
+                    //if (group.ConditionsAreValid ())
+                    //{
+                    //    // The first valid item we found was dialogue, so we'll display that to the user
+                    //    OnGroupNodeBegin ( group );
+                    //    return;
+                    //}
                 }
                 else if (connection.node is Answer)
                 {
@@ -66,25 +129,7 @@ namespace QuestFlow.DialogueEngine
 
                     if (answer.ConditionsAreValid ())
                     {
-                        // The first valid item we found is an answer, so we'll compile all answers to display to the user
-                        List<Answer> validAnswerConnections = new List<Answer> ();
-
-                        for (int x = 0; x < port.ConnectionCount; x++)
-                        {
-                            // Nested loop through each connection again to find all valid answers
-
-                            NodePort answerConnection = port.GetConnection ( x );
-
-                            if (answerConnection.node is Answer)
-                            {
-                                if ((answerConnection.node as Answer).ConditionsAreValid ())
-                                {
-                                    validAnswerConnections.Add ( (answerConnection.node as Answer) );
-                                }
-                            }
-                        }
-
-                        OnAnswerNodeBegin ( validAnswerConnections );
+                        GetAnswers ( port );
                         return;
                     }
                 }
@@ -92,6 +137,111 @@ namespace QuestFlow.DialogueEngine
 
             // No valid connections found. End the conversation.
             OnConversationEnd ();
+        }
+
+        private void GetDialogue (NodePort port)
+        {
+            // The first valid item we found is dialogue, so we'll compile all dialogue to display to the user
+            List<Answer> validAnswerConnections = new List<Answer> ();
+            List<Group> validGroupConnections = new List<Group> ();
+            GetAnswersRecursively ( ref validAnswerConnections, ref validGroupConnections, port );
+
+            for (int g = 0; g < validGroupConnections.Count; g++)
+            {
+                OnGroupNodeBegin ( validGroupConnections[g] );
+            }
+
+            OnAnswerNodeBegin ( validAnswerConnections );
+        }
+
+        private void GetAnswers (NodePort port)
+        {
+            // The first valid item we found is an answer, so we'll compile all answers to display to the user
+            List<Answer> validAnswerConnections = new List<Answer> ();
+            List<Group> validGroupConnections = new List<Group> ();
+            GetAnswersRecursively ( ref validAnswerConnections, ref validGroupConnections, port );
+
+            for (int g = 0; g < validGroupConnections.Count; g++)
+            {
+                OnGroupNodeBegin ( validGroupConnections[g] );
+            }
+
+            OnAnswerNodeBegin ( validAnswerConnections );
+        }
+
+        private bool GetRecursiveFirstGroupChildNode (NodePort groupPort, out Node outputNode)
+        {
+            for (int i = 0; i < groupPort.ConnectionCount; i++)
+            {
+                NodePort connection = groupPort.GetConnection ( i );
+
+                if (connection.node is Answer)
+                {
+                    Answer answer = (connection.node as Answer);
+                    Debug.Log ( "Group answer id - " + answer.GetInstanceID () );
+                    if (answer.ConditionsAreValid ())
+                    {
+                        Debug.Log ( "Conditions valid" );
+                        outputNode = connection.node;
+                        return true;
+                    }
+                    else
+                    {
+                        Debug.Log ( "Answer node is invalid" );
+                    }
+                }
+                else if (connection.node is Dialogue)
+                {
+                    if ((connection.node as Dialogue).ConditionsAreValid ())
+                    {
+                        outputNode = connection.node;
+                        return true;
+                    }
+                }
+                else if (connection.node is Group)
+                {
+                    if ((connection.node as Group).ConditionsAreValid ())
+                    {
+                        if (GetRecursiveFirstGroupChildNode ( connection.node.GetOutputPort ( "output" ), out outputNode ))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            outputNode = null;
+            return false;
+        }
+
+        private void GetAnswersRecursively(ref List<Answer> validAnswers, ref List<Group> validGroups, NodePort port)
+        {
+            for (int i = 0; i < port.ConnectionCount; i++)
+            {
+                NodePort connection = port.GetConnection ( i );
+
+                if (connection.node is Answer)
+                {
+                    Answer answer = (connection.node as Answer);
+                    Debug.Log ( "Local answer id - " + answer.GetInstanceID () );
+                    if (answer.ConditionsAreValid ())
+                    {
+                        validAnswers.Add ( answer as Answer );
+                    }
+                }
+                else if (connection.node is Group)
+                {
+                    Group group = (connection.node as Group);
+
+                    if (group.ConditionsAreValid ())
+                    {
+                        validGroups.Add ( connection.node as Group );
+                        NodePort groupPort = group.GetOutputPort ( "output" );
+
+                        GetAnswersRecursively ( ref validAnswers, ref validGroups, groupPort );
+                    }
+                }
+            }
         }
 
         private void OnStatementNodeBegin (Dialogue node)
@@ -107,12 +257,11 @@ namespace QuestFlow.DialogueEngine
         private void OnGroupNodeBegin(Group node)
         {
             DialogueManager.instance.OnGroupNodeBegin ( node );
-            GetNextNodeFromStatement ( node );
+            node.DoActions ();
         }
 
         private void OnConversationEnd ()
         {
-            //activeNode = null;
             DialogueManager.instance.OnConversationEnd ();
         }
 

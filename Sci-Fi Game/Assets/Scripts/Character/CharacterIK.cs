@@ -84,8 +84,8 @@ public class CharacterIK : MonoBehaviour
 
         if (!character.IsAI)
         {
-            FindObjectOfType<PlayerCameraController> ().SetXRecoil ( recoilData.cameraXAmount * recoilData.cameraXCurve.Evaluate ( recoilCounter ) * UnityEngine.Random.Range ( recoilData.rangeXModifier.x, recoilData.rangeXModifier.y ) * recoilData.cameraMultiplier * isEmptyClipMultiplier );
-            FindObjectOfType<PlayerCameraController> ().SetYRecoil ( recoilData.cameraYAmount * recoilData.cameraYCurve.Evaluate ( recoilCounter ) * UnityEngine.Random.Range ( recoilData.rangeYModifier.x, recoilData.rangeYModifier.y ) * recoilData.cameraMultiplier * isEmptyClipMultiplier );
+            EntityManager.instance.CameraController.SetXRecoil ( recoilData.cameraXAmount * recoilData.cameraXCurve.Evaluate ( recoilCounter ) * UnityEngine.Random.Range ( recoilData.rangeXModifier.x, recoilData.rangeXModifier.y ) * recoilData.cameraMultiplier * isEmptyClipMultiplier );
+            EntityManager.instance.CameraController.SetYRecoil ( recoilData.cameraYAmount * recoilData.cameraYCurve.Evaluate ( recoilCounter ) * UnityEngine.Random.Range ( recoilData.rangeYModifier.x, recoilData.rangeYModifier.y ) * recoilData.cameraMultiplier * isEmptyClipMultiplier );
         }
     }
 

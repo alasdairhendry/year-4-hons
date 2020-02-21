@@ -22,6 +22,7 @@ namespace QuestFlow
         [SerializeField] private Button answerButton;
 
         private List<Button> answerButtons = new List<Button> ();
+        bool messageBoxWasOpened = false;
 
         private void Start ()
         {
@@ -41,6 +42,8 @@ namespace QuestFlow
         {
             canvasGroup.alpha = 1;
             canvasGroup.blocksRaycasts = true;
+            messageBoxWasOpened = MessageBox.instance.isOpened;
+            MessageBox.instance.Close ();
         }
 
         private void OnDialogueNode (Dialogue dialogue)
@@ -71,6 +74,8 @@ namespace QuestFlow
                 return;
             }
 
+            dialogueActorText.text = "Response";
+
             answerPanel.SetActive ( true );
             dialoguePanel.SetActive ( false );
 
@@ -78,8 +83,8 @@ namespace QuestFlow
             {
                 for (int i = answerButtons.Count; i < answers.Count; i++)
                 {
-                    GameObject newButton = Instantiate ( answerButton.gameObject, answerButton.transform.parent );
-                    answerButtons.Add ( newButton.GetComponent<Button> () );
+                    GameObject newButton = Instantiate ( answerButton.transform.parent.gameObject, answerButton.transform.parent.parent );
+                    answerButtons.Add ( newButton.GetComponentInChildren<Button> () );
                     int x = i;
                     answerButtons[i].onClick.AddListener ( () => { DialogueManager.instance.OnClickAnswer ( x ); } );
                 }
@@ -89,11 +94,11 @@ namespace QuestFlow
             {
                 if (i >= answers.Count)
                 {
-                    answerButtons[i].gameObject.SetActive ( false );
+                    answerButtons[i].transform.parent.gameObject.SetActive ( false );
                     continue;
                 }
 
-                answerButtons[i].gameObject.SetActive ( true );
+                answerButtons[i].transform.parent.gameObject.SetActive ( true );
                 answerButtons[i].gameObject.GetComponentInChildren<TextMeshProUGUI> ().text = answers[i].dialogue;
             }
         }
@@ -102,6 +107,18 @@ namespace QuestFlow
         {
             canvasGroup.alpha = 0;
             canvasGroup.blocksRaycasts = false;
+
+            if (messageBoxWasOpened)
+            {
+                MessageBox.instance.Open ();
+            }
+
+            messageBoxWasOpened = false;
+        }
+
+        public void StopConversation ()
+        {
+            DialogueManager.instance.EndCurrentConversation ();
         }
     }
 }

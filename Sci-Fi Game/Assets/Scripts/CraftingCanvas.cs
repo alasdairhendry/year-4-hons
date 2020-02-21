@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -19,11 +20,22 @@ public class CraftingCanvas : UIPanel
     }
 
     [SerializeField] private GameObject panel;
+    [SerializeField] private GameObject notBeingCraftedPanel;
+    [SerializeField] private GameObject beingCraftedPanel;
+    [Space]
+    [SerializeField] private Image recipeResultImage;
+    [SerializeField] private TextMeshProUGUI recipeResultName;
+    [SerializeField] private TextMeshProUGUI recipeResultTime;
     [Space]
     [SerializeField] private List<CraftingRecipeUIButton> recipeButtons = new List<CraftingRecipeUIButton> ();
     [SerializeField] private List<CraftingIngredientUIPanel> ingredientPanels = new List<CraftingIngredientUIPanel> ();
     [SerializeField] private List<CraftingIngredientUIPanel> toolPanels = new List<CraftingIngredientUIPanel> ();
+    [SerializeField] private TextMeshProUGUI recipeTimeTakenText;
+    [SerializeField] private TextMeshProUGUI recipeEnergyTakenText;
     [Space]
+    [SerializeField] private Transform benchEnergyFill;
+    [SerializeField] private TMPro.TextMeshProUGUI benchEnergyFillText;
+    [SerializeField] private TMPro.TextMeshProUGUI benchNameText;
     [SerializeField] private TMPro.TextMeshProUGUI recipeNameText;
     [SerializeField] private TMPro.TextMeshProUGUI recipeDescriptionText;
 
@@ -33,9 +45,19 @@ public class CraftingCanvas : UIPanel
 
     private void Update ()
     {
+        if (!isOpened) return;
+
         if (EntityManager.instance.PlayerCharacter.cInput.rawInput != Vector2.zero)
         {
             Close ();
+        }
+
+        if (currentBench != null)
+        {
+            benchEnergyFill.transform.localScale = new Vector3 ( Mathf.Lerp ( benchEnergyFill.transform.localScale.x, currentBench.currentEnergyNormalised, Time.deltaTime * 5.0f ), 1.0f, 1.0f );
+            benchEnergyFillText.text = "Energy " + (currentBench.currentEnergyNormalised * 100.0f).ToString ( "0" ) + "%";
+
+            recipeResultTime.text = (currentBench.currentCraftingTime / SkillModifiers.CraftingRecipeSpeedModifier).ToString ( "0" ) + " seconds";
         }
     }
 
@@ -49,6 +71,7 @@ public class CraftingCanvas : UIPanel
 
         currentTable = table;
         currentBench = bench;
+        benchNameText.text = currentBench.CraftingBenchName;
         UpdateRecipeButtons ();
         ShowRecipe ( table.recipes[0] );
     }
@@ -64,6 +87,8 @@ public class CraftingCanvas : UIPanel
 
         if (currentBench == null) return;
 
+        isOpened = true;
+
         if (currentTable.recipes.Count <= 0)
         {
             Debug.LogError ( "Table does not have recipes" );
@@ -71,11 +96,14 @@ public class CraftingCanvas : UIPanel
         }
 
         panel.SetActive ( true );
+
+        UpdateDisplayedPanel ();
     }
 
     public override void Close ()
     {
         base.Close ();
+        isOpened = true;
         panel.SetActive ( false );
         currentTable = null;
         currentBench = null;
@@ -106,6 +134,8 @@ public class CraftingCanvas : UIPanel
     {
         recipeNameText.text = currentRecipe.recipeName;
         recipeDescriptionText.text = currentRecipe.recipeDescription;
+        recipeTimeTakenText.text = currentRecipe.timeToCraft + " seconds";
+        recipeEnergyTakenText.text = currentRecipe.tableResourceUsage + "%";
 
         for (int i = 0; i < ingredientPanels.Count; i++)
         {
@@ -140,15 +170,45 @@ public class CraftingCanvas : UIPanel
         }
     }
 
+    private void UpdateDisplayedPanel ()
+    {
+        if (currentBench == null)
+        {
+            Close ();
+            return;
+        }
+
+        if (currentBench.currentRecipeBeingCrafted == null)
+        {
+            beingCraftedPanel.SetActive ( false );
+            notBeingCraftedPanel.SetActive ( true );
+        }
+        else
+        {
+            beingCraftedPanel.SetActive ( true );
+            notBeingCraftedPanel.SetActive ( false );
+
+            recipeResultImage.sprite = currentBench.currentRecipeBeingCrafted.resultSprite;
+            recipeResultName.text = currentBench.currentRecipeBeingCrafted.recipeName;
+}
+    }
+
     private void ShowRecipe(CraftingRecipe recipe)
     {
         currentRecipe = recipe;
         UpdateRecipePanel ();
     }
 
+    public void OnClick_ClaimItem ()
+    {
+        currentBench.Claim ();
+        UpdateDisplayedPanel ();
+    }
+
     public void OnClick_Create ()
     {
         currentBench.Create ( currentRecipe );
+        UpdateDisplayedPanel ();
         UpdateRecipePanel ();
     }
 }

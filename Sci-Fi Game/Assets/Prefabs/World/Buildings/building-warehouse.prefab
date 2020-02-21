@@ -124,6 +124,7 @@ GameObject:
   - component: {fileID: 5051341365563142528}
   - component: {fileID: 5079975244770733616}
   - component: {fileID: 5069461146604004182}
+  - component: {fileID: 797539801268859102}
   m_Layer: 0
   m_Name: SM_Bld_Warehouse_Door_Bottom_01
   m_TagString: Untagged
@@ -192,6 +193,20 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!64 &797539801268859102
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5047595122793791176}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Convex: 0
+  m_CookingOptions: 14
+  m_Mesh: {fileID: 4300006, guid: 8b4bb575fa7c7514e8ce244267cefe40, type: 3}
 --- !u!1 &5047827792177151478
 GameObject:
   m_ObjectHideFlags: 0
@@ -203,6 +218,7 @@ GameObject:
   - component: {fileID: 5046098514198714740}
   - component: {fileID: 5079952720599489588}
   - component: {fileID: 5069768335233064426}
+  - component: {fileID: 3011966838186593879}
   m_Layer: 0
   m_Name: SM_Bld_Warehouse_Door_Bottom_Glass_01
   m_TagString: Untagged
@@ -270,6 +286,20 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!64 &3011966838186593879
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5047827792177151478}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Convex: 0
+  m_CookingOptions: 14
+  m_Mesh: {fileID: 4300008, guid: 8b4bb575fa7c7514e8ce244267cefe40, type: 3}
 --- !u!1 &5048037267027333358
 GameObject:
   m_ObjectHideFlags: 0
@@ -281,6 +311,7 @@ GameObject:
   - component: {fileID: 5050994861785776048}
   - component: {fileID: 5079084246702427034}
   - component: {fileID: 5070272390944261686}
+  - component: {fileID: 1819062699582853978}
   m_Layer: 0
   m_Name: SM_Bld_Warehouse_Door_Glass_01
   m_TagString: Untagged
@@ -348,6 +379,20 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!64 &1819062699582853978
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5048037267027333358}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Convex: 0
+  m_CookingOptions: 14
+  m_Mesh: {fileID: 4300002, guid: 8b4bb575fa7c7514e8ce244267cefe40, type: 3}
 --- !u!1 &5048506644686930970
 GameObject:
   m_ObjectHideFlags: 0
@@ -359,6 +404,7 @@ GameObject:
   - component: {fileID: 5051337495100874164}
   - component: {fileID: 5079789556491860326}
   - component: {fileID: 5069648811726088854}
+  - component: {fileID: 9197014300207662657}
   m_Layer: 0
   m_Name: SM_Bld_Warehouse_Door_Top_01
   m_TagString: Untagged
@@ -426,3 +472,17 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!64 &9197014300207662657
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5048506644686930970}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Convex: 0
+  m_CookingOptions: 14
+  m_Mesh: {fileID: 4300004, guid: 8b4bb575fa7c7514e8ce244267cefe40, type: 3}

@@ -7,27 +7,28 @@ public class AIStateBaseFlee : AIStateBase
 {
     public override void OnEnter (NPC npc)
     {
-        npc.NPCNavMesh.ResetCurrentPath ();
+        npc.NPCNavMesh.ClearCurrentPath ();
+        npc.Character.cWeapon.SetHolsterState ( true );
     }
 
     public override void OnUpdate (NPC npc)
     {
         if((npc.transform.position - EntityManager.instance.PlayerCharacter.transform.position).sqrMagnitude > 400)
         {
-            npc.Delete ();
+            npc.DieImmediately ();
             return;
         }
 
         if (npc.NPCNavMesh.currentPath.corners.Length <= 0)
         {
-            npc.NPCNavMesh.FindDestinationAwayFromEnemy ( 25 );
+            npc.NPCNavMesh.SetDestinationAwayFromEnemy ( 25, false, true );
             npc.Character.isRunning = true;
         }
         else
         {
-            if (Random.value <= 0.005f)
+            if (Random.value <= 0.0025f)
             {
-                npc.NPCNavMesh.FindDestinationAwayFromEnemy ( 25 );
+                npc.NPCNavMesh.SetDestinationAwayFromEnemy ( 2, false, false );
                 npc.Character.isRunning = true;
             }
         }
@@ -35,7 +36,7 @@ public class AIStateBaseFlee : AIStateBase
 
     public override void OnExit (NPC npc)
     {
-        npc.NPCNavMesh.ResetCurrentPath ();
+        npc.NPCNavMesh.ClearCurrentPath ();
         npc.Character.isRunning = false;
     }
 }

@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: Recipe - Sponge Cake
   m_EditorClassIdentifier: 
   recipeName: Sponge Cake
-  timeToCraft: 1
+  timeToCraft: 2.5
   tableResourceUsage: 10
+  resultSprite: {fileID: 21300000, guid: 31e25cd4b2adbcb4fa23419d45120d1a, type: 3}
   ingredientsRequired:
   - ID: 6
     Amount: 1
@@ -27,4 +28,6 @@ MonoBehaviour:
     Amount: 1
   resultingItems:
   - ID: 10
+    Amount: 1
+  - ID: 37
     Amount: 1

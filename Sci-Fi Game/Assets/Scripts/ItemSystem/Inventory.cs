@@ -4,10 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+[System.Serializable]
 public class Inventory
 {
     public int stackCapacity { get; protected set; } = 12;
-    public bool usesMaxStacks { get; protected set; } = false;
+    //public bool usesMaxStacks { get; protected set; } = false;
+    public bool stackEveryItem { get; protected set; } = true;
     public bool canRecieveItems = true;
     public List<ItemStack> stacks = new List<ItemStack> ();
 
@@ -74,6 +76,24 @@ public class Inventory
         return amount;
     }
 
+    public bool CheckCanRecieveItem(int id, int amount)
+    {
+        ItemBaseData item = ItemDatabase.GetItem ( id );
+
+        if(item.IsStackable)
+        {
+            if (GetStackCount + 1 <= stackCapacity || CheckHasItem(id))
+                return true;
+        }
+        else
+        {
+            if (GetStackCount + amount <= stackCapacity)
+                return true;
+        }
+
+        return false;
+    }
+
     public int GetIndexOfItem(int id)
     {
         if (CheckHasItem ( id ))
@@ -88,10 +108,11 @@ public class Inventory
 
     private System.Action OnInventoryChanged;
 
-    public Inventory (int stackCapacity, bool usesMaxStacks, bool canRecieveItems)
+    public Inventory (int stackCapacity, bool stackEveryItem, bool canRecieveItems)
     {
         this.stackCapacity = stackCapacity;
-        this.usesMaxStacks = usesMaxStacks;
+        this.stackEveryItem = stackEveryItem;
+        //this.usesMaxStacks = usesMaxStacks;
         this.canRecieveItems = canRecieveItems;
     }
 
@@ -106,7 +127,72 @@ public class Inventory
         if (amount <= 0) { Debug.LogError ( "Adding a value of " + amount ); return amount; }
         if (canRecieveItems == false && bypassRecieveCriteria == false) { Debug.LogError ( "This inventory cannot recieve items" ); return amount; }
 
-        int amountNotAdded = AddItemRecursively ( id, amount, index );
+        int amountNotAdded = 0;/* AddItemRecursively ( id, amount, index );*/
+        ItemBaseData item = null;
+
+        if(ItemDatabase.GetItem(id, out item ))
+        {
+            if (stackEveryItem)
+            {
+                int currentIndex = GetIndexOfItem ( id );
+
+                if (currentIndex >= 0)
+                {
+                    stacks[currentIndex].Amount += amount;
+                    amountNotAdded = 0;
+                }
+                else
+                {
+                    if (stacks.Count >= stackCapacity)
+                    {
+                        // Inventory is full
+                        amountNotAdded = amount;
+                    }
+                    else
+                    {
+                        stacks.Add ( new ItemStack () { ID = id, Amount = amount } );
+                        amountNotAdded = 0;
+                    }
+                }
+            }
+            else
+            {
+                if (item.IsStackable)
+                {
+                    int currentIndex = GetIndexOfItem ( id );
+
+                    if (currentIndex >= 0)
+                    {
+                        stacks[currentIndex].Amount += amount;
+                        amountNotAdded = 0;
+                    }
+                    else
+                    {
+                        if (stacks.Count >= stackCapacity)
+                        {
+                            // Inventory is full
+                            amountNotAdded = amount;
+                        }
+                        else
+                        {
+                            stacks.Add ( new ItemStack () { ID = id, Amount = amount } );
+                            amountNotAdded = 0;
+                        }
+                    }
+                }
+                else
+                {
+                    int amountToAdd = Mathf.Min ( amount, stackCapacity - stacks.Count );
+                    amountNotAdded = amount - amountToAdd;
+
+                    for (int i = 0; i < amountToAdd; i++)
+                    {
+                        stacks.Add ( new ItemStack () { ID = id, Amount = 1 } );
+                    }
+                }
+            }
+            
+        }
 
         //Debug.Log ( string.Format ( "Requested to add {0} {1}. {2} were added and {3} were returned to original inventory", amount, ItemDatabase.GetItem ( id ).Name, (amount - amountNotAdded), amountNotAdded ) );
         OnItemAdded?.Invoke ( id, (amount - amountNotAdded) );
@@ -115,81 +201,82 @@ public class Inventory
         return amountNotAdded;
     }
 
-    List<ItemStack> existingStacks = new List<ItemStack> ();
+    //List<ItemStack> existingStacks = new List<ItemStack> ();
 
-    private int AddItemRecursively (int id, int amount = 1, int index =-1)
-    {
-        ItemBaseData item = null;
+    //private int AddItemRecursively (int id, int amount = 1, int index = -1)
+    //{
+    //    ItemBaseData item = null;
 
-        if (ItemDatabase.GetItem ( id, out item ))
-        {
-            while (amount > 0)
-            {
-                existingStacks.Clear ();
+    //    if (ItemDatabase.GetItem ( id, out item ))
+    //    {
+    //        while (amount > 0)
+    //        {
+    //            existingStacks.Clear ();
 
-                for (int i = 0; i < stacks.Count; i++)
-                {
-                    if (stacks[i].ID == id)
-                        existingStacks.Add ( stacks[i] );
-                }
+    //            for (int i = 0; i < stacks.Count; i++)
+    //            {
+    //                if (stacks[i].ID == id)
+    //                    existingStacks.Add ( stacks[i] );
+    //            }
 
-                for (int i = 0; i < existingStacks.Count; i++)
-                {
-                    if (usesMaxStacks)
-                        if (existingStacks[i].Amount >= item.MaxStack)
-                            continue;
+    //            for (int i = 0; i < existingStacks.Count; i++)
+    //            {
+    //                if (!stackEveryItem)
+    //                    if (!item.IsStackable)
+    //                        continue;
 
-                    int amountToAdd = Mathf.Min ( ((usesMaxStacks) ? item.MaxStack - existingStacks[i].Amount : int.MaxValue), amount );
-                    existingStacks[i].Amount += amountToAdd;
-                    amount -= amountToAdd;
+    //                //int amountToAdd = Mathf.Min ( ((usesMaxStacks) ? item.MaxStack - existingStacks[i].Amount : int.MaxValue), amount );
+    //                int amountToAdd = Mathf.Min ()
+    //                existingStacks[i].Amount += amountToAdd;
+    //                amount -= amountToAdd;
 
-                    if (amount <= 0)
-                    {
-                        return 0;
-                    }
-                    else
-                    {
-                        continue;
-                    }
-                }
+    //                if (amount <= 0)
+    //                {
+    //                    return 0;
+    //                }
+    //                else
+    //                {
+    //                    continue;
+    //                }
+    //            }
 
-                if (stacks.Count >= stackCapacity)
-                {
-                    // Inventory is full
-                    return amount;
-                }
-                else
-                {
-                    // Can be added
-                    int amountToAdd = Mathf.Min ( ((usesMaxStacks) ? item.MaxStack : int.MaxValue), amount );
+    //            if (stacks.Count >= stackCapacity)
+    //            {
+    //                // Inventory is full
+    //                return amount;
+    //            }
+    //            else
+    //            {
+    //                // Can be added
+    //                int amountToAdd = Mathf.Min ( ((usesMaxStacks) ? item.MaxStack : int.MaxValue), amount );
 
-                    if (index < 0)
-                        stacks.Add ( new ItemStack () { ID = id, Amount = amountToAdd } );
-                    else
-                        stacks.Insert ( index, new ItemStack () { ID = id, Amount = amountToAdd } );
+    //                if (index < 0)
+    //                    stacks.Add ( new ItemStack () { ID = id, Amount = amountToAdd } );
+    //                else
+    //                    stacks.Insert ( index, new ItemStack () { ID = id, Amount = amountToAdd } );
 
-                    amount -= amountToAdd;
+    //                amount -= amountToAdd;
 
-                    if (amount <= 0)
-                    {
-                        return 0;
-                    }
-                    else
-                    {
-                        continue;
-                    }
-                }
-            }
-        }
-        else
-        {
-            Debug.LogError ( "Item [" + id + "] does not exist" );
-            return amount;
-        }
+    //                if (amount <= 0)
+    //                {
+    //                    return 0;
+    //                }
+    //                else
+    //                {
+    //                    continue;
+    //                }
+    //            }
+    //        }
+    //    }
+    //    else
+    //    {
+    //        Debug.LogError ( "Item [" + id + "] does not exist" );
+    //        return amount;
+    //    }
 
-        Debug.LogError ( "NO!" );
-        return 0;
-    }
+    //    Debug.LogError ( "NO!" );
+    //    return 0;
+    //}
 
     /// <summary>
     /// Removes the amount of item ID from the inventory. If there is not enough available to remove, it will return how many were not removed.
@@ -200,7 +287,66 @@ public class Inventory
     public int RemoveItem (int id, int amount = 1)
     {
         if (amount <= 0) { Debug.LogError ( "Removing a value of " + amount ); return 0; }
-        int amountNotRemoved = RemoveItemRecursively ( id, amount );
+        //int amountNotRemoved = RemoveItemRecursively ( id, amount );
+        int amountNotRemoved = 0;
+
+        ItemBaseData item = null;
+
+        if (ItemDatabase.GetItem ( id, out item ))
+        {
+            if (stackEveryItem)
+            {
+                int currentIndex = GetIndexOfItem ( id );
+
+                if (currentIndex >= 0)
+                {
+                    int amountToRemove = Mathf.Min ( stacks[currentIndex].Amount, amount );
+                    stacks[currentIndex].Amount -= amountToRemove;
+                    amountNotRemoved = amount - amountToRemove;
+                }
+                else
+                {
+                    amountNotRemoved = amount;
+                }
+            }
+            else
+            {
+                if (item.IsStackable)
+                {
+                    int currentIndex = GetIndexOfItem ( id );
+
+                    if (currentIndex >= 0)
+                    {
+                        int amountToRemove = Mathf.Min ( stacks[currentIndex].Amount, amount );
+                        stacks[currentIndex].Amount -= amountToRemove;
+                        amountNotRemoved = amount - amountToRemove;
+                    }
+                    else
+                    {
+                        amountNotRemoved = amount;
+                    }
+                }
+                else
+                {
+                    int amountRemoved = 0;
+
+                    for (int i = 0; i < stacks.Count; i++)
+                    {
+                        if (stacks[i].ID == id)
+                        {
+                            amountRemoved++;
+                            stacks.RemoveAt ( i );
+                            if (amountRemoved >= amount)
+                                break;
+                        }
+                    }
+
+                    amountNotRemoved = amount - amountRemoved;
+                }
+            }
+        }
+
+        RemoveEmptyStacks ();
 
         //Debug.Log ( string.Format ( "Requested to remove {0} {1}. {2} were removed and {3} were returned to original inventory", amount, ItemDatabase.GetItem ( id ).Name, (amount - amountNotRemoved), amountNotRemoved ) );
         OnItemRemoved?.Invoke ( id, (amount - amountNotRemoved) );
@@ -209,41 +355,41 @@ public class Inventory
         return amountNotRemoved;
     }
 
-    private int RemoveItemRecursively (int id, int amount = 1)
-    {
-        ItemBaseData item = null;
+    //private int RemoveItemRecursively (int id, int amount = 1)
+    //{
+    //    ItemBaseData item = null;
 
-        if (ItemDatabase.GetItem ( id, out item ))
-        {
-            /*List<Stack> */existingStacks = stacks.Where ( x => x.ID == id ).OrderBy ( x => x.Amount ).ToList ();
+    //    if (ItemDatabase.GetItem ( id, out item ))
+    //    {
+    //        /*List<Stack> */existingStacks = stacks.Where ( x => x.ID == id ).OrderBy ( x => x.Amount ).ToList ();
 
-            for (int i = 0; i < existingStacks.Count; i++)
-            {
-                int amountToRemove = Mathf.Min ( existingStacks[i].Amount, amount );
-                existingStacks[i].Amount -= amountToRemove;
-                amount -= amountToRemove;
+    //        for (int i = 0; i < existingStacks.Count; i++)
+    //        {
+    //            int amountToRemove = Mathf.Min ( existingStacks[i].Amount, amount );
+    //            existingStacks[i].Amount -= amountToRemove;
+    //            amount -= amountToRemove;
 
-                if (amount > 0)
-                {
-                    RemoveEmptyStacks ();
-                    return RemoveItemRecursively ( id, amount );
-                }
-                else
-                {
-                    RemoveEmptyStacks ();
-                    return 0;
-                }
-            }
+    //            if (amount > 0)
+    //            {
+    //                RemoveEmptyStacks ();
+    //                return RemoveItemRecursively ( id, amount );
+    //            }
+    //            else
+    //            {
+    //                RemoveEmptyStacks ();
+    //                return 0;
+    //            }
+    //        }
 
-            RemoveEmptyStacks ();
-            return amount;
-        }
-        else
-        {
-            Debug.LogError ( "Item [" + id + "] does not exist" );
-            return amount;
-        }
-    }
+    //        RemoveEmptyStacks ();
+    //        return amount;
+    //    }
+    //    else
+    //    {
+    //        Debug.LogError ( "Item [" + id + "] does not exist" );
+    //        return amount;
+    //    }
+    //}
 
     private void RemoveEmptyStacks ()
     {

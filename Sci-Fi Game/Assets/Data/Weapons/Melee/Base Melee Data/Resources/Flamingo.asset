@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponName: Flamingo
   weaponAttackType: 0
+  weaponItemID: 46
+  brokenVariantItemID: 62
   offsetPosition: {x: 0.0108, y: 0.0022, z: -0.0069}
   offsetRotation: {x: 358.09702, y: 266.77585, z: 114.453804}
   localScale: {x: 0.1, y: 0.1, z: 0.1}

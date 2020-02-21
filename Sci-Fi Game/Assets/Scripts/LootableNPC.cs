@@ -5,7 +5,7 @@ using UnityEngine;
 public class LootableNPC : MonoBehaviour
 {
     private NPCData data;
-    private Inventory droppedItems = new Inventory ( 12, false, false );
+    private Inventory droppedItems = new Inventory ( 12, true, false );
 
     private void Start ()
     {

@@ -10,7 +10,6 @@ public class ItemContainerCanvas : UIPanel
     [SerializeField] private List<ItemContainerPanel> containerPanels = new List<ItemContainerPanel> ();
     [SerializeField] private TextMeshProUGUI inventoryNameText;
     [SerializeField] private CanvasGroup cGroup;
-    public bool IsActive { get; protected set; }
     public System.Action OnContainerClosed;
 
     private void Awake ()
@@ -42,18 +41,19 @@ public class ItemContainerCanvas : UIPanel
     {
         if (targetInventory == null) return;
 
+        StoreCanvas.instance.Close ();
         EntityManager.instance.InventoryCanvas.Open ();
         base.Open ();
+        isOpened = true;
 
         cGroup.alpha = 1;
         cGroup.blocksRaycasts = true;
-        IsActive = true;
-
     }
 
     public override void Close ()
     {
         base.Close ();
+        isOpened = false;
         if (targetInventory != null)
         {
             targetInventory.UnregisterInventoryChanged ( OnInventoryChanged );
@@ -61,7 +61,6 @@ public class ItemContainerCanvas : UIPanel
 
         cGroup.alpha = 0;
         cGroup.blocksRaycasts = false;
-        IsActive = false;
         OnContainerClosed?.Invoke ();
     }
 

@@ -10,11 +10,10 @@ public class ItemData_ChocolateBar : ItemBaseData
         base.IsSoulbound = false;
         base.IsUnique = false;
 
-        base.MaxStack = int.MaxValue;
+        base.IsStackable = true; 
         base.RelatedQuestIDs = new string[] { };
 
-        base.SellPrice = 500;
-        base.BuyPrice = 3000;
+        base.BuyPrice = 20;
         base.FetchSprite ();
     }
 }

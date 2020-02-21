@@ -10,11 +10,10 @@ public class ItemData_PotOfFlour : ItemBaseData
         base.IsSoulbound = false;
         base.IsUnique = false;
 
-        base.MaxStack = int.MaxValue;
+        base.IsStackable = true; 
         base.RelatedQuestIDs = new string[] { };
 
-        base.SellPrice = 25;
-        base.BuyPrice = 125;
+        base.BuyPrice = 10;
         base.FetchSprite ();
     }
 }

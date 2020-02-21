@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class PlayerCameraController : MonoBehaviour
@@ -12,6 +13,7 @@ public class PlayerCameraController : MonoBehaviour
     [SerializeField] private Vector3 localOffset = new Vector3 ();
     [SerializeField] private Vector3 localEuler = new Vector3 ();
     [Space]
+    [SerializeField] private float stopMovementWhenDistanceIs = 0.1f;
     [SerializeField] private float followDamp = 5.0f;
     [SerializeField] private float smoothVelocityX;
     [SerializeField] private float smoothVelocityY;
@@ -36,9 +38,10 @@ public class PlayerCameraController : MonoBehaviour
     private float smoothX;
     private float smoothY;
 
-    [SerializeField] private float mouseX;
-    [SerializeField] private float mouseY;
+    private float mouseX;
+    private float mouseY;
     private float currentFOV = 60.0f;
+    private bool shouldRecordMovement = false;
 
     public Transform LookTransform { get { return yRotationRoot; } }
 
@@ -47,37 +50,30 @@ public class PlayerCameraController : MonoBehaviour
     public Vector3 initialCameraPosition { get; protected set; }
     public Quaternion initialCameraRotation { get; protected set; }
     public Transform cameraTransform { get; protected set; }
+    public Transform cameraRoot { get; protected set; }
     public Transform CinematicComboView { get; protected set; }
+
+    [Header("Obstruction")]
+    [SerializeField] private float cameraObsDistanceDeduction = 0.25f;
+    [SerializeField] private float cameraObsForwardDistance = 0.1f;
+    [SerializeField] private LayerMask obstructionLayerMask;
+    Vector3 obstructionPosition = new Vector3 ();
 
     private void Awake ()
     {
         camera = GetComponentInChildren<Camera> ();
         yRotationRoot = transform.GetChild ( 0 );
         xRotationRoot = yRotationRoot.GetChild ( 0 );
-        cameraTransform = xRotationRoot.GetChild ( 0 ).GetChild ( 0 );
+        cameraRoot = xRotationRoot.GetChild ( 0 );
+        cameraTransform = cameraRoot.GetChild ( 0 );
         initialCameraPosition = cameraTransform.localPosition;
         initialCameraRotation = cameraTransform.localRotation;
     }
 
-    public PlayerCameraController SetTarget (Transform t)
-    {
-        this.target = t;
-        this.character = t.gameObject.GetComponent<Character> ();
-        return this;
-    }
-
-    //public void SwitchTarget (Transform target, Vector3 offset)
-    //{
-    //    //this.target = target;
-    //    //this.character = target.GetComponent<Character> ();
-    //    //this.globalOffset = offset;
-    //    //transform.GetChild ( 0 ).transform.localPosition = offset;
-    //}
-
-    private bool shouldRecordMovement = false;
-
     private void Update ()
     {
+        CheckObstructions ();
+
         if (character.currentVehicle != null && character.currentVehicle.CurrentVehicleMode == VehicleMode.Hover)
         {
             mouseX = Input.GetAxis ( "Mouse X" );
@@ -122,6 +118,12 @@ public class PlayerCameraController : MonoBehaviour
 
     private void FixedUpdate ()
     {
+        SetCameraPositionAndRotation ();
+        CheckLocalCameraPosition ();
+    }
+
+    private void SetCameraPositionAndRotation ()
+    {
         if (!target) return;
         if (target.gameObject.activeSelf == false) { return; }
 
@@ -161,11 +163,11 @@ public class PlayerCameraController : MonoBehaviour
                 NewVehicleGround vehicleGround = character.currentVehicle as NewVehicleGround;
                 VehicleBaseMulti vehicleMulti = character.currentVehicle as VehicleBaseMulti;
                 VehicleGroundData vehicleData;
-                if(vehicleGround != null)
+                if (vehicleGround != null)
                 {
                     vehicleData = vehicleGround.VehicleData;
                 }
-                else 
+                else
                 {
                     vehicleData = vehicleMulti.VehicleGroundData;
                 }
@@ -186,14 +188,25 @@ public class PlayerCameraController : MonoBehaviour
         }
         else
         {
-            if (character != null && character.cWeapon != null && character.cWeapon.isEquipped == true && character.cWeapon.isHolstered == false)
-            {
-                targetFOV = character.IsAiming && character.cWeapon.currentWeaponData.weaponAttackType == WeaponAttackType.Gun ? 40.0f : 60.0f;
-                currentFOV = Mathf.Lerp ( currentFOV, targetFOV, Time.deltaTime * fovChangeDamp );
-                camera.fieldOfView = currentFOV;
-            }
+            targetFOV = 60.0f;
 
-            transform.position = Vector3.Slerp ( transform.position, target.TransformPoint ( globalOffset ), followDamp * Time.deltaTime );
+            if (character != null && character.cWeapon != null && character.cWeapon.isEquipped && !character.cWeapon.isHolstered && character.IsAiming && character.cWeapon.currentWeaponData.weaponAttackType == WeaponAttackType.Gun)
+                targetFOV = 40.0f;
+
+            currentFOV = Mathf.Lerp ( currentFOV, targetFOV, Time.deltaTime * fovChangeDamp );
+            camera.fieldOfView = currentFOV;
+
+            //if (character != null && character.cWeapon != null && character.cWeapon.isEquipped == true && character.cWeapon.isHolstered == false)
+            //{
+            //    targetFOV = character.IsAiming && character.cWeapon.currentWeaponData.weaponAttackType == WeaponAttackType.Gun ? 40.0f : 60.0f;
+            //    currentFOV = Mathf.Lerp ( currentFOV, targetFOV, Time.deltaTime * fovChangeDamp );
+            //    camera.fieldOfView = currentFOV;
+            //}
+
+            Vector3 localTargetPosition = target.TransformPoint ( globalOffset );
+
+            if (Mathf.Abs ( (transform.position - localTargetPosition).sqrMagnitude ) > stopMovementWhenDistanceIs)
+                transform.position = Vector3.Slerp ( transform.position, target.TransformPoint ( globalOffset ), followDamp * Time.deltaTime );
 
             smoothX = Mathf.SmoothDamp ( smoothX, mouseX, ref smoothVelocityX, turnSmooth );
             smoothY = Mathf.SmoothDamp ( smoothY, mouseY, ref smoothVelocityY, turnSmooth );
@@ -216,7 +229,7 @@ public class PlayerCameraController : MonoBehaviour
         }
     }
 
-    private void LateUpdate ()
+    private void CheckLocalCameraPosition ()
     {
         if (CinematicComboView != null)
         {
@@ -227,23 +240,80 @@ public class PlayerCameraController : MonoBehaviour
         else
         {
             // Out of cinema view
-            cameraTransform.localPosition = Vector3.Slerp ( cameraTransform.localPosition, initialCameraPosition, Time.deltaTime * 25.0f );
-            cameraTransform.localRotation = Quaternion.Slerp ( cameraTransform.localRotation, initialCameraRotation, Time.deltaTime * 25.0f );
+            if (obstructionPosition == Vector3.zero)
+            {
+                cameraTransform.localPosition = Vector3.Slerp ( cameraTransform.localPosition, initialCameraPosition, Time.deltaTime * 25.0f );
+                cameraTransform.localRotation = Quaternion.Slerp ( cameraTransform.localRotation, initialCameraRotation, Time.deltaTime * 25.0f );
+            }
+            else
+            {
+                cameraTransform.localPosition = Vector3.Slerp ( cameraTransform.localPosition, obstructionPosition, Time.deltaTime * 25.0f );
+                cameraTransform.localRotation = Quaternion.Slerp ( cameraTransform.localRotation, initialCameraRotation, Time.deltaTime * 25.0f );
+            }
         }
     }
 
-    public void SetXRecoil (float x)
-    {
-        xRecoilAngle = Time.deltaTime * x;
-    }
+    [Space] [SerializeField] private GameObject hitGo;
 
-    public void SetYRecoil (float x)
+    private void CheckObstructions ()
     {
-        yRecoilAngle = Time.deltaTime * x;
-    }
+        Ray ray = new Ray ( cameraRoot.transform.position, (EntityManager.instance.PlayerCharacter.Animator.GetBoneTransform ( HumanBodyBones.Head ).transform.position - cameraRoot.transform.position).normalized );
+        RaycastHit hit;
+        RaycastHit[] hits;
+
+        float dist = (EntityManager.instance.PlayerCharacter.Animator.GetBoneTransform ( HumanBodyBones.Head ).transform.position - cameraRoot.transform.position).magnitude;
+        dist -= cameraObsDistanceDeduction;
+
+        hits = Physics.RaycastAll ( ray, dist, obstructionLayerMask, QueryTriggerInteraction.Ignore );
+        if (hits.Length > 0)
+        {
+            hits = hits.OrderBy ( x => x.distance ).ToArray ();
+            hit = hits[hits.Length - 1];
+            hitGo = hit.collider.gameObject;
+            obstructionPosition = cameraRoot.InverseTransformPoint ( hit.point ) + new Vector3 ( 0.0f, 0.0f, cameraObsForwardDistance );
+            camera.useOcclusionCulling = false;
+        }
+        else
+        {
+            hitGo = null;
+            obstructionPosition = Vector3.zero;
+            camera.useOcclusionCulling = true;
+        }
+
+        Debug.DrawRay ( ray.origin, ray.direction * dist );
+
+        return;
+
+
+        if (Physics.Raycast(ray, out hit, cameraObsDistanceDeduction, obstructionLayerMask, QueryTriggerInteraction.Ignore ))
+        {
+            obstructionPosition = cameraRoot.InverseTransformPoint ( hit.point ) + new Vector3 ( 0.0f, 0.0f, cameraObsForwardDistance );
+        }
+        else
+        {
+            obstructionPosition = Vector3.zero;
+        }
+    }    
 
     public void SetCinematicComboView (Transform transform)
     {
         CinematicComboView = transform;
+    }
+
+    public PlayerCameraController SetTarget (Transform t)
+    {
+        this.target = t;
+        this.character = t.gameObject.GetComponent<Character> ();
+        return this;
+    }
+
+    public void SetXRecoil (float x)
+    {
+        xRecoilAngle = Time.deltaTime * x * SkillModifiers.ShootingRecoilModifier;
+    }
+
+    public void SetYRecoil (float x)
+    {
+        yRecoilAngle = Time.deltaTime * x * SkillModifiers.ShootingRecoilModifier;
     }
 }

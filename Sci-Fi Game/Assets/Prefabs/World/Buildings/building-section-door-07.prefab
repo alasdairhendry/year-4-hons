@@ -123,6 +123,7 @@ GameObject:
   - component: {fileID: 2131033742011587828}
   - component: {fileID: 2158452252248879336}
   - component: {fileID: 2148417230095967386}
+  - component: {fileID: 6162931078929361959}
   m_Layer: 0
   m_Name: SM_Bld_Section_Door_07_Glass
   m_TagString: Untagged
@@ -190,6 +191,20 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!64 &6162931078929361959
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2127624011285514536}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Convex: 0
+  m_CookingOptions: 14
+  m_Mesh: {fileID: 4300002, guid: d131faf156439f04b961d7156a95bbd0, type: 3}
 --- !u!1 &2127924664812619718
 GameObject:
   m_ObjectHideFlags: 0
@@ -201,6 +216,7 @@ GameObject:
   - component: {fileID: 2129347019570144452}
   - component: {fileID: 2158803701301732528}
   - component: {fileID: 2148577942105621650}
+  - component: {fileID: 8466105186543518500}
   m_Layer: 0
   m_Name: SM_Bld_Section_Door_07_Door
   m_TagString: Untagged
@@ -268,3 +284,17 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!64 &8466105186543518500
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2127924664812619718}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Convex: 0
+  m_CookingOptions: 14
+  m_Mesh: {fileID: 4300004, guid: d131faf156439f04b961d7156a95bbd0, type: 3}

@@ -122,6 +122,7 @@ GameObject:
   - component: {fileID: 3688812945003629367}
   - component: {fileID: 3699784812953517029}
   - component: {fileID: 3707815170139027059}
+  - component: {fileID: 4624736768032639337}
   m_Layer: 0
   m_Name: SM_Bld_Section_Door_04_Glass
   m_TagString: Untagged
@@ -189,3 +190,17 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!64 &4624736768032639337
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3685883881886054475}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Convex: 0
+  m_CookingOptions: 14
+  m_Mesh: {fileID: 4300002, guid: 01d6c4efb3237a04f9d6d6a6cea76877, type: 3}

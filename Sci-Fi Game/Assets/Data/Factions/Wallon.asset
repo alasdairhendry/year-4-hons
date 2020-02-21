@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: Wallon
   m_EditorClassIdentifier: 
   factionName: Wallon
+  factionAdjective: Wallonite
   factionDescription: 
+  factionSprite: {fileID: 21300000, guid: bb0af28f84fc13e42b30d656c47f3592, type: 3}
   factionType: 4
   specialisationName: Consumer Rights
   specialisationDescription: Can refund spent talent points

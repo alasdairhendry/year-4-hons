@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class MobSpawner : MonoBehaviour
 {
@@ -73,22 +74,42 @@ public class MobSpawner : MonoBehaviour
         GameObject instance = Instantiate ( mobPrefab );
 
         Vector3 spawnPosition = this.transform.position + Random.insideUnitSphere * radius;
-        ray = new Ray ( spawnPosition + (Vector3.up * radius * 4), Vector3.down );
-        hit = new RaycastHit ();
 
-        if(Physics.Raycast(ray, out hit, radius * 10 ))
+        NavMeshHit navMeshHit;
+        bool sampledPositionSuccessfully = false;
+        int sampleCount = 0;
+
+        do
         {
-            spawnPosition = hit.point + (Vector3.up * 0.25f);
-        }
-        else
+            sampledPositionSuccessfully = NavMesh.SamplePosition ( spawnPosition, out navMeshHit, 8.0f, NPCNavMesh.WalkableAreaMask );
+            sampleCount++;
+
+            if (sampleCount >= 5)
+                break;
+        } while (sampledPositionSuccessfully == false);
+
+        if(sampledPositionSuccessfully == false)
         {
-            Debug.LogError ( "Error ray casting suitable terrain" );
+            Debug.LogError ( "Couldnt sample any spawn positions for npc", instance );
+            Destroy ( instance );
+            return;
         }
 
-        instance.transform.position = spawnPosition;
+        //ray = new Ray ( spawnPosition + (Vector3.up * radius * 4), Vector3.down );
+        //hit = new RaycastHit ();
+
+        //if(Physics.Raycast(ray, out hit, radius * 10 ))
+        //{
+        //    spawnPosition = hit.point + (Vector3.up * 0.25f);
+        //}
+        //else
+        //{
+        //    Debug.LogError ( "Error ray casting suitable terrain" );
+        //}
+
+        instance.transform.position = navMeshHit.position;
         instance.transform.localEulerAngles = new Vector3 ( 0.0f, Random.Range ( 0.0f, 360.0f ), 0.0f );
         instance.transform.SetParent ( this.transform );
-        instance.GetComponent<UnityEngine.AI.NavMeshAgent> ().Warp ( spawnPosition );
 
         NPC npc = instance.GetComponent<NPC> ();
         npc.SetMobSpawner ( this );

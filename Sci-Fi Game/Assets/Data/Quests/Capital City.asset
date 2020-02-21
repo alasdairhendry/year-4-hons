@@ -1,0 +1,320 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-7935496084781551350
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 538380306cacd154db98e0408be9aca0, type: 3}
+  m_Name: stage01
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -136, y: -104}
+  ports:
+    keys:
+    - input
+    - output
+    values:
+    - _fieldName: input
+      _node: {fileID: -7935496084781551350}
+      _typeQualifiedName: QuestFlow.QuestEngine.State, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: output
+        node: {fileID: 3212209135020552425}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: output
+      _node: {fileID: -7935496084781551350}
+      _typeQualifiedName: QuestFlow.QuestEngine.State, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: input
+        node: {fileID: 8412069100837242521}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 1
+      _typeConstraint: 0
+      _dynamic: 0
+  input: {fileID: 0}
+  output: {fileID: 0}
+  conditionsFoldout: 0
+  actionsFoldout: 1
+  outputFoldout: 0
+  questLog: I knocked on the door and there was no answer.. Maybe there are some more
+    clues lying around..
+  conditions: []
+  actions:
+  - {fileID: 2404085177277590207}
+  conditionRequirementType: 0
+--- !u!114 &-1398613991819321752
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 538380306cacd154db98e0408be9aca0, type: 3}
+  m_Name: stage03
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 488, y: -104}
+  ports:
+    keys:
+    - input
+    - output
+    values:
+    - _fieldName: input
+      _node: {fileID: -1398613991819321752}
+      _typeQualifiedName: QuestFlow.QuestEngine.State, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: output
+        node: {fileID: 8412069100837242521}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: output
+      _node: {fileID: -1398613991819321752}
+      _typeQualifiedName: QuestFlow.QuestEngine.State, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: input
+        node: {fileID: 1377789805392180019}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 1
+      _typeConstraint: 0
+      _dynamic: 0
+  input: {fileID: 0}
+  output: {fileID: 0}
+  conditionsFoldout: 0
+  actionsFoldout: 0
+  outputFoldout: 0
+  questLog: I spoke to some crazy person nearby. From what I could decipher, he thinks
+    I should talk to one of the guards at The Gates.
+  conditions: []
+  actions: []
+  conditionRequirementType: 0
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e17b2a51f2422545a6d5b0f2159ed2b, type: 3}
+  m_Name: Capital City
+  m_EditorClassIdentifier: 
+  nodes:
+  - {fileID: -7935496084781551350}
+  - {fileID: 8412069100837242521}
+  - {fileID: -1398613991819321752}
+  - {fileID: 1377789805392180019}
+  - {fileID: 3212209135020552425}
+  - {fileID: 0}
+  questID: capitalcity
+  questName: Capital City
+  collateQuestLog: 1
+  reward:
+    mandatoryReward:
+      reward:
+      - itemID: 3
+        amount: 100
+      - itemID: 51
+        amount: 1
+      - itemID: 1
+        amount: 3
+    decisionRewards: []
+--- !u!114 &1377789805392180019
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce96e3798eae9cb45ae1774e9e1c5d03, type: 3}
+  m_Name: Success
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 824, y: -104}
+  ports:
+    keys:
+    - input
+    - output
+    values:
+    - _fieldName: input
+      _node: {fileID: 1377789805392180019}
+      _typeQualifiedName: QuestFlow.QuestEngine.State, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: output
+        node: {fileID: -1398613991819321752}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: output
+      _node: {fileID: 1377789805392180019}
+      _typeQualifiedName: QuestFlow.QuestEngine.State, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 1
+      _connectionType: 1
+      _typeConstraint: 0
+      _dynamic: 0
+  input: {fileID: 0}
+  output: {fileID: 0}
+  conditionsFoldout: 0
+  actionsFoldout: 0
+  outputFoldout: 0
+  questLog: 'I spoke to a guard over at The Gates. He said a lot of people get attacked
+    outside the city, and end up being brought in.
+
+
+    He''s not sure what happened to me, but he said someone else in the city might
+    know.'
+  conditions: []
+  actions: []
+  conditionRequirementType: 0
+  optionalReward:
+    mandatoryReward:
+      reward: []
+    decisionRewards: []
+--- !u!114 &2404085177277590207
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac572cabe1289d547a07ce534a0a2f6f, type: 3}
+  m_Name: QuestFlow.ActionSetQuestInteractableState
+  m_EditorClassIdentifier: 
+  id: 1
+  state: 1
+--- !u!114 &3212209135020552425
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7cad8f65384a31845938ae7dc9b4dd8c, type: 3}
+  m_Name: Start
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -392, y: -104}
+  ports:
+    keys:
+    - input
+    - output
+    values:
+    - _fieldName: input
+      _node: {fileID: 3212209135020552425}
+      _typeQualifiedName: QuestFlow.QuestEngine.State, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: output
+      _node: {fileID: 3212209135020552425}
+      _typeQualifiedName: QuestFlow.QuestEngine.State, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: input
+        node: {fileID: -7935496084781551350}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 1
+      _typeConstraint: 0
+      _dynamic: 0
+  input: {fileID: 0}
+  output: {fileID: 0}
+  conditionsFoldout: 0
+  actionsFoldout: 0
+  outputFoldout: 0
+  questLog: "I've just woke up inside this doorway..\n\nWhere on earth am I? \nI should
+    search my surroundings for clues."
+  conditions: []
+  actions: []
+  conditionRequirementType: 0
+  questReward:
+    mandatoryReward:
+      reward: []
+    decisionRewards: []
+--- !u!114 &8412069100837242521
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 538380306cacd154db98e0408be9aca0, type: 3}
+  m_Name: stage02
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 168, y: -104}
+  ports:
+    keys:
+    - input
+    - output
+    values:
+    - _fieldName: input
+      _node: {fileID: 8412069100837242521}
+      _typeQualifiedName: QuestFlow.QuestEngine.State, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: output
+        node: {fileID: -7935496084781551350}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: output
+      _node: {fileID: 8412069100837242521}
+      _typeQualifiedName: QuestFlow.QuestEngine.State, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: input
+        node: {fileID: -1398613991819321752}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 1
+      _typeConstraint: 0
+      _dynamic: 0
+  input: {fileID: 0}
+  output: {fileID: 0}
+  conditionsFoldout: 0
+  actionsFoldout: 0
+  outputFoldout: 0
+  questLog: "I found a poster that says \"Capital City - Medical Station\". \n\nIf
+    I can find someone to talk to, maybe they'll know why I'm here."
+  conditions: []
+  actions: []
+  conditionRequirementType: 0

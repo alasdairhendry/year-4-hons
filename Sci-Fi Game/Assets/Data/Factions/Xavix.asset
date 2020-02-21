@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: Xavix
   m_EditorClassIdentifier: 
   factionName: Xavix
+  factionAdjective: Xavian
   factionDescription: 
+  factionSprite: {fileID: 21300000, guid: dbe4252253870a747bc9d5cf24ed06e8, type: 3}
   factionType: 5
   specialisationName: Life Sap
   specialisationDescription: Heals 5% of damage done

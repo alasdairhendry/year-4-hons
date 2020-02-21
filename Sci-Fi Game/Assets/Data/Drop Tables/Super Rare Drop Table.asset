@@ -28,7 +28,7 @@ MonoBehaviour:
   - itemID: 27
     amount: 1
     range: 0
-    amountRange: {x: 0, y: 0}
+    amountRange: {x: 1, y: 1}
     weight: 1
     foldout: 0
   - itemID: -1

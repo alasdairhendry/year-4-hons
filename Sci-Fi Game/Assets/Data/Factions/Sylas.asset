@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: Sylas
   m_EditorClassIdentifier: 
   factionName: Sylas
+  factionAdjective: Sylan
   factionDescription: 
+  factionSprite: {fileID: 21300000, guid: 4ad13f53f37e2204faeca5c19cdbb600, type: 3}
   factionType: 3
   specialisationName: Juggernaut
   specialisationDescription: Overall hit points increased by 15% but damage output

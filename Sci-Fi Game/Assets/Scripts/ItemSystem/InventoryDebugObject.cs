@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class InventoryDebugObject : MonoBehaviour
 {
-    public Inventory inventory = new Inventory ( 12, true, true );
+    public Inventory inventory = new Inventory ( 12, false, true );
 
     [SerializeField] InventoryCanvas targetCanvas;
 

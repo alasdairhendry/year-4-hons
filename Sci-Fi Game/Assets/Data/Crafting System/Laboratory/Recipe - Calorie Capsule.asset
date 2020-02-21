@@ -15,6 +15,7 @@ MonoBehaviour:
   recipeName: Calorie Capsule
   timeToCraft: 1.25
   tableResourceUsage: 5
+  resultSprite: {fileID: 21300000, guid: 63421f22f64232a418c64b953bb17422, type: 3}
   ingredientsRequired:
   - ID: 28
     Amount: 1

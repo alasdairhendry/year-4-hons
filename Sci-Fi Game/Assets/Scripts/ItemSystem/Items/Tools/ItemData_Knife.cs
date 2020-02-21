@@ -10,11 +10,10 @@ public class ItemData_Knife : ItemBaseData
         base.IsSoulbound = false;
         base.IsUnique = false;
 
-        base.MaxStack = 1;
+        base.IsStackable = false;
         base.RelatedQuestIDs = new string[] { };
 
-        base.SellPrice = 500;
-        base.BuyPrice = 3250;
+        base.BuyPrice = 25;
         base.FetchSprite ();
     }
 }

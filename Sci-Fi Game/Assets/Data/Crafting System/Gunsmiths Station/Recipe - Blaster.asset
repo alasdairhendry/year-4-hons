@@ -15,6 +15,7 @@ MonoBehaviour:
   recipeName: Blaster
   timeToCraft: 30
   tableResourceUsage: 25
+  resultSprite: {fileID: 21300000, guid: 6c6a9ad254d4af7489af76d91a7ef86b, type: 3}
   ingredientsRequired:
   - ID: 16
     Amount: 8

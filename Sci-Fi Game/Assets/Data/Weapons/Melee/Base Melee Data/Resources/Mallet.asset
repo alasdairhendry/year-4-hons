@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponName: Mallet
   weaponAttackType: 0
+  weaponItemID: 47
+  brokenVariantItemID: 63
   offsetPosition: {x: 0.0106, y: 0.0025, z: 0.0005}
   offsetRotation: {x: 13.836015, y: 269.1475, z: 90.648}
   localScale: {x: 0.1, y: 0.1, z: 0.1}

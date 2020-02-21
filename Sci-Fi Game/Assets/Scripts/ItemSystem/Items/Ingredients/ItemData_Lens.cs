@@ -10,10 +10,9 @@ public class ItemData_Lens : ItemBaseData
         base.IsSoulbound = false;
         base.IsUnique = false;
 
-        base.MaxStack = int.MaxValue;
+        base.IsStackable = true; 
         base.RelatedQuestIDs = new string[] { };
 
-        base.SellPrice = 40;
         base.BuyPrice = 60;
         base.FetchSprite ();
     }

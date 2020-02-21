@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxSqrMagnitude: 100
   cameraOffset: {x: 0, y: 1.5, z: -5}
-  engineTorque: 25000
+  engineTorque: 10000
   brakeForce: 11250
   drivingDrag: 0
   drivingAngularDrag: 1
   idleDrag: 1
   idleAngularDrag: 0.5
   maxRevs: 7000
-  maxTurningAngle: 90
+  maxTurningAngle: 40
   automaticGearbox: 1

@@ -50,8 +50,6 @@ public class DropTableEditor : Editor
 
             EditorGUILayout.BeginVertical ( "Box" );
 
-            GUILayout.Space ( -16 );
-
             EditorGUILayout.PropertyField ( serializedObject.FindProperty ( "loot" ).GetArrayElementAtIndex ( i ).FindPropertyRelative ( "itemID" ) );
 
             if (!serializedObject.FindProperty ( "loot" ).GetArrayElementAtIndex ( i ).FindPropertyRelative ( "range" ).boolValue)

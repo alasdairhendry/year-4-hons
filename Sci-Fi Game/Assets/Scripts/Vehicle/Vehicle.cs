@@ -181,7 +181,6 @@ public class Vehicle : MonoBehaviour
     {
         ParticleSystem.EmissionModule mod = smokeParticles.emission;
         mod.rateOverTimeMultiplier = Mathf.Lerp ( 0.0f, 100.0f, Mathf.InverseLerp ( 0.65f, 0.25f, health.healthNormalised ) );
-        Debug.Log ( "rateOverTimeMultiplier " + mod.rateOverTimeMultiplier );
         smokeParticles.Play ();
     }
 
@@ -189,7 +188,18 @@ public class Vehicle : MonoBehaviour
     {
         if(collision.relativeVelocity.sqrMagnitude > 25.0f)
         {
-            health.RemoveHealth ( 12.5f, DamageType.BluntForce );
+            float damage = 12.5f;
+
+            Debug.Log ( "Should take " + damage );
+
+            if(currentDriver != null && currentDriver == EntityManager.instance.PlayerCharacter)
+            {
+                damage *= SkillModifiers.DrivingDamageReduction;
+            }
+
+            Debug.Log ( "Took " + damage );
+
+            health.RemoveHealth ( damage, DamageType.BluntForce );
         }
     }
 

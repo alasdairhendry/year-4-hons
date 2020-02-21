@@ -15,6 +15,7 @@ MonoBehaviour:
   recipeName: Blaster Rifle
   timeToCraft: 60
   tableResourceUsage: 50
+  resultSprite: {fileID: 21300000, guid: 0298c5d527c978b4ba9c8bc5148699c0, type: 3}
   ingredientsRequired:
   - ID: 18
     Amount: 5

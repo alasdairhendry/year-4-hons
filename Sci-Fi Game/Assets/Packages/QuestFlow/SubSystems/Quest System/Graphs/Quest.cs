@@ -12,6 +12,7 @@ namespace QuestFlow.QuestEngine
     {
         public string questID;
         public string questName;
+        public bool collateQuestLog = true;
         public QuestReward reward;
 
         public override Node AddNode (Type type)

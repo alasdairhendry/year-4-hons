@@ -59,7 +59,7 @@ public class CharacterInteraction : MonoBehaviour
             currentlyHoveredInteractable = interactable;
             //interactable.OnPointerEnter ();
 
-            if (interactable != null)
+            if (interactable != null && interactable.IsInteractable)
             {
                 if (Extensions.SquaredDistance ( hit.collider.transform.position, transform.position ) > SquaredInteractionAvailableRadius)
                 {

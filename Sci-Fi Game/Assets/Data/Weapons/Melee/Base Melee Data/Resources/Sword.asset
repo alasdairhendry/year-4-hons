@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponName: Sword
   weaponAttackType: 0
+  weaponItemID: 51
+  brokenVariantItemID: 67
   offsetPosition: {x: 0.0107, y: 0.0023, z: -0.0049}
   offsetRotation: {x: 346.67856, y: 88.92305, z: 267.72815}
   localScale: {x: 0.1, y: 0.1, z: 0.1}

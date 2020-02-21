@@ -15,6 +15,10 @@ public class AIStateControllerData : ScriptableObject
     [SerializeField] private AIStateBase nearMissBehaviour;
     [SerializeField] private AIStateBaseFlee fleeBehaviour;
     [SerializeField] private AIStateBaseCombat combatBehaviour;
+    [Header ( "Combat" )]
+    [SerializeField] private float stopsAttackingAfterLastAttackDelay = 3.0f;
+    [SerializeField] [NaughtyAttributes.HideIf ( nameof ( stopsAttackingSqrDistanceIsPlayerWeaponDistace ) )] private float stopsAttackingSqrDistanceDelay = 100.0f;
+    [SerializeField] private bool stopsAttackingSqrDistanceIsPlayerWeaponDistace = true;
     [Header ( "Combat Gun Stats" )]
     [SerializeField] private float strategicReloadChance = 0.0001f;
     [SerializeField] private float emptyClipReloadChance = 0.1f;
@@ -37,4 +41,7 @@ public class AIStateControllerData : ScriptableObject
     public float StopCombatAfterPlayerDeathChance { get => stopCombatAfterPlayerDeathChance; set => stopCombatAfterPlayerDeathChance = value; }
     public float FireChance { get => fireChance; set => fireChance = value; }
     public float StopFiringChance { get => stopFiringChance; set => stopFiringChance = value; }
+    public float StopsAttackingAfterLastAttackDelay { get => stopsAttackingAfterLastAttackDelay; set => stopsAttackingAfterLastAttackDelay = value; }
+    public float StopsAttackingOnEnemySqrDistanceDelay { get => stopsAttackingSqrDistanceDelay; set => stopsAttackingSqrDistanceDelay = value; }
+    public bool StopsAttackingSqrDistanceIsPlayerWeaponDistance { get => stopsAttackingSqrDistanceIsPlayerWeaponDistace; set => stopsAttackingSqrDistanceIsPlayerWeaponDistace = value; }
 }

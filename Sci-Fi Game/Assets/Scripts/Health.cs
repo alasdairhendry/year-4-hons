@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum DamageType { PlayerAttack, EnemyAttack, FallDamage, FireDamage, WaterDamage, BluntForce }
-public enum HealType { Consumable }
+public enum DamageType { PlayerAttack, EnemyAttack, FallDamage, FireDamage, WaterDamage, BluntForce, CompostDamage }
+public enum HealType { Consumable, FactionEffect }
 
 public class Health : MonoBehaviour
 {
@@ -15,8 +15,8 @@ public class Health : MonoBehaviour
 
     [SerializeField] private float maxHealth = 100.0f;
     [SerializeField] private FloatingTextIndicator floatingTextIndicator;
-    public float currentHealth { get; protected set; }
-    public float healthNormalised { get => currentHealth / maxHealth; }
+    [NaughtyAttributes.ShowNativeProperty] public float currentHealth { get; protected set; }
+    [NaughtyAttributes.ShowNativeProperty] public float healthNormalised { get => currentHealth / maxHealth; }
     public float MaxHealth { get => maxHealth; set => maxHealth = value; }
 
     private void Awake ()
@@ -30,6 +30,8 @@ public class Health : MonoBehaviour
 
         if (resetCurrent)
             currentHealth = maxHealth;
+
+        onHealthChanged?.Invoke ();
     }
 
     public float AddHealth(float amount, HealType healType)
@@ -42,7 +44,7 @@ public class Health : MonoBehaviour
         return added;
     }
 
-    public float RemoveHealth (float amount, DamageType damageType)
+    public float RemoveHealth (float amount, DamageType damageType, bool isCritical = false)
     {
         if (currentHealth <= 0) return 0;
 
@@ -53,7 +55,7 @@ public class Health : MonoBehaviour
         onHealthChanged?.Invoke ();
         CheckDeath ();
         if (floatingTextIndicator != null)
-            floatingTextIndicator.CreateText ( removed.ToString (), FloatingTextType.Damage );
+            floatingTextIndicator.CreateDamageText ( removed, isCritical);
         return removed;
     }
 

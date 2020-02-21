@@ -7,7 +7,7 @@ public class AIStateBaseIdle : AIStateBase
 {
     public override void OnEnter (NPC npc)
     {
-        npc.NPCNavMesh.ResetCurrentPath ();
+        npc.NPCNavMesh.ClearCurrentPath ();
     }
 
     public override void OnUpdate (NPC npc)
@@ -16,13 +16,13 @@ public class AIStateBaseIdle : AIStateBase
         {
             if(Random.value < 0.01f)
             {
-                npc.NPCNavMesh.FindDestinationWithinMobZone ();
+                npc.NPCNavMesh.SetDestinationWithinMobZone ( false, false );
             }
         }
     }
 
     public override void OnExit (NPC npc)
     {
-        npc.NPCNavMesh.ResetCurrentPath ();
+        npc.NPCNavMesh.ClearCurrentPath ();
     }
 }

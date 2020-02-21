@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95280342ab59ddc43b018dc874eeff74, type: 3}
+  m_Name: NPC AI Data - Waypoint
+  m_EditorClassIdentifier: 
+  nearMissRadius: 1
+  fleesBelowHealthPercent: 0
+  weaponChoices: []
+  weaponAlwaysEquipped: 0
+  weaponAlwaysUnholstered: 0
+  idleBehaviour: {fileID: 0}
+  nearMissBehaviour: {fileID: 0}
+  fleeBehaviour: {fileID: 11400000, guid: a5d50708b0ab7954aac59b7cbddddb65, type: 2}
+  combatBehaviour: {fileID: 11400000, guid: 98d2b50f421a4c942a63de6675f057e5, type: 2}
+  stopsAttackingAfterLastAttackDelay: 10
+  stopsAttackingSqrDistanceDelay: 100
+  stopsAttackingSqrDistanceIsPlayerWeaponDistace: 0
+  strategicReloadChance: 0.0001
+  emptyClipReloadChance: 0.1
+  stopCombatAfterPlayerDeathChance: 1
+  fireChance: 0.1
+  stopFiringChance: 0.3

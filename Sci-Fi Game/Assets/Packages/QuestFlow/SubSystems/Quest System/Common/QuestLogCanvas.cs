@@ -2,37 +2,69 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace QuestFlow
 {
-    public class QuestLogCanvas : MonoBehaviour
+    public class QuestLogCanvas : UIPanel
     {
+        public static QuestLogCanvas instance;      
+
+        [SerializeField] private GameObject mainPanel;
         [SerializeField] private GameObject questLogPanel;
         [SerializeField] private GameObject questLogItem;
         [Space]
         [SerializeField] private GameObject questDisplayPanel;
         [SerializeField] private TextMeshProUGUI questDisplayTitle;
         [SerializeField] private TextMeshProUGUI questDisplayBody;
+        [SerializeField] private ScrollRect questDisplayBodyScrollRect;
+        [SerializeField] private Button closeButton;
 
         private Dictionary<string, GameObject> questIDToLogItemDictionary = new Dictionary<string, GameObject> ();
+        private Dictionary<string, string> questIDToLogDataDictionary = new Dictionary<string, string> ();
         private Quest currentDisplayedQuest;
+
+        [SerializeField] private Animator updatedPanelAnimator;
+
+        private void Awake ()
+        {
+            if (instance == null) instance = this;
+            else if (instance != this) { Destroy ( this.gameObject ); return; }
+        }
 
         private void Start ()
         {
             CreateQuestLogItems ();
-            HideQuestDisplayPanel ();
             QuestManager.instance.onQuestStateChanged += UpdateQuestState;
             QuestManager.instance.onQuestSubStateChanged += UpdateQuestLog;
+            Close ();
+        }
+
+        public override void Open ()
+        {
+            base.Open ();
+            mainPanel.SetActive ( true );
+            isOpened = true;
+            HideQuestDisplayPanel ();
+        }
+
+        public override void Close ()
+        {
+            base.Close ();
+            mainPanel.SetActive ( false );
+            isOpened = false;
         }
 
         private void CreateQuestLogItems ()
         {
-            for (int i = 0; i < QuestManager.instance.GetQuests.Count; i++)
+            List<Quest> questsOrdered = QuestManager.instance.GetQuests.OrderBy ( x => x.questName ).ToList ();
+
+            for (int i = 0; i < questsOrdered.Count; i++)
             {
-                Quest quest = QuestManager.instance.GetQuests[i];
+                Quest quest = questsOrdered[i];
                 QuestManager.QuestData questData = QuestManager.instance.GetQuestDataByID ( quest.questID );
                 GameObject item = questLogItem;
 
@@ -42,13 +74,14 @@ namespace QuestFlow
                 }
 
                 questIDToLogItemDictionary.Add ( quest.questID, item );
+                questIDToLogDataDictionary.Add ( quest.questID, QuestManager.instance.GetQuestLogEntry ( quest, "" ) );
 
                 QuestState questState = questData.currentQuestState;
                 SetQuestLogNameData ( item.GetComponentInChildren<TextMeshProUGUI> (), quest );
-                item.GetComponent<Button> ().onClick.AddListener ( () => { OpenQuestDisplayPanel ( quest ); } );
+                item.GetComponentInChildren<Button> ().onClick.AddListener ( () => { OpenQuestDisplayPanel ( quest ); } );
             }
 
-            if (QuestManager.instance.GetQuests.Count <= 0)
+            if (questsOrdered.Count <= 0)
             {
                 questLogItem.SetActive ( false );
             }
@@ -57,7 +90,6 @@ namespace QuestFlow
         private void UpdateQuestState (Quest quest, QuestState questState)
         {
             SetQuestLogNameData ( questIDToLogItemDictionary[quest.questID].GetComponentInChildren<TextMeshProUGUI> (), quest );
-            UpdateQuestLog ( quest );
         }
 
         private void SetQuestLogNameData (TextMeshProUGUI textMesh, Quest quest)
@@ -83,14 +115,18 @@ namespace QuestFlow
                     break;
             }
 
-            textMesh.text = string.Format ( "<color={0}>{1}</color>", colour, quest.questName + " - " + data.currentNode.name );
+            textMesh.text = string.Format ( "<color={0}>{1}</color>", colour, quest.questName );
         }
 
         private void UpdateQuestLog (Quest quest)
         {
-            if(currentDisplayedQuest == quest)
+            updatedPanelAnimator.SetTrigger ( "trigger" );
+            questIDToLogDataDictionary[quest.questID] = QuestManager.instance.GetQuestLogEntry ( quest, questIDToLogDataDictionary[quest.questID] );
+
+            if (currentDisplayedQuest == quest)
             {
-                questDisplayBody.text = QuestManager.instance.GetQuestLogEntry ( quest );
+                questDisplayBody.text = questIDToLogDataDictionary[quest.questID];
+                StartCoroutine ( SetNormalisedVerticalScrollPositionAfterFrame () );
             }
         }
 
@@ -100,7 +136,16 @@ namespace QuestFlow
             questLogPanel.SetActive ( false );
             currentDisplayedQuest = quest;
             questDisplayTitle.text = quest.questName;
-            questDisplayBody.text = QuestManager.instance.GetQuestLogEntry ( quest );
+            questDisplayBody.text = questIDToLogDataDictionary[quest.questID];
+            StartCoroutine ( SetNormalisedVerticalScrollPositionAfterFrame () );
+            closeButton.onClick.RemoveAllListeners ();
+            closeButton.onClick.AddListener ( () => { HideQuestDisplayPanel (); } );
+        }
+
+        private IEnumerator SetNormalisedVerticalScrollPositionAfterFrame ()
+        {
+            yield return new WaitForEndOfFrame ();
+            questDisplayBodyScrollRect.verticalNormalizedPosition = 0.0f;
         }
 
         public void HideQuestDisplayPanel ()
@@ -108,8 +153,10 @@ namespace QuestFlow
             questLogPanel.SetActive ( true );
             questDisplayPanel.SetActive ( false );
             currentDisplayedQuest = null;
-            questDisplayTitle.text = "";
+            questDisplayTitle.text = "Quest Log";
             questDisplayBody.text = "";
+            closeButton.onClick.RemoveAllListeners ();
+            closeButton.onClick.AddListener ( () => { Close (); } );
         }
     }
 }

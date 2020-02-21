@@ -27,13 +27,12 @@ public abstract class ItemBaseData
     public bool IsSellable { get; protected set; }          // Is the item able to be sold to shops?
     public bool IsSoulbound { get; protected set; }         // Can the item be destroyed?
     public bool IsUnique { get; protected set; }            // Can the player have multiple of these items?
+    public bool IsStackable { get; protected set; }             // Can this item be stacked on top of itself in an inventory?
 
-    public int MaxStack { get; protected set; }             // The maximum amount of this item that can fit in one inventory space
     public string[] RelatedQuestIDs { get; protected set; }    // Does this item relate to any quest IDs? If so, it is considered a quest item
     public bool IsQuestItem { get { return RelatedQuestIDs.Length > 0; } }  // Relies on RelatedQuestIDs to determine if this is a quest item or not
 
-    public int SellPrice { get; protected set; }            // A baseline price that the player can sell this item for (this may be overridden by a merchants price modifier)
-    public int BuyPrice { get; protected set; }            // A baseline price that the player can buy this item for (this may be overridden by a merchants price modifier)
+    public int BuyPrice { get; protected set; }            // A baseline price that the player can buy this item for ( this may be overridden by a merchants price modifier ) (( The sell price will typically be 0.75f of the buy price ))
     public Sprite Sprite { get; protected set; }            // A sprite to display in the game UI 
 
     protected Dictionary<InventoryInteractionData.InteractType, InventoryInteractionData> interactionData { get; set; } = new Dictionary<InventoryInteractionData.InteractType, InventoryInteractionData> ();
@@ -47,6 +46,7 @@ public abstract class ItemBaseData
         {
             int amount = EntityManager.instance.PlayerInventory.GetStackAtIndex ( inventoryIndex ).Amount;
             EntityManager.instance.PlayerInventory.RemoveItem ( ID, amount );
+            SoundEffect.Play ( EntityManager.instance.dropItemSoundEffects.GetRandom () );
         } ), false );
     }
 
@@ -135,7 +135,7 @@ public abstract class ItemBaseDataBook : ItemBaseData
     public ItemBaseDataBook (int ID) : base ( ID )
     {
         this.category = ItemCategory.Book;
-        AddInteractionData ( new InventoryInteractionData ( InventoryInteractionData.InteractType.Read, (inventoryIndex) => { BookDisplayCanvas.instance.Show ( bookTitle, bookText ); } ), true );
+        AddInteractionData ( new InventoryInteractionData ( InventoryInteractionData.InteractType.Read, (inventoryIndex) => { BookDisplayCanvas.instance.SetBook ( bookTitle, bookText ); BookDisplayCanvas.instance.Open (); } ), true );
     }
 
     protected void SetTitle(string text)
@@ -157,15 +157,12 @@ public abstract class ItemBaseDataBook : ItemBaseData
         bookText += text;
     }
 
-    protected void InsertBreak ()
+    protected void InsertBreak (int count = 1)
     {
-        this.bookText += "\n";
-    }
-
-    protected void InsertSpace ()
-    {
-        this.bookText += "\n";
-        this.bookText += "\n";
+        for (int i = 0; i < count; i++)
+        {
+            this.bookText += "\n";
+        }
     }
 
     protected void InsertParagraph(string text)
@@ -201,7 +198,7 @@ public class InventoryInteractionData
         base.IsSoulbound = false;
         base.IsUnique = false;
 
-        base.MaxStack = 10;
+        base.IsStackable = true; 10;
         base.RelatedQuestIDs = new int[] { };
 
         base.sellPrice = 0;

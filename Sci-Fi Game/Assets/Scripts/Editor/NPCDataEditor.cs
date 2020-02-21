@@ -17,8 +17,13 @@ public class NPCDataEditor : Editor
     {
         base.DrawDefaultInspector ();
 
-        EditorGUILayout.LabelField ( "Modified Hit Chance: " + t.GetBaseHitChance.ToString ( "0.000" ) );
-        EditorGUILayout.LabelField ( "Modified Base Damage : " + t.GetBaseDamageOutput.ToString ( "0.000" ) );
+        EditorGUILayout.LabelField ( "Modified Max Health: " + NPCCombatStats.GetMaxHealth(t) );
+        EditorGUILayout.Space ();
+        EditorGUILayout.LabelField ( "Modified Melee Hit Chance: " + NPCCombatStats.GetMeleeHitChance ( t ) );
+        EditorGUILayout.LabelField ( "Modified Melee Damage : " + NPCCombatStats.GetMeleeDamageOutput ( t ) );
+        EditorGUILayout.Space ();
+        EditorGUILayout.LabelField ( "Modified Gun Hit Chance: " + NPCCombatStats.GetGunHitChance ( t ) );
+        EditorGUILayout.LabelField ( "Modified Gun Damage : " + NPCCombatStats.GetGunDamageOutput ( t ) );
 
     }
 }

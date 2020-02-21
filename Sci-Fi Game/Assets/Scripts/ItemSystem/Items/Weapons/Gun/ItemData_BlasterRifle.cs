@@ -9,11 +9,10 @@ public class ItemData_BlasterRifle : ItemGearWeaponGun
         base.IsSoulbound = false;
         base.IsUnique = false;
 
-        base.MaxStack = 1;
+        base.IsStackable = false;
         base.RelatedQuestIDs = new string[] { };
 
-        base.SellPrice = 200;
-        base.BuyPrice = 60;
+        base.BuyPrice = 1000;
         base.FetchSprite ();
     }
 }

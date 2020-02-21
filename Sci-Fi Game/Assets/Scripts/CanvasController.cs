@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class CanvasController : MonoBehaviour
 {
@@ -10,6 +12,12 @@ public class CanvasController : MonoBehaviour
     private void Start ()
     {
         canvases = FindObjectsOfType<Canvas> ().ToList ();
+    }
+
+    private void Update ()
+    {
+        if (EventSystem.current.currentSelectedGameObject != null && EventSystem.current.currentSelectedGameObject.GetComponent<TMP_InputField> () == null)
+            EventSystem.current.SetSelectedGameObject ( null );
     }
 
     public void PullCanvasToFront(Canvas canvas)

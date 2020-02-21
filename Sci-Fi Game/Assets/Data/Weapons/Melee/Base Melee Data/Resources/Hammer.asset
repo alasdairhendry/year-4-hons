@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponName: Hammer
   weaponAttackType: 0
+  weaponItemID: 44
+  brokenVariantItemID: 60
   offsetPosition: {x: 0.0105, y: 0.003, z: -0.0027}
   offsetRotation: {x: 13.836028, y: 269.1475, z: 92.53098}
   localScale: {x: 0.1, y: 0.1, z: 0.1}
