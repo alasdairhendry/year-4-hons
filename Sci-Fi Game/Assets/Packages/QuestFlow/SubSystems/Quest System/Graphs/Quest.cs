@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 using XNode;
 
@@ -15,6 +17,7 @@ namespace QuestFlow.QuestEngine
         public bool collateQuestLog = true;
         public QuestReward reward;
 
+#if UNITY_EDITOR
         public override Node AddNode (Type type)
         {
             if (type != typeof ( Start ))
@@ -28,6 +31,21 @@ namespace QuestFlow.QuestEngine
             return base.AddNode ( type );
         }
 
+        public override void RemoveNode (Node node)
+        {
+            if (node is State)
+            {
+                List<Condition> conditions = (node as NodeBase).conditions;
+                for (int i = 0; i < conditions.Count; i++)
+                {
+                    if (conditions[i] != null)
+                        AssetDatabase.RemoveObjectFromAsset ( conditions[i] );
+                }
+            }
+
+            base.RemoveNode ( node );
+        }
+#endif
         public bool ContainsStartNode ()
         {
             bool foundNode = false;
@@ -120,21 +138,6 @@ namespace QuestFlow.QuestEngine
             }
 
             return quests;
-        }
-
-        public override void RemoveNode (Node node)
-        {
-            if (node is State)
-            {
-                List<Condition> conditions = (node as NodeBase).conditions;
-                for (int i = 0; i < conditions.Count; i++)
-                {
-                    if (conditions[i] != null)
-                        AssetDatabase.RemoveObjectFromAsset ( conditions[i] );
-                }
-            }
-
-            base.RemoveNode ( node );
         }
     }   
 }

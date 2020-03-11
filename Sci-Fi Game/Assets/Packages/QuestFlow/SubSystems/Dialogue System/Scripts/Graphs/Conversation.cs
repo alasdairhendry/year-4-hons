@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 using XNode;
 
@@ -265,6 +267,19 @@ namespace QuestFlow.DialogueEngine
             GetNextNodeFromStatement ( node );
         }
 
+        public bool ContainsStartNode ()
+        {
+            bool foundNode = false;
+
+            for (int i = 0; i < nodes.Count; i++)
+            {
+                if (nodes[i] as Start) { foundNode = true; break; }
+            }
+
+            return foundNode;
+        }
+
+#if UNITY_EDITOR
         public override Node AddNode (Type type)
         {
             if (type != typeof ( Start ))
@@ -282,18 +297,6 @@ namespace QuestFlow.DialogueEngine
             }
 
             return base.AddNode ( type );
-        }
-
-        public bool ContainsStartNode ()
-        {
-            bool foundNode = false;
-
-            for (int i = 0; i < nodes.Count; i++)
-            {
-                if (nodes[i] as Start) { foundNode = true; break; }
-            }
-
-            return foundNode;
         }
 
         public override void RemoveNode (Node node)
@@ -343,5 +346,6 @@ namespace QuestFlow.DialogueEngine
             return a.ToList (); ;
 
         }
+#endif
     }
 }
