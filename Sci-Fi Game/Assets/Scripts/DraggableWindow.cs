@@ -11,12 +11,23 @@ public class DraggableWindow : MonoBehaviour, IPointerDownHandler
         {
             Cursor.visible = false;
             isDragging = true;
-            FindObjectOfType<CanvasController> ().PullCanvasToFront ( GetComponentInParent<Canvas> () );
+            CanvasController.instance.PullCanvasToFront ( GetComponentInParent<Canvas> () );
         }
     }
 
     [SerializeField] private RectTransform windowRect;
+    private Vector3 initialPosition = new Vector3 ();
     private bool isDragging = false;
+
+    private void Start ()
+    {
+        initialPosition = windowRect.anchoredPosition3D;
+    }
+
+    public void ResetPosition()
+    {
+        windowRect.anchoredPosition3D = initialPosition;
+    }
 
     private void Update ()
     {

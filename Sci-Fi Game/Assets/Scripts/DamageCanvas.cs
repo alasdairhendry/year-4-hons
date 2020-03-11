@@ -26,7 +26,7 @@ public class DamageCanvas : MonoBehaviour
 
         if (isPlayer)
         {
-            scaleModifier *= 0.5f;
+            scaleModifier *= 0.75f;
         }
 
         if (isCritical)
@@ -48,6 +48,44 @@ public class DamageCanvas : MonoBehaviour
             {
                 go.GetComponentInChildren<TextMeshProUGUI> ().color = new Color ( 0.9f, 0.9f, 0.9f, 1.0f );
             }
+        }
+    }
+
+    public void SpawnHealIndicator (Transform targetTransform, float maxDistance, float amount, bool isCritical = false, bool isPlayer = false)
+    {
+        GameObject go = Instantiate ( damageIndicatorPrefab );
+        go.transform.SetParent ( this.transform );
+        go.transform.position = targetTransform.position + (Random.insideUnitSphere * maxDistance);
+
+        float scaleModifier = 0.01f;
+
+        if (isPlayer)
+        {
+            scaleModifier *= 0.75f;
+        }
+
+        if (isCritical)
+        {
+            scaleModifier *= 2.0f;
+        }
+
+        go.transform.localScale = Vector3.one * scaleModifier;
+        go.GetComponentInChildren<TextMeshProUGUI> ().text = "+" + Mathf.Floor ( amount ).ToString ( "0" );
+
+        if (!isPlayer)
+        {
+            if (isCritical)
+            {
+                go.GetComponentInChildren<TextMeshProUGUI> ().color = Color.yellow;
+            }
+            else
+            {
+                go.GetComponentInChildren<TextMeshProUGUI> ().color = new Color ( 0.9f, 0.9f, 0.9f, 1.0f );
+            }
+        }
+        else
+        {
+            go.GetComponentInChildren<TextMeshProUGUI> ().color = Color.cyan;
         }
     }
 

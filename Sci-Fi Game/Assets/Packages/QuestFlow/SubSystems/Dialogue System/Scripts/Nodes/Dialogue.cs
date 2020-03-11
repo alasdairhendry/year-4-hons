@@ -7,7 +7,7 @@ namespace QuestFlow.DialogueEngine
     [NodeTint ( "#DFE88B" )]
     public class Dialogue : DialogueEntry
     {
-        [TextArea] public string dialogue = "";
+        [TextArea(6,6)] public string dialogue = "";
         [SerializeField] private ActorData actorOverride;
 
         protected override void Init ()

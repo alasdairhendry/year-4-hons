@@ -15,7 +15,7 @@ public class StoreCanvas : UIPanel
         if (instance == null) instance = this;
         else if (instance != this) { Destroy ( this.gameObject ); return; }
 
-        Close ();
+        Close ( true );
     }
 
     private void Update ()
@@ -23,6 +23,27 @@ public class StoreCanvas : UIPanel
         if (EntityManager.instance.PlayerCharacter.cInput.rawInput != Vector2.zero)
         {
             Close ();
+        }
+    }
+
+    public float GetItemSellPriceFromCurrentShopkeeper (int itemID)
+    {
+        ItemBaseData item = null;
+
+        if (ItemDatabase.GetItem ( itemID, out item ))
+        {
+            if (currentShopkeeper == null)
+            {
+                return item.BuyPrice;
+            }
+            else
+            {
+                return currentShopkeeper.GetSellPrice ( itemID );
+            }
+        }
+        else
+        {
+            return 0.0f;
         }
     }
 
@@ -51,16 +72,21 @@ public class StoreCanvas : UIPanel
     {
         EntityManager.instance.InventoryCanvas.Open ();
         ItemContainerCanvas.instance.Close ();
+        BankCanvas.instance.Close ();
 
         base.Open ();
         isOpened = true;
         mainPanel.SetActive ( true );
+        UIPanelController.instance.OnPanelOpened ( this );
     }
 
-    public override void Close ()
+    public override void Close (bool bypassCloseCheck = false)
     {
+        if (isOpened == false && !bypassCloseCheck) return;
+
         base.Close ();
         isOpened = false;
         mainPanel.SetActive ( false );
+        UIPanelController.instance.OnPanelClosed ( this );
     }
 }

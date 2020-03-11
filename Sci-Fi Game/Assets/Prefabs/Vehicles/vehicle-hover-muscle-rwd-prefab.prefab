@@ -80,7 +80,8 @@ AudioSource:
   m_GameObject: {fileID: 4412196693586326321}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -6574690979570365131, guid: cad6d4cbb4c2a094e9c802d99ed71df9,
+    type: 2}
   m_audioClip: {fileID: 8300000, guid: aadec5c80f057d54089d254fa6db8597, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
@@ -90,11 +91,11 @@ AudioSource:
   Spatialize: 0
   SpatializePostEffects: 0
   Priority: 128
-  DopplerLevel: 1
+  DopplerLevel: 0
   MinDistance: 1
-  MaxDistance: 10
+  MaxDistance: 50
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 2
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -102,10 +103,19 @@ AudioSource:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0
+      time: 0.1
       value: 1
       inSlope: 0
       outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.32500002
+      value: 0.35
+      inSlope: -1.7333331
+      outSlope: -1.7333331
       tangentMode: 0
       weightedMode: 0
       inWeight: 0.33333334
@@ -117,8 +127,8 @@ AudioSource:
       outSlope: 0
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
+      inWeight: 0
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
@@ -142,7 +152,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 0.16666667
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -176,7 +186,8 @@ AudioSource:
   m_GameObject: {fileID: 4412196693586326321}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -6574690979570365131, guid: cad6d4cbb4c2a094e9c802d99ed71df9,
+    type: 2}
   m_audioClip: {fileID: 8300000, guid: 29f5835d8b963eb43b57ca751e9556ec, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
@@ -186,11 +197,11 @@ AudioSource:
   Spatialize: 0
   SpatializePostEffects: 0
   Priority: 128
-  DopplerLevel: 1
+  DopplerLevel: 0
   MinDistance: 20
   MaxDistance: 50
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 2
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -198,10 +209,19 @@ AudioSource:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0
+      time: 0.39999998
       value: 1
       inSlope: 0
       outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.55
+      value: 0.35
+      inSlope: -2.6000001
+      outSlope: -2.6000001
       tangentMode: 0
       weightedMode: 0
       inWeight: 0.33333334
@@ -213,8 +233,8 @@ AudioSource:
       outSlope: 0
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
+      inWeight: 0
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
@@ -238,7 +258,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 0.16666667
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -352,6 +372,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 100
   floatingTextIndicator: {fileID: 0}
+  regeneratesOverTime: 0
+  regenerateEveryXSeconds: 10
+  regeneratePercentOfMaxHealth: 0.05
+  startRegenerationAfterXSeconds: 30
 --- !u!1 &8559302925286916875
 GameObject:
   m_ObjectHideFlags: 0
@@ -407,6 +431,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -486,6 +511,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -564,6 +590,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -643,6 +670,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -721,6 +749,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -799,6 +828,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -877,6 +907,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -956,6 +987,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1035,6 +1067,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1114,6 +1147,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1201,6 +1235,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1402,11 +1437,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4412196693586326320}
     m_Modifications:
-    - target: {fileID: 2399699994302040380, guid: fa4368b042eed874082ddb0544d1eed4,
-        type: 3}
-      propertyPath: m_Name
-      value: vehicle-smoke-particles (3)
-      objectReference: {fileID: 0}
     - target: {fileID: 241290373928069090, guid: fa4368b042eed874082ddb0544d1eed4,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1461,6 +1491,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2399699994302040380, guid: fa4368b042eed874082ddb0544d1eed4,
+        type: 3}
+      propertyPath: m_Name
+      value: vehicle-smoke-particles (3)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fa4368b042eed874082ddb0544d1eed4, type: 3}
@@ -1558,11 +1593,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4412196693586326320}
     m_Modifications:
-    - target: {fileID: 6431832202300931812, guid: 76915df11a9b0364dbadaa5540f90a0e,
-        type: 3}
-      propertyPath: m_Name
-      value: Interactable
-      objectReference: {fileID: 0}
     - target: {fileID: 6431832202300931810, guid: 76915df11a9b0364dbadaa5540f90a0e,
         type: 3}
       propertyPath: interactType
@@ -1642,6 +1672,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6431832202300931812, guid: 76915df11a9b0364dbadaa5540f90a0e,
+        type: 3}
+      propertyPath: m_Name
+      value: Interactable
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6431832202300931809, guid: 76915df11a9b0364dbadaa5540f90a0e, type: 3}

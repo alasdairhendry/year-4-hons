@@ -1,0 +1,125 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1ee7761905c11d41ae739b6268198eb, type: 3}
+  m_Name: Audio Clip Asset Database
+  m_EditorClassIdentifier: 
+  assets:
+  - assetNameString: UIPanelOpen
+    assetType: 0
+    assets:
+    - {fileID: 8300000, guid: f8c0eb179481e0c40a5ff999b7c6662f, type: 3}
+    foldout: 1
+  - assetNameString: UIPanelClose
+    assetType: 1
+    assets:
+    - {fileID: 8300000, guid: 70ae166c5b464bd49a5aff8123546350, type: 3}
+    foldout: 1
+  - assetNameString: UIButtonHover
+    assetType: 2
+    assets:
+    - {fileID: 8300000, guid: 2aff95e9ca977374397cd2d6fe3047d5, type: 3}
+    foldout: 1
+  - assetNameString: UIButtonClick
+    assetType: 3
+    assets:
+    - {fileID: 8300000, guid: dbbb37634f0c30845b0ed54e046daad6, type: 3}
+    foldout: 1
+  - assetNameString: BookOpen
+    assetType: 4
+    assets:
+    - {fileID: 0}
+    foldout: 1
+  - assetNameString: BookClose
+    assetType: 5
+    assets:
+    - {fileID: 0}
+    foldout: 1
+  - assetNameString: BookFlipPage
+    assetType: 6
+    assets:
+    - {fileID: 0}
+    foldout: 1
+  - assetNameString: ChestOpen
+    assetType: 7
+    assets:
+    - {fileID: 8300000, guid: 9b7209987b7eecf4aba794b9773f9fc3, type: 3}
+    foldout: 1
+  - assetNameString: ChestClose
+    assetType: 8
+    assets:
+    - {fileID: 8300000, guid: 0712e108f8013f645bce4a2c6c87c01c, type: 3}
+    foldout: 1
+  - assetNameString: QuestAccepted
+    assetType: 9
+    assets:
+    - {fileID: 8300000, guid: 277149fc50f1c0940bd377a92d21ac92, type: 3}
+    foldout: 1
+  - assetNameString: QuestCompleted
+    assetType: 10
+    assets:
+    - {fileID: 8300000, guid: 910c65db221d2d642b8028c770d2fe75, type: 3}
+    foldout: 1
+  - assetNameString: QuestLogUpdated
+    assetType: 11
+    assets:
+    - {fileID: 8300000, guid: fd3d3b98060ac864c83497a03704aee1, type: 3}
+    foldout: 1
+  - assetNameString: LevelUp
+    assetType: 12
+    assets:
+    - {fileID: 8300000, guid: 2921ca9b0adfcfc48af70e4e331ce37a, type: 3}
+    foldout: 1
+  - assetNameString: CoinsRattle
+    assetType: 13
+    assets:
+    - {fileID: 8300000, guid: 9f4cc52c299c9e443ad034d8cb2d9c69, type: 3}
+    foldout: 1
+  - assetNameString: InventoryUpdated
+    assetType: 14
+    assets:
+    - {fileID: 8300000, guid: 295bca0143141b445bcd6929311c3f1e, type: 3}
+    foldout: 1
+  - assetNameString: WeaponBreak
+    assetType: 15
+    assets:
+    - {fileID: 8300000, guid: 130f8c62cf37d7e4eb9afb30362e9d8d, type: 3}
+    foldout: 1
+  - assetNameString: UseGem
+    assetType: 16
+    assets:
+    - {fileID: 8300000, guid: df6d7d605c719f94388a6cd118e8b2fb, type: 3}
+    foldout: 1
+  - assetNameString: PlayerDeath
+    assetType: 17
+    assets:
+    - {fileID: 8300000, guid: 777c8c33d6c601b478d91e0e9b54fe85, type: 3}
+    foldout: 1
+  - assetNameString: Footstep
+    assetType: 18
+    assets:
+    - {fileID: 8300000, guid: c53d3b042ad78f545a2fe70a6a054b1e, type: 3}
+    - {fileID: 8300000, guid: 0b6ab164cc8aa144ea3fe518add868e3, type: 3}
+    - {fileID: 8300000, guid: d829e9423f70e304880cf96adec436be, type: 3}
+    - {fileID: 8300000, guid: 98f074e20de191a4f81000d832e0bf25, type: 3}
+    - {fileID: 8300000, guid: 6c4295d974c712a4eb9ebb72dc12908d, type: 3}
+    - {fileID: 8300000, guid: 86d15944649384f4db229e842987027d, type: 3}
+    - {fileID: 8300000, guid: 4d4daa4325e842e4082abc4ac60cec78, type: 3}
+    - {fileID: 8300000, guid: 142e0975d40fdf94eac3ae052ee5198c, type: 3}
+    - {fileID: 8300000, guid: 5bf44bfb6d6eee946adeadfe376ef1e7, type: 3}
+    - {fileID: 8300000, guid: a2a4a11ee081c9f42ba376a88dd454e2, type: 3}
+    - {fileID: 8300000, guid: 6a0bf622302b85a47a8b4d2aa8fbd622, type: 3}
+    foldout: 0
+  - assetNameString: UIButtonHoverExit
+    assetType: 19
+    assets:
+    - {fileID: 8300000, guid: 2aff95e9ca977374397cd2d6fe3047d5, type: 3}
+    foldout: 0

@@ -11,6 +11,12 @@ public class CharacterRegion : MonoBehaviour
     private bool hasSetRegion = false;
     private Ray ray;
     private RaycastHit[] hits;
+    private CityController cityController;
+
+    private void Awake ()
+    {
+        cityController = FindObjectOfType<CityController> ();
+    }
 
     private void Update ()
     {
@@ -19,21 +25,20 @@ public class CharacterRegion : MonoBehaviour
 
     private void DetectRegions ()
     {
-        Vector3 origin = transform.position + Vector3.up;
-        List<CityRegions> regionsDetected = new List<CityRegions> ();
+        CityRegions regionDetected = CityRegionController.GetRegion ( transform.position + Vector3.up, detectionRadius );
 
-        DetectRegionHit ( origin, regionsDetected );
-        DetectRegionHit ( origin + Vector3.right * detectionRadius, regionsDetected );
-        DetectRegionHit ( origin + Vector3.left * detectionRadius, regionsDetected );
-        DetectRegionHit ( origin + Vector3.forward * detectionRadius, regionsDetected );
-        DetectRegionHit ( origin + Vector3.back * detectionRadius, regionsDetected );
-
-        if (regionsDetected.Count == 1)
+        if (regionDetected != CityRegions.None)
         {
-            if (regionsDetected[0] != currentRegion || hasSetRegion == false)
+            if (regionDetected != currentRegion || hasSetRegion == false)
             {
-                OnEnterNewRegion ( regionsDetected[0] );
+                OnEnterNewRegion ( regionDetected );
             }
+
+            cityController.OnCharacterEnterCity ();
+        }
+        else
+        {
+            cityController.OnCharacterLeaveCity ();
         }
     }
 
@@ -42,20 +47,5 @@ public class CharacterRegion : MonoBehaviour
         hasSetRegion = true;
         currentRegion = newRegion;
         MiniMapCanvas.instance.UpdateLocationText ( newRegion.ToString ().ToProperCase () );
-    }
-
-    private void DetectRegionHit (Vector3 position, List<CityRegions> detectedRegions)
-    {
-        ray = new Ray ( position, Vector3.down );
-        hits = new RaycastHit[0];
-        hits = Physics.RaycastAll ( ray, 100.0f, layerMask, QueryTriggerInteraction.Ignore );
-
-        for (int i = 0; i < hits.Length; i++)
-        {
-            CityRegion region = hits[i].collider.GetComponent<CityRegion> ();
-            if (region == null) continue;
-            if (detectedRegions.Contains ( region.Region )) continue;
-            detectedRegions.Add ( region.Region );
-        }
     }
 }

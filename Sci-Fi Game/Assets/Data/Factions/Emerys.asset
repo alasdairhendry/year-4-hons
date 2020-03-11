@@ -14,7 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   factionName: Emerys
   factionAdjective: Emerian
-  factionDescription: 
+  factionDescription: Emerian people come from the frozen, northern isle of Emeryton.
+    As their nation barely poses a threat, they have always been great at maintaining
+    relationships.
+  factionPlayerMaterial: {fileID: 2100000, guid: 06d40dc2e1401784eb420a0d2d5d7235,
+    type: 2}
   factionSprite: {fileID: 21300000, guid: 535a239ae7b20b644b09d5d5835f85d4, type: 3}
   factionType: 0
   specialisationName: Diplomacy

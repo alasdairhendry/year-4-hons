@@ -64,6 +64,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -172,12 +173,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   driverLocalPosition: {x: 0, y: 0, z: 0}
-  driverLocalRotation: {x: 1, y: 0, z: 0}
+  driverLocalRotation: {x: -1, y: 0, z: 0}
   driverExitLocalPosition: {x: 0, y: 0, z: 0}
   idleClip: {fileID: -203655887218126122, guid: d1ee3e463feb1284792b716561b142d2,
     type: 3}
-  engineIsOn: 0
-  collider: {fileID: 0}
+  engineIsOn: 1
+  collider: {fileID: 1170938903625158715}
   idleSource: {fileID: 0}
   ignitionSource: {fileID: 0}
   pitches: {x: 0, y: 0}
@@ -187,20 +188,9 @@ MonoBehaviour:
   smokeParticles: {fileID: 9198975663269326628}
   explosionParticles: {fileID: 1624949763213255596, guid: 90891c3a418f4a649b04cb115c98dd4f,
     type: 3}
-  vehicleData: {fileID: 0}
-  exitUpwardsForce: 5
-  rotationalSpeed: 10
-  pitchSpeed: 15
-  jumpBoostForce: 5
-  jumpBoostCooldown: 0
-  defaultRideHeight: 0.75
-  maxRideHeight: 5
-  timeToRideMax: 7.5
-  rideHeightDrainRate: 0.33333334
-  rideHeightRegenRate: 0.1
-  antiRollForce: 15
-  input: {x: 0, y: 0}
-  spinnyRotate: 1
+  vehicleData: {fileID: 11400000, guid: 12c1dd1a571515e49877338a75b5fb1d, type: 2}
+  hover: {fileID: 1170938903625158704}
+  currentEngineForce: 0
 --- !u!114 &-6822524623346421726
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -213,8 +203,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3935918ba8db964a87302f5040e1c02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
+  maxHealth: 200
   floatingTextIndicator: {fileID: 0}
+  regeneratesOverTime: 0
+  regenerateEveryXSeconds: 10
+  regeneratePercentOfMaxHealth: 0.05
+  startRegenerationAfterXSeconds: 30
 --- !u!1001 &1091721616
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -222,10 +216,35 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1175572869502267647}
     m_Modifications:
-    - target: {fileID: 6431832202300931812, guid: 76915df11a9b0364dbadaa5540f90a0e,
+    - target: {fileID: 6431832202300931809, guid: 76915df11a9b0364dbadaa5540f90a0e,
         type: 3}
-      propertyPath: m_Name
-      value: Interactable (1)
+      propertyPath: m_Radius
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6431832202300931810, guid: 76915df11a9b0364dbadaa5540f90a0e,
+        type: 3}
+      propertyPath: interactType
+      value: Enter
+      objectReference: {fileID: 0}
+    - target: {fileID: 6431832202300931810, guid: 76915df11a9b0364dbadaa5540f90a0e,
+        type: 3}
+      propertyPath: interactableName
+      value: Hoverboard
+      objectReference: {fileID: 0}
+    - target: {fileID: 6431832202300931810, guid: 76915df11a9b0364dbadaa5540f90a0e,
+        type: 3}
+      propertyPath: onInteractEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1170938903625158718}
+    - target: {fileID: 6431832202300931810, guid: 76915df11a9b0364dbadaa5540f90a0e,
+        type: 3}
+      propertyPath: onInteractEvent.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: EnterPlayer
+      objectReference: {fileID: 0}
+    - target: {fileID: 6431832202300931810, guid: 76915df11a9b0364dbadaa5540f90a0e,
+        type: 3}
+      propertyPath: localPosition.y
+      value: 0.58
       objectReference: {fileID: 0}
     - target: {fileID: 6431832202300931811, guid: 76915df11a9b0364dbadaa5540f90a0e,
         type: 3}
@@ -282,35 +301,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6431832202300931810, guid: 76915df11a9b0364dbadaa5540f90a0e,
+    - target: {fileID: 6431832202300931812, guid: 76915df11a9b0364dbadaa5540f90a0e,
         type: 3}
-      propertyPath: interactType
-      value: Enter
-      objectReference: {fileID: 0}
-    - target: {fileID: 6431832202300931810, guid: 76915df11a9b0364dbadaa5540f90a0e,
-        type: 3}
-      propertyPath: interactableName
-      value: Hoverboard
-      objectReference: {fileID: 0}
-    - target: {fileID: 6431832202300931810, guid: 76915df11a9b0364dbadaa5540f90a0e,
-        type: 3}
-      propertyPath: onInteractEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 1170938903625158718}
-    - target: {fileID: 6431832202300931810, guid: 76915df11a9b0364dbadaa5540f90a0e,
-        type: 3}
-      propertyPath: onInteractEvent.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: EnterPlayer
-      objectReference: {fileID: 0}
-    - target: {fileID: 6431832202300931810, guid: 76915df11a9b0364dbadaa5540f90a0e,
-        type: 3}
-      propertyPath: localPosition.y
-      value: 0.58
-      objectReference: {fileID: 0}
-    - target: {fileID: 6431832202300931809, guid: 76915df11a9b0364dbadaa5540f90a0e,
-        type: 3}
-      propertyPath: m_Radius
-      value: 1
+      propertyPath: m_Name
+      value: Interactable (1)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 76915df11a9b0364dbadaa5540f90a0e, type: 3}
@@ -453,11 +447,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1175572869502267647}
     m_Modifications:
-    - target: {fileID: 2399699994302040380, guid: fa4368b042eed874082ddb0544d1eed4,
-        type: 3}
-      propertyPath: m_Name
-      value: vehicle-smoke-particles (6)
-      objectReference: {fileID: 0}
     - target: {fileID: 241290373928069090, guid: fa4368b042eed874082ddb0544d1eed4,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -512,6 +501,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2399699994302040380, guid: fa4368b042eed874082ddb0544d1eed4,
+        type: 3}
+      propertyPath: m_Name
+      value: vehicle-smoke-particles (6)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fa4368b042eed874082ddb0544d1eed4, type: 3}

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -7,14 +8,37 @@ using UnityEngine.UI;
 
 public class InventoryItemPanel : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler, IPointerClickHandler
 {
+    [SerializeField] private DragHandler.Master panelDragType = DragHandler.Master.PlayerInventory;
     [SerializeField] private GameObject contentPanel;
     [SerializeField] private Image itemIcon;
     [SerializeField] private GameObject itemAmountPanel;
     [SerializeField] private TextMeshProUGUI itemAmountText;
     [SerializeField] private TooltipItemUI tooltipItem;
+    [SerializeField] private CooldownUIPanel cooldownPanel;
     public int inventoryIndex { get; protected set; } = -1;
     public int ItemID { get; protected set; }
     public int ItemAmount { get; protected set; }
+
+    private void Start ()
+    {
+        GameManager.instance.OnGlobalCooldownStateChange += OnCooldownStateChange;
+    }
+
+    private void OnCooldownStateChange (bool state)
+    {
+        if (state)
+        {
+            if (ItemDatabase.ItemExists ( ItemID ))
+            {
+                if (ItemDatabase.GetItem ( ItemID ).category == ItemCategory.Consumable)
+                    cooldownPanel?.SetActive ( state );
+            }
+        }
+        else
+        {
+            cooldownPanel?.SetActive ( state );
+        }
+    }
 
     public void SetInventoryIndex(int index)
     {        
@@ -36,7 +60,7 @@ public class InventoryItemPanel : MonoBehaviour, IBeginDragHandler, IDragHandler
         this.ItemID = itemID;
         this.ItemAmount = amount;
 
-        if(sprite == null)
+        if (sprite == null)
         {
             itemIcon.color = new Color ( 0.0f, 0.0f, 0.0f, 0.0f );
         }
@@ -51,29 +75,37 @@ public class InventoryItemPanel : MonoBehaviour, IBeginDragHandler, IDragHandler
         itemAmountText.text = this.ItemAmount.ToString ();
         tooltipItem.SetTooltipAction ( () =>
         {
-            if (string.IsNullOrEmpty ( ItemDatabase.GetInteractionPrefix ( itemID ) ))
+            string s = "";
+
+            if (panelDragType == DragHandler.Master.PlayerInventory)
             {
-                return ItemDatabase.GetItem ( itemID ).Name
-                + "\n"
-                + ColourHelper.TagColour ( ColourHelper.TagSize ( ItemDatabase.GetItem ( itemID ).category
-                + "\n"
-                + ItemDatabase.GetItem ( itemID ).Description, 80.0f ), ColourDescription.OffWhiteText );
+                if (!string.IsNullOrEmpty ( ItemDatabase.GetInteractionPrefix ( itemID ) ))
+                    s += ColourHelper.TagColour ( ItemDatabase.GetInteractionPrefix ( itemID ), ColourDescription.DarkYellowText );
             }
-            else
+            else if(panelDragType == DragHandler.Master.Bank)
             {
-                return ItemDatabase.GetInteractionPrefix ( itemID ) + ColourHelper.TagColour ( ItemDatabase.GetItem ( itemID ).Name
-                + "\n"
-                + ColourHelper.TagSize ( ItemDatabase.GetItem ( itemID ).category
-                + "\n"
-                + ItemDatabase.GetItem ( itemID ).Description, 80.0f ), ColourDescription.OffWhiteText );
+                if (Input.GetKey ( KeyCode.LeftShift ))
+                    s += "Take All ";
+                else
+                    s += "Take ";
             }
-        }
-        );
+
+            s += ColourHelper.TagColour ( ItemDatabase.GetItem ( itemID ).Name, ColourDescription.OffWhiteText );
+
+            s += ColourHelper.TagColourSize ( "\n" + ItemDatabase.GetGlobalItemSellPrice ( itemID ) + " Crowns", ColourDescription.DarkYellowText, 80.0f );
+            s += ColourHelper.TagColourSize ( "\n" + ItemDatabase.GetItem ( itemID ).category.ToString (), ColourDescription.OffWhiteText, 80.0f );
+            s += ColourHelper.TagColourSize ( "\n" + ItemDatabase.GetItem ( itemID ).Description, ColourDescription.OffWhiteText, 80.0f );
+
+            if (ItemDatabase.ItemExists ( itemID ) && ItemDatabase.GetItem ( itemID ).IsSellable && StoreCanvas.instance.isOpened && StoreCanvas.instance.currentShopkeeper != null)
+                s += ColourHelper.TagColourSize ( "\n\n" + StoreCanvas.instance.currentShopkeeper.Npc.NpcData.NpcName + " will buy this for " + ColourHelper.TagColour ( StoreCanvas.instance.GetItemSellPriceFromCurrentShopkeeper ( itemID ).ToString (), ColourDescription.DarkYellowText ) + " crowns", ColourDescription.OffWhiteText, 80.0f );
+
+            return s;
+        } );
     }
 
     void IBeginDragHandler.OnBeginDrag (PointerEventData eventData)
     {
-        DragHandler.OnBeginDrag ( inventoryIndex, ItemID, ItemAmount, DragHandler.Master.PlayerInventory, contentPanel.transform );       
+        DragHandler.OnBeginDrag ( inventoryIndex, ItemID, ItemAmount, panelDragType, contentPanel.transform, ItemDatabase.GetItem ( ItemID ).Sprite );       
     }
 
     void IDragHandler.OnDrag (PointerEventData eventData)
@@ -88,189 +120,39 @@ public class InventoryItemPanel : MonoBehaviour, IBeginDragHandler, IDragHandler
 
     void IDropHandler.OnDrop (PointerEventData eventData)
     {
-        DragHandler.OnDrop ( inventoryIndex, DragHandler.Master.PlayerInventory );
+        DragHandler.OnDrop ( inventoryIndex, panelDragType );
     }
 
     void IPointerClickHandler.OnPointerClick (PointerEventData eventData)
     {
         if (ItemID < 0) return;
 
-        if (eventData.button == PointerEventData.InputButton.Left)
+        if (panelDragType == DragHandler.Master.PlayerInventory)
         {
-            ItemDatabase.InvokeInventoryDefaultAction ( ItemID, inventoryIndex );
-        }
-        else if (eventData.button == PointerEventData.InputButton.Right)
-        {
-            DropdownMenuCanvas.instance.Open ( ItemDatabase.GetItem ( ItemID ).GetAllInteractionData (), ItemID, inventoryIndex );
-        }
-    }
-}
-
-public static class DragHandler
-{
-    public static bool isDragging = false;
-    public enum Master { PlayerInventory, ItemContainer, Hotbar }
-    public static Master fromMaster = Master.PlayerInventory;
-
-    public static int fromIndex = -1;
-
-    public static int dragItemID = -1;
-    public static int dragItemAmount = -1;
-
-    private static Transform targetObject;
-    private static Transform originalParent;
-    private static CanvasGroup targetCanvasGroup;
-    private static Vector3 originalPosition;
-    private static Vector3 offset;
-
-    public static void OnBeginDrag (int _fromIndex, int _dragItemID, int _dragItemAmount, Master _fromMaster, Transform _targetObject)
-    {
-        if (isDragging) { Debug.Log ( 1 ); return; }
-        if (!ItemDatabase.ItemExists ( _dragItemID )) { Debug.Log ( 2 ); return; }
-
-        targetObject = _targetObject;
-        originalPosition = targetObject.position;
-        offset = originalPosition - Input.mousePosition;
-
-        originalParent = targetObject.parent;
-        targetObject.SetParent ( targetObject.root );
-        targetObject.SetAsLastSibling ();
-
-        targetCanvasGroup = targetObject.GetComponent<CanvasGroup> ();
-        if (targetCanvasGroup)
-            targetCanvasGroup.blocksRaycasts = false;
-
-        isDragging = true;
-        fromIndex = _fromIndex;
-        dragItemID = _dragItemID;
-        dragItemAmount = _dragItemAmount;
-        fromMaster = _fromMaster;
-    }
-
-    public static void OnDrag ()
-    {
-        targetObject.transform.position = Input.mousePosition + offset;
-    }
-
-    public static void OnEndDrag ()
-    {
-        // This is only ever called if end drag did not hit something with a valid OnDrop interface
-        if (isDragging)
-        {
-            if (EventSystem.current.IsPointerOverGameObject () == false)
+            if (eventData.button == PointerEventData.InputButton.Left)
             {
-                switch (fromMaster)
-                {
-                    case Master.PlayerInventory:
-                        ItemBaseData item = null;
-
-                        if (ItemDatabase.GetItem ( dragItemID, out item ))
-                        {
-                            if (item.IsSoulbound)
-                            {
-                                //Debug.LogError ( "Cannot remove a soulbound item from your inventory - perhaps give a option to destroy if we implement a way to get it back garaunteed" );
-                                MessageBox.AddMessage ( "Cannot remove a soulbound item from your inventory", MessageBox.Type.Error );
-                            }
-                            else
-                            {
-                                EntityManager.instance.PlayerInventory.RemoveItem ( dragItemID, dragItemAmount );
-                            }
-                        }
-                        break;
-                    case Master.ItemContainer:
-                        ItemContainerCanvas.instance.targetInventory.RemoveItem ( dragItemID, dragItemAmount );
-                        break;
-                    case Master.Hotbar:
-                        HotbarCanvas.instance.TryRemoveItem ( dragItemID, fromIndex );
-                        break;
-                }
-
-                SoundEffect.Play ( EntityManager.instance.dropItemSoundEffects.GetRandom () );
+                ItemDatabase.InvokeInventoryDefaultAction ( ItemID, inventoryIndex );
             }
-
-            Reset ();
-        }
-    }
-
-    private static void Reset ()
-    {
-        targetObject.transform.position = originalPosition;
-        targetObject.SetParent ( originalParent );
-
-        originalPosition = Vector3.zero;
-        offset = Vector3.zero;
-
-        originalParent = null;
-
-        if (targetCanvasGroup)
-        {
-            targetCanvasGroup.blocksRaycasts = true;
-            targetCanvasGroup = null;
-        }
-
-        targetObject = null;
-
-        isDragging = false;
-        fromIndex = -1;
-        dragItemID = -1;
-        dragItemAmount = -1;
-    }
-
-    public static void OnDrop (int _toIndex, Master _toMaster)
-    {
-        if (!isDragging) return;
-
-        if (fromMaster == Master.ItemContainer)
-        {
-            switch (_toMaster)
+            else if (eventData.button == PointerEventData.InputButton.Right)
             {
-                case Master.PlayerInventory:
-                    ItemContainerCanvas.instance.targetInventory.SendTo ( EntityManager.instance.PlayerInventory, dragItemID, dragItemAmount );
-                    break;
-                case Master.ItemContainer:
-                    ItemContainerCanvas.instance.targetInventory.SwitchIndices ( fromIndex, _toIndex );
-                    break;              
+                DropdownMenuCanvas.instance.Open ( ItemDatabase.GetItem ( ItemID ).GetAllInteractionData (), ItemID, inventoryIndex );
             }
         }
-        else if (fromMaster == Master.PlayerInventory)
+        else if (panelDragType == DragHandler.Master.Bank)
         {
-            switch (_toMaster)
+            if (eventData.button == PointerEventData.InputButton.Left)
             {
-                case Master.PlayerInventory:
-                    EntityManager.instance.PlayerInventory.SwitchIndices ( fromIndex, _toIndex );
-                    break;
-                case Master.ItemContainer:
-                    ItemBaseData item = null;
+                int shiftClick = ItemAmount;
 
-                    if (ItemDatabase.GetItem ( dragItemID, out item ))
-                    {
-                        if (item.IsSoulbound)
-                        {
-                            MessageBox.AddMessage( "Cannot remove a soulbound item from your inventory", MessageBox.Type.Error );
-                            //Debug.LogError ( "Cannot remove a soulbound item from your inventory - perhaps give a option to destroy if we implement a way to get it back garaunteed" );
-                        }
-                        else
-                        {
-                            EntityManager.instance.PlayerInventory.SendTo ( ItemContainerCanvas.instance.targetInventory, dragItemID, dragItemAmount );
-                        }
-                    }
-                    break;
-                case Master.Hotbar:
-                    HotbarCanvas.instance.TryAddItem ( dragItemID, _toIndex );
-                    break;
+                if (Input.GetKey ( KeyCode.LeftShift ))
+                    PlayerInventoryController.SendItemFromBankToInventory ( ItemID, shiftClick );
+                else
+                    PlayerInventoryController.SendItemFromBankToInventory ( ItemID, 1 );
             }
         }
-        else if(fromMaster == Master.Hotbar)
+        else
         {
-            switch (_toMaster)
-            {
-                case Master.Hotbar:
-                    HotbarCanvas.instance.TrySwitchItems ( fromIndex, _toIndex );
-                    break;
-            }
-
+            Debug.LogError ( "Incorrect panel type for interaction" );
         }
-
-        Reset ();
     }
 }

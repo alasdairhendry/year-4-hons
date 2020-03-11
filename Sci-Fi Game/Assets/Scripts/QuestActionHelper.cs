@@ -8,7 +8,7 @@ public class QuestActionHelper : MonoBehaviour
     public static QuestActionHelper instance;
     [SerializeField] private List<QuestInteractable> interactables = new List<QuestInteractable> ();
     [SerializeField] private List<QuestMobSpawner> mobSpawners = new List<QuestMobSpawner> ();
-    [SerializeField] private NPCShopkeeper horvik;
+    [SerializeField] private List<Shop> shops = new List<Shop> ();
 
     private void Awake ()
     {
@@ -54,9 +54,16 @@ public class QuestActionHelper : MonoBehaviour
         qms.mobSpawner.DespawnAll ();
     }
 
-    public void OpenHorviksToolStore ()
+    public void OpenShop(Shop.ShopID shopID)
     {
-        horvik.OpenShop ();
+        Shop qi = shops.First ( x => x.id == shopID );
+        if (qi == null)
+        {
+            Debug.LogError ( "Shop " + shopID.ToString () + " does not exist" );
+            return;
+        }
+
+        qi.shop.OpenShop ();
     }
 
     [System.Serializable]
@@ -73,5 +80,13 @@ public class QuestActionHelper : MonoBehaviour
         public enum MobSpawnerID { EvilCivilian }
         public MobSpawnerID id;
         public MobSpawner mobSpawner;
+    }
+
+    [System.Serializable]
+    public class Shop
+    {
+        public enum ShopID { Horvik, Cracker }
+        public ShopID id;
+        public NPCShopkeeper shop;
     }
 }

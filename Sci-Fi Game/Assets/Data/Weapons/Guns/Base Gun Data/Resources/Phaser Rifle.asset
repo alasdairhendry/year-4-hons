@@ -15,17 +15,19 @@ MonoBehaviour:
   weaponName: Phaser Rifle
   weaponAttackType: 1
   weaponItemID: 27
+  isBreakable: 1
   brokenVariantItemID: 59
   offsetPosition: {x: 0.0112, y: 0.0015, z: -0.0023}
   offsetRotation: {x: -0.00016392455, y: 90.00003, z: 263.84988}
   localScale: {x: 0.1, y: 0.1, z: 0.10000002}
   prefab: {fileID: 2865452233086558167, guid: 96d5f95ce95034c4eb53969d41dfa3a6, type: 3}
-  baseDamage: 30
+  baseDamage: 7.5
   activeBodyPart: 18
   holsterBodyPart: 54
   holsterData: {fileID: 11400000, guid: 2129cd025d3a31e4fa1437a46176bfac, type: 2}
   sheatheSoundData: {fileID: 11400000, guid: 17449ef03929a5246b4b8de3ff7dd4f4, type: 2}
   unsheatheSoundData: {fileID: 11400000, guid: ab967c0c7a6c0ef45a9c84ba7f6dafae, type: 2}
+  dps: 93.75
   weaponType: 1
   ammoType: 2
   fireTypes: 01000000

@@ -19,7 +19,7 @@ public class BookDisplayCanvas : UIPanel
         if (instance == null) instance = this;
         else if (instance != this) { Destroy ( this.gameObject ); return; }
 
-        Close ();
+        Close ( true );
     }
 
     public void SetBook (string bookTitle, string bookText)
@@ -39,16 +39,20 @@ public class BookDisplayCanvas : UIPanel
         cGroup.blocksRaycasts = true;
         pageText.text = "Page 1";
         this.bookText.pageToDisplay = 1;
+        UIPanelController.instance.OnPanelOpened ( this );
     }
 
-    public override void Close ()
+    public override void Close (bool bypassCloseCheck = false)
     {
+        if (isOpened == false && !bypassCloseCheck) return;
+
         base.Close ();
         isOpened = true;
         this.bookTitle.text = "";
         this.bookText.text = "";
         cGroup.alpha = 0;
         cGroup.blocksRaycasts = false;
+        UIPanelController.instance.OnPanelClosed ( this );
     }
 
     public void OnClickPreviousPage ()

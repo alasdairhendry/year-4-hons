@@ -29,7 +29,7 @@ public class CharacterInteraction : MonoBehaviour
     private void Update ()
     {
         GetDisplayRadiusObjects ();
-        UpdateCurrentInteractions ();
+        UpdateInteractionDisplays ();
         UpdateMouseCursors ();
 
         if (EventSystem.current.IsPointerOverGameObject ()) return;
@@ -140,7 +140,7 @@ public class CharacterInteraction : MonoBehaviour
         interactionsInDisplayRadius = hits;
     }
 
-    private void UpdateCurrentInteractions ()
+    private void UpdateInteractionDisplays ()
     {
         for (int i = 0; i < interactionsInDisplayRadius.Count; i++)
         {
@@ -149,7 +149,7 @@ public class CharacterInteraction : MonoBehaviour
 
             if (inter.IsInteractable)
             {
-                ShowObject ( colliderToUIDictionary[interactionsInDisplayRadius[i]], inter.InteractType, inter.GetName);
+                ShowObject ( colliderToUIDictionary[interactionsInDisplayRadius[i]], inter.InteractType, inter.GetName, inter.TextColour);
                 SetScale ( colliderToUIDictionary[interactionsInDisplayRadius[i]].transform, inter.SquaredInteractionRadius, squaredDistancePlayerToInteractable );
                 UpdatePosition ( colliderToUIDictionary[interactionsInDisplayRadius[i]].transform, inter.UIWorldPosition() );
             }
@@ -162,9 +162,10 @@ public class CharacterInteraction : MonoBehaviour
         }
     }
 
-    private void ShowObject(GameObject go, string type, string name)
+    private void ShowObject(GameObject go, string type, string name, ColourDescription colour)
     {
-        go.GetComponentInChildren<TextMeshProUGUI> ().text = "<b><size=75%>" + type + "</size></b>\n" + name;
+        go.GetComponentInChildren<TextMeshProUGUI> ().text = string.Format ( "<b><size=75%>{0}</size></b>\n{1}", type, ColourHelper.TagColour( name, colour) );
+        //go.GetComponentInChildren<TextMeshProUGUI> ().text = "<b><size=75%>" + type + "</size></b>\n" + name;
         go.GetComponent<Animator> ().SetBool ( "show", true);
     }
 
@@ -214,7 +215,7 @@ public class CharacterInteraction : MonoBehaviour
                 go.transform.SetParent ( interactionCanvas );
                 go.transform.localScale = Vector3.one;
                 colliderToUIDictionary.Add ( interactables[i], go );
-                ShowObject ( go, "", "" );
+                ShowObject ( go, "", "", ColourDescription.InteractionDefault  );
             }
         }
     }

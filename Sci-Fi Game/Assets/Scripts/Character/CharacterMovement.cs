@@ -9,24 +9,9 @@ public class CharacterMovement : MonoBehaviour
 
     [SerializeField] private CharacterMovementData movementData;
 
-    private Vector3 lastMousePosition = new Vector3 ();
-
-    public float GetCurrentSpeed
-    {
-        get
-        {
-            return 0.0f;
-            if (character.currentState == Character.State.Standing)
-                return character.isRunning ? movementData.walkSpeed * movementData.runModifier : movementData.walkSpeed;
-
-            return 0.0f;
-        }
-    }
-
     private void Awake ()
     {
         character = GetComponent<Character> ();
-        lastMousePosition = Input.mousePosition;
     }
 
     public void OnUpdate ()
@@ -65,6 +50,7 @@ public class CharacterMovement : MonoBehaviour
 
     public void SnapCharacterRotationToCamera ()
     {
+        if (character.IsAI) return;
         Vector3 moveDirection = new Vector3 ( 0.0f, 0.0f, 0.0f );
         moveDirection = character.cCameraController.LookTransform.forward;
         moveDirection.Normalize ();

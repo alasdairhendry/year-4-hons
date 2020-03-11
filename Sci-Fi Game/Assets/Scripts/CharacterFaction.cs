@@ -38,6 +38,12 @@ public class CharacterFaction : MonoBehaviour
         {
             CheckDefaultFaction ();
         }
+
+        if(GetComponent<Character>().IsAI == false)
+        {
+            CurrentFaction = PlayerFactionController.chosenFaction;
+            GetComponentInChildren<SkinnedMeshRenderer> ( false ).material = CurrentFaction.factionPlayerMaterial;
+        }
     }
 
     private void CheckDefaultFaction ()
@@ -53,7 +59,7 @@ public class CharacterFaction : MonoBehaviour
         {
             if (GetComponent<NPC> () != null)
             {
-                currentFaction = GetComponent<NPC> ().NpcData.Faction;
+                currentFaction = GetComponent<NPC> ().NpcData.PossibleFactions.GetRandom ();
             }
         }
     }

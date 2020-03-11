@@ -15,6 +15,7 @@ MonoBehaviour:
   recipeName: Steel Ingot
   timeToCraft: 2.5
   tableResourceUsage: 10
+  resultSprite: {fileID: 21300000, guid: 2eadae1799dfabe4a99e7678ac3cdb12, type: 3}
   ingredientsRequired:
   - ID: 16
     Amount: 2

@@ -22,7 +22,18 @@ public class ItemIDDrawer : PropertyDrawer
 
         EditorGUI.PropertyField ( intRect, property, GUIContent.none );
 
-        if (EditorGUI.DropdownButton ( filterButton, new GUIContent ( ItemDatabase.GetStrings ()[property.intValue] ), FocusType.Keyboard ))
+        string stringName = "";
+
+        if (ItemDatabase.GetStrings ().IsValidIndex ( property.intValue ))
+        {
+            stringName = ItemDatabase.GetStrings ()[property.intValue];
+        }
+        else
+        {
+            stringName = "Empty";
+        }
+
+        if (EditorGUI.DropdownButton ( filterButton, new GUIContent ( stringName ), FocusType.Keyboard ))
         {
             PopupFilterWindow window = EditorWindow.GetWindow<PopupFilterWindow> ();
 

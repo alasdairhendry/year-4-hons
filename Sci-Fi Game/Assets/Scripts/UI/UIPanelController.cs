@@ -17,14 +17,19 @@ public class UIPanelController : MonoBehaviour
     {
         if (Input.GetKeyDown ( KeyCode.Escape ))
         {
-            if(panelHistory.Count > 0)
+            if (panelHistory.Count > 0)
             {
                 panelHistory[panelHistory.Count - 1].Close ();
+            }
+            else
+            {
+                if (EntityManager.instance.PlayerCharacter.currentVehicle == null)
+                    FindObjectOfType<MenuCanvas> ().Open ();
             }
         }
     }
 
-    public void RegisterPanelHistory(UIPanel panel)
+    public void RegisterPanelHistory (UIPanel panel)
     {
         if (panelHistory.Contains ( panel ))
         {
@@ -34,11 +39,22 @@ public class UIPanelController : MonoBehaviour
         panelHistory.Add ( panel );
     }
 
-    public void UnregisterPanelHistory(UIPanel panel)
+    public void UnregisterPanelHistory (UIPanel panel)
     {
         if (panelHistory.Contains ( panel ))
         {
             panelHistory.Remove ( panel );
         }
+    }
+
+    public void OnPanelOpened (UIPanel panel)
+    {
+        CanvasController.instance.PullCanvasToFront ( panel.Canvas );
+        SoundEffectManager.Play ( AudioClipAsset.UIPanelOpen, AudioMixerGroup.UI );
+    }
+
+    public void OnPanelClosed (UIPanel panel)
+    {
+        SoundEffectManager.Play ( AudioClipAsset.UIPanelClose, AudioMixerGroup.UI );
     }
 }

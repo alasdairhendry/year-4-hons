@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -8,7 +9,7 @@ public class NPCShopkeeper : MonoBehaviour
     [SerializeField] private List<ShopItem> baseInventory = new List<ShopItem> ();
 
     public List<ShopItem> BaseInventory { get => baseInventory; protected set => baseInventory = value; }
-    private NPC npc;
+    public NPC Npc { get; private set; }
 
     private float sameFactionModifier = 1.0f;
     private float differentFactionModifier = 0.25f;
@@ -16,7 +17,7 @@ public class NPCShopkeeper : MonoBehaviour
 
     private void Awake ()
     {
-        npc = GetComponent<NPC> ();
+        Npc = GetComponent<NPC> ();
     }
 
     public void OpenShop ()
@@ -24,11 +25,11 @@ public class NPCShopkeeper : MonoBehaviour
         StoreCanvas.instance.SetShopkeeper ( this );
         StoreCanvas.instance.Open ();
 
-        if (EntityManager.instance.PlayerCharacter.cFaction.CurrentFaction.factionType == npc.Character.cFaction.CurrentFaction.factionType)
+        if (EntityManager.instance.PlayerCharacter.cFaction.CurrentFaction.factionType == Npc.Character.cFaction.CurrentFaction.factionType)
         {
             MessageBox.AddMessage ( "Prices will not be inflated at this shop, as you are the same faction.", MessageBox.Type.Info );
         }
-        else if (EntityManager.instance.PlayerCharacter.cFaction.CurrentFaction.opposingFaction.factionType == npc.Character.cFaction.CurrentFaction.factionType)
+        else if (EntityManager.instance.PlayerCharacter.cFaction.CurrentFaction.opposingFaction.factionType == Npc.Character.cFaction.CurrentFaction.factionType)
         {
             if (EntityManager.instance.PlayerCharacter.cFaction.CurrentFaction.factionType == FactionType.Emerys)
                 MessageBox.AddMessage ( "Prices will be inflated at this shop, but your Faction Specialisation minimises this.", MessageBox.Type.Warning );
@@ -48,28 +49,23 @@ public class NPCShopkeeper : MonoBehaviour
     {
         ItemBaseData item = ItemDatabase.GetItem ( itemID );
 
-        if (item.IsQuestItem)
-        {
-            MessageBox.AddMessage ( "This item is required to complete a quest.", MessageBox.Type.Error );
-            return;
-        }
-
-        if (item.IsSoulbound)
-        {
-            MessageBox.AddMessage ( "This item is soulbound.", MessageBox.Type.Error );
-            return;
-        }
-
-        if (item.IsSellable == false)
-        {
-            MessageBox.AddMessage ( "This item cannot be sold.", MessageBox.Type.Error );
-            return;
-        }        
+        if (!PlayerInventoryController.CanSellItemToShop ( itemID ))
+            return;        
 
         int payout = amount * GetSellPrice ( itemID );
-        EntityManager.instance.PlayerInventory.RemoveItem ( itemID, amount );
-        EntityManager.instance.PlayerInventory.AddCoins ( payout );
-        MessageBox.AddMessage ( "You sell " + amount + " " + ItemDatabase.GetItem ( itemID ).Name + " for " + payout + " crowns from the shopkeeper.", MessageBox.Type.Info );
+
+        if (EntityManager.instance.PlayerInventory.CheckCanRecieveItem ( 3, payout ))
+        {
+            EntityManager.instance.PlayerInventory.RemoveItem ( itemID, amount );
+            EntityManager.instance.PlayerInventory.AddCoins ( payout );
+
+            SoundEffectManager.Play ( AudioClipAsset.CoinsRattle, AudioMixerGroup.SFX );
+            MessageBox.AddMessage ( "You sell " + amount + " " + ItemDatabase.GetItem ( itemID ).Name + " for " + payout + " crowns from the shopkeeper.", MessageBox.Type.Info );
+        }
+        else
+        {
+            MessageBox.AddMessage ( "I need more inventory space to do this.", MessageBox.Type.Warning );
+        }
     }
 
     public void TryBuyItem (int itemID)
@@ -88,6 +84,7 @@ public class NPCShopkeeper : MonoBehaviour
                 else
                 {
                     // TODO : Player purchase sound
+                    SoundEffectManager.Play ( AudioClipAsset.CoinsRattle, AudioMixerGroup.SFX );
                     MessageBox.AddMessage ( "You buy " + ItemDatabase.GetItem ( itemID ).Name + " for " + GetBuyPrice ( itemID ) + " crowns from the shopkeeper.", MessageBox.Type.Info );
                     EntityManager.instance.PlayerInventory.RemoveCoins ( GetBuyPrice ( itemID ) );
                 }
@@ -110,39 +107,49 @@ public class NPCShopkeeper : MonoBehaviour
         if (baseInventory.Exists ( x => x.itemID == itemID ))
             baseInventorySellPriceModifier = baseInventory.Find ( x => x.itemID == itemID ).sellPriceModifier;
 
+        Debug.Log ( "Sell price modifier " + baseInventorySellPriceModifier );
+
         float factionSellPriceModifier = sameFactionModifier;
 
-        if (EntityManager.instance.PlayerCharacter.cFaction.CurrentFaction.factionType == npc.Character.cFaction.CurrentFaction.factionType)
+        if (EntityManager.instance.PlayerCharacter.cFaction.CurrentFaction.factionType == Npc.Character.cFaction.CurrentFaction.factionType)
         {
+            Debug.Log ( "same faction" );
             factionSellPriceModifier = sameFactionModifier;
         }
-        else if (EntityManager.instance.PlayerCharacter.cFaction.CurrentFaction.opposingFaction.factionType == npc.Character.cFaction.CurrentFaction.factionType)
+        else if (EntityManager.instance.PlayerCharacter.cFaction.CurrentFaction.opposingFaction.factionType == Npc.Character.cFaction.CurrentFaction.factionType)
         {
+            Debug.Log ( "opposing faction" );
             factionSellPriceModifier = 1 - opposingFactionModifier;
         }
         else
         {
+            Debug.Log ( "different faction" );
             factionSellPriceModifier = 1 - differentFactionModifier;
         }
 
+        Debug.Log ( "Faction price modifier " + factionSellPriceModifier );
+
         if (EntityManager.instance.PlayerCharacter.cFaction.CurrentFaction.factionType == FactionType.Emerys)
         {
+            Debug.Log ( "Faction is emerys - Faction modifier is now " + factionSellPriceModifier );
             factionSellPriceModifier += 0.25f;
             factionSellPriceModifier = Mathf.Clamp01 ( factionSellPriceModifier );
         }
 
-        return Mathf.FloorToInt ( Mathf.FloorToInt ( ItemDatabase.GetItem ( itemID ).BuyPrice * 0.75f ) * baseInventorySellPriceModifier * factionSellPriceModifier * ItemDatabase.GLOBAL_ITEM_SELL_MODIFER );
+        Debug.Log ( "Final outcome " + Mathf.FloorToInt ( ItemDatabase.GetGlobalItemSellPrice ( itemID ) * baseInventorySellPriceModifier * factionSellPriceModifier ) );
+        //return Mathf.FloorToInt ( Mathf.FloorToInt ( ItemDatabase.GetItem ( itemID ).BuyPrice * 0.75f ) * baseInventorySellPriceModifier * factionSellPriceModifier * ItemDatabase.GLOBAL_ITEM_SELL_MODIFER );
+        return Mathf.FloorToInt ( ItemDatabase.GetGlobalItemSellPrice ( itemID ) * baseInventorySellPriceModifier * factionSellPriceModifier );
     }
 
     public int GetBuyPrice (int itemID)
     {
         float factionBuyPriceModifier = sameFactionModifier;
 
-        if (EntityManager.instance.PlayerCharacter.cFaction.CurrentFaction.factionType == npc.Character.cFaction.CurrentFaction.factionType)
+        if (EntityManager.instance.PlayerCharacter.cFaction.CurrentFaction.factionType == Npc.Character.cFaction.CurrentFaction.factionType)
         {
             factionBuyPriceModifier = sameFactionModifier;
         }
-        else if (EntityManager.instance.PlayerCharacter.cFaction.CurrentFaction.opposingFaction.factionType == npc.Character.cFaction.CurrentFaction.factionType)
+        else if (EntityManager.instance.PlayerCharacter.cFaction.CurrentFaction.opposingFaction.factionType == Npc.Character.cFaction.CurrentFaction.factionType)
         {
             factionBuyPriceModifier = 1 + opposingFactionModifier;
         }

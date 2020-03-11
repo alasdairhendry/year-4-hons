@@ -80,13 +80,13 @@ public class CraftingBench : MonoBehaviour
         }
     }
 
-    public void Interact ()
+    public virtual void Interact ()
     {
         CraftingCanvas.instance.SetCraftingTable ( table, this );
         CraftingCanvas.instance.Open ();
     }
 
-    public void Claim ()
+    public virtual void Claim ()
     {
         if (currentCraftingTime > 0)
         {
@@ -104,8 +104,10 @@ public class CraftingBench : MonoBehaviour
 
         for (int i = 0; i < stacks; i++)
         {
-            ItemDatabase.SendTo ( resultsInventory, EntityManager.instance.PlayerInventory, resultsInventory.stacks[0].ID, resultsInventory.stacks[0].Amount );
+            ItemDatabase.SendTo ( resultsInventory, EntityManager.instance.PlayerInventory, resultsInventory.stacks[0].ID, resultsInventory.stacks[0].Amount, false );
         }
+
+        SoundEffectManager.Play ( AudioClipAsset.InventoryUpdated, AudioMixerGroup.SFX );
 
         if (resultsInventory.IsEmpty)
         {
@@ -117,7 +119,7 @@ public class CraftingBench : MonoBehaviour
         }
     }
 
-    public void Create(CraftingRecipe recipe)
+    public virtual void Create(CraftingRecipe recipe)
     {
         if (currentCraftingTime > 0)
         {
@@ -131,25 +133,7 @@ public class CraftingBench : MonoBehaviour
             return;
         }
 
-        bool canCreate = true;
-
-        for (int i = 0; i < recipe.ingredientsRequired.Count; i++)
-        {
-            if (!EntityManager.instance.PlayerInventory.CheckHasItemQuantity ( recipe.ingredientsRequired[i].ID, recipe.ingredientsRequired[i].Amount ))
-            {
-                canCreate = false;
-            }
-        }
-
-        for (int i = 0; i < recipe.toolsRequired.Count; i++)
-        {
-            if (!EntityManager.instance.PlayerInventory.CheckHasItemQuantity ( recipe.toolsRequired[i].ID, recipe.toolsRequired[i].Amount ))
-            {
-                canCreate = false;
-            }
-        }
-
-        if (canCreate)
+        if (CheckCanCreateRecipe(recipe))
         {
             for (int i = 0; i < recipe.ingredientsRequired.Count; i++)
             {
@@ -164,7 +148,6 @@ public class CraftingBench : MonoBehaviour
             }
 
             currentRecipeBeingCrafted = recipe;
-            //currentCraftingTime = recipe.timeToCraft;
             currentEnergy -= recipe.tableResourceUsage;
 
             if (Random.value <= TalentManager.instance.GetTalentModifier ( TalentType.Demand ))
@@ -183,5 +166,28 @@ public class CraftingBench : MonoBehaviour
         {
             MessageBox.AddMessage ( "Not enough ingredients to create item.", MessageBox.Type.Warning );
         }
+    }
+
+    protected bool CheckCanCreateRecipe (CraftingRecipe recipe)
+    {
+        bool canCreate = true;
+
+        for (int i = 0; i < recipe.ingredientsRequired.Count; i++)
+        {
+            if (!EntityManager.instance.PlayerInventory.CheckHasItemQuantity ( recipe.ingredientsRequired[i].ID, recipe.ingredientsRequired[i].Amount ))
+            {
+                canCreate = false;
+            }
+        }
+
+        for (int i = 0; i < recipe.toolsRequired.Count; i++)
+        {
+            if (!EntityManager.instance.PlayerInventory.CheckHasItemQuantity ( recipe.toolsRequired[i].ID, recipe.toolsRequired[i].Amount ))
+            {
+                canCreate = false;
+            }
+        }
+
+        return canCreate;
     }
 }

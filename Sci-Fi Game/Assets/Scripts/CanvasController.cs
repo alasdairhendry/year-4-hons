@@ -7,7 +7,14 @@ using UnityEngine.EventSystems;
 
 public class CanvasController : MonoBehaviour
 {
+    public static CanvasController instance;
     private List<Canvas> canvases = new List<Canvas> ();
+
+    private void Awake ()
+    {
+        if (instance == null) instance = this;
+        else if (instance != this) Destroy ( this.gameObject );
+    }
 
     private void Start ()
     {

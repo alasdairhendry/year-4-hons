@@ -10,6 +10,9 @@ public class SkillsCanvas : UIPanel
     [SerializeField] private GameObject skillUIPrefab;
     [SerializeField] private Transform skillUIParent;
     [SerializeField] private TextMeshProUGUI characterLevelText;
+    [SerializeField] private TextMeshProUGUI combatLevelText;
+    [SerializeField] private TextMeshProUGUI factionNameText;
+    [SerializeField] private TextMeshProUGUI factionSpecText;
 
     private Dictionary<SkillType, SkillEntryUIPanel> panels = new Dictionary<SkillType, SkillEntryUIPanel> ();
 
@@ -36,7 +39,7 @@ public class SkillsCanvas : UIPanel
             UpdateSkillUI ( SkillManager.instance.Skills[i].skillType );
         }
 
-        Close ();
+        Close ( true );
     }
 
     public override void Open ()
@@ -44,13 +47,20 @@ public class SkillsCanvas : UIPanel
         base.Open ();
         isOpened = true;
         mainPanel.SetActive ( true );
+        UIPanelController.instance.OnPanelOpened ( this );
+
+        factionNameText.text = EntityManager.instance.PlayerCharacter.cFaction.CurrentFaction.factionName;
+        factionSpecText.text = EntityManager.instance.PlayerCharacter.cFaction.CurrentFaction.specialisationDescription;
     }
 
-    public override void Close ()
+    public override void Close (bool bypassCloseCheck = false)
     {
+        if (isOpened == false && !bypassCloseCheck) return;
+
         base.Close ();
         isOpened = false;
         mainPanel.SetActive ( false );
+        UIPanelController.instance.OnPanelClosed ( this );
     }
 
     private void OnXPGained (float xpGained, SkillType skillType)
@@ -65,11 +75,12 @@ public class SkillsCanvas : UIPanel
 
     private void OnCharacterLevelIncreased ()
     {
-        characterLevelText.text = Mathf.FloorToInt ( SkillManager.instance.CharacterLevel ).ToString ( "0" );
+        characterLevelText.text = Mathf.FloorToInt ( SkillManager.instance.CharacterLevel ).ToString ( "00" );
     }
 
     private void UpdateSkillUI (SkillType skillType)
     {
+        combatLevelText.text = Mathf.FloorToInt ( SkillManager.instance.CombatLevel ).ToString ( "00" );
         panels[skillType].skillNameText.text = SkillManager.instance.GetSkill ( skillType ).skillName;
         panels[skillType].skillLevelText.text = "Lv. " + SkillManager.instance.GetSkill ( skillType ).currentLevel.ToString ( "00" );
 

@@ -23,6 +23,7 @@ public class AIStateBaseFlee : AIStateBase
         {
             npc.NPCNavMesh.SetDestinationAwayFromEnemy ( 25, false, true );
             npc.Character.isRunning = true;
+            npc.Character.runPercentNormalised = 0.55f;
         }
         else
         {
@@ -30,6 +31,7 @@ public class AIStateBaseFlee : AIStateBase
             {
                 npc.NPCNavMesh.SetDestinationAwayFromEnemy ( 2, false, false );
                 npc.Character.isRunning = true;
+                npc.Character.runPercentNormalised = 0.55f;
             }
         }
     }
@@ -38,5 +40,6 @@ public class AIStateBaseFlee : AIStateBase
     {
         npc.NPCNavMesh.ClearCurrentPath ();
         npc.Character.isRunning = false;
+        npc.Character.runPercentNormalised = 1.0f;
     }
 }

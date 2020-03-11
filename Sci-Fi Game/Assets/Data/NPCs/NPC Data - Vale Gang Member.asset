@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18e058adc300213489ad94a5f429fe16, type: 3}
+  m_Name: NPC Data - Vale Gang Member
+  m_EditorClassIdentifier: 
+  npcName: Vale Gang Member
+  defaultAttackOption: 0
+  possibleFactions:
+  - {fileID: 11400000, guid: 49feedc8fa1e89241aba015f742c78ad, type: 2}
+  damageTakenAudioClips: {fileID: 11400000, guid: 972e1bab4adcb8d45ba8d404c9ffba20,
+    type: 2}
+  deathAudioClips: {fileID: 11400000, guid: 2c1ef71e4dc04c74d90755ad47da9419, type: 2}
+  uniqueDropTable: {fileID: 11400000, guid: c78a92e96f6349649b16b976e4dfab23, type: 2}
+  accessToCoinsDropTable: 1
+  accessToIngredientsDropTable: 1
+  accessToMeleeDropTable: 1
+  accessToGunDropTable: 1
+  accessToMaskTable: 1
+  accessToPartyHatTable: 1
+  combatScalesWithPlayer: 1
+  combatLevel: 1
+  baseHitChanceModifier: 1
+  baseMaxHealthModifier: 0.75
+  baseDamageModifier: 1.2
+  characterMaterials:
+  - {fileID: 2100000, guid: 06d40dc2e1401784eb420a0d2d5d7235, type: 2}
+  - {fileID: 2100000, guid: 06d40dc2e1401784eb420a0d2d5d7235, type: 2}
+  - {fileID: 2100000, guid: 5b103efddde787a45ac844ebc57b0aca, type: 2}
+  - {fileID: 2100000, guid: 55c0cd122e2ec5d4eb6df00a2966824b, type: 2}
+  - {fileID: 2100000, guid: 16baf78d55bdd7b44bf9d50edffd3241, type: 2}
+  - {fileID: 2100000, guid: 4334c1afd5d33194b851aae4a7c4f9e3, type: 2}
+  - {fileID: 2100000, guid: d8ff1947f6875f94998cfbbd28f2b751, type: 2}
+  - {fileID: 2100000, guid: 5846f1c3c4e5f1e42b95451831844600, type: 2}
+  - {fileID: 2100000, guid: a1260db7eb4efe7478246fda2858823d, type: 2}
+  - {fileID: 2100000, guid: 316dc25e2b60cf84e84e83a0a0995b59, type: 2}
+  - {fileID: 2100000, guid: f0dd791a13593c24092eab330b4af2a1, type: 2}
+  - {fileID: 2100000, guid: 7c930a77c2c60a749af7a8afd9f8163e, type: 2}
+  - {fileID: 2100000, guid: 225e7340f239c124c9bfac44ef8dbda2, type: 2}
+  - {fileID: 2100000, guid: d29677146096e2e44a5d0dc42b09e592, type: 2}
+  - {fileID: 2100000, guid: eb43ccf57eac0174194f68627fecf001, type: 2}
+  - {fileID: 2100000, guid: 3f74aff155264e942b8bd6ebc1f78268, type: 2}
+  - {fileID: 2100000, guid: 08ba515e3c063a64bbec69a2c933acd7, type: 2}
+  - {fileID: 2100000, guid: 1b701687f546d7a48924043a4de4f2bf, type: 2}
+  - {fileID: 2100000, guid: 86c886b27b55b4c4aaece649eea0a079, type: 2}
+  - {fileID: 2100000, guid: 129704b08c93bae4a89513e33c890d5e, type: 2}
+  - {fileID: 2100000, guid: 51cf3e7710a033d46b4a1f0514895eec, type: 2}
+  - {fileID: 2100000, guid: 1b3f510c14fcc24419370fa386429eac, type: 2}
+  - {fileID: 2100000, guid: e43e0848fad28db439d9411118a7fc32, type: 2}
+  - {fileID: 2100000, guid: f48d74d319b42e046888964c0831d020, type: 2}
+  - {fileID: 2100000, guid: 7910c4de4f114e343a611b5cdfb7b8d8, type: 2}

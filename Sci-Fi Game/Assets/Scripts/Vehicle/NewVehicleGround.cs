@@ -135,7 +135,6 @@ public class NewVehicleGround : Vehicle
                 {
                     if (NormalisedSpeed ( vehicleData.maxSqrMagnitude ) > CurrentGear.maxMPHMultipler)
                     {
-                        UnityEngine.Debug.Log ( "ShiftUp" );
                         ShiftUp ();
                     }
                 }
@@ -149,7 +148,6 @@ public class NewVehicleGround : Vehicle
 
                     if (NormalisedSpeed ( vehicleData.maxSqrMagnitude ) < gears[(Gear)(int)CurrentGearIndex - 1].maxMPHMultipler * 0.8f)
                     {
-                        UnityEngine.Debug.Log ( "DOwn" );
                         ShiftDown ();
                     }
                 }

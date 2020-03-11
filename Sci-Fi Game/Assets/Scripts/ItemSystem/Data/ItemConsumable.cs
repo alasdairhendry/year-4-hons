@@ -13,7 +13,7 @@ public abstract class ItemConsumable : ItemBaseData
             case ConsumeType.Eat:
                 AddInteractionData ( new InventoryInteractionData ( InventoryInteractionData.InteractType.Eat, (inventoryIndex) =>
                 {
-                    SoundEffect.Play ( EntityManager.instance.eatSoundEffects.GetRandom () );
+                    if (DragHandler.isDragging) return;
                     ConsumeItem ();
                 } ) );
                 defaultInteractionData = InventoryInteractionData.InteractType.Eat;
@@ -21,7 +21,7 @@ public abstract class ItemConsumable : ItemBaseData
             case ConsumeType.Drink:
                 AddInteractionData ( new InventoryInteractionData ( InventoryInteractionData.InteractType.Drink, (inventoryIndex) =>
                 {
-                    SoundEffect.Play ( EntityManager.instance.drinkSoundEffects.GetRandom () );
+                    if (DragHandler.isDragging) return;
                     ConsumeItem ();
                 } ) );
                 defaultInteractionData = InventoryInteractionData.InteractType.Drink;
@@ -29,14 +29,15 @@ public abstract class ItemConsumable : ItemBaseData
             case ConsumeType.Inject:
                 AddInteractionData ( new InventoryInteractionData ( InventoryInteractionData.InteractType.Use, (inventoryIndex) =>
                 {
-                    SoundEffect.Play ( EntityManager.instance.injectSoundEffects.GetRandom () );
+                    if (DragHandler.isDragging) return;
                     ConsumeItem ();
                 } ) );
                 defaultInteractionData = InventoryInteractionData.InteractType.Use;
                 break;
             case ConsumeType.Use:
                 AddInteractionData ( new InventoryInteractionData ( InventoryInteractionData.InteractType.Use, (inventoryIndex) =>
-                {                    
+                {
+                    if (DragHandler.isDragging) return;
                     ConsumeItem ();
                 } ) );
                 defaultInteractionData = InventoryInteractionData.InteractType.Use;

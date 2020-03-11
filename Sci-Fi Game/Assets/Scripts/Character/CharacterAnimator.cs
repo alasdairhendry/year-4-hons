@@ -97,9 +97,9 @@ public class CharacterAnimator : MonoBehaviour
             animator.SetFloat ( "forward", Mathf.Lerp ( animatorFloatForward, fwd, Time.deltaTime * locomotionLerp ) );
             animator.SetFloat ( "sideway", Mathf.Lerp ( animatorFloatSideway, fwd, Time.deltaTime * locomotionLerp ) );
         }
-       
+
         ////
-        animator.SetFloat ( "running", Mathf.Lerp ( animatorFloatRunning, character.isRunning ? 1.0f : 0.0f, Time.deltaTime * runningStanceLerp ) );
+        animator.SetFloat ( "running", Mathf.Lerp ( animatorFloatRunning, character.isRunning ? character.runPercentNormalised : 0.0f, Time.deltaTime * runningStanceLerp ) );
         animator.SetFloat ( "ads", character.IsAiming ? 1.0f : 0.0f );
         animator.SetBool ( "isGun", character.cWeapon.isEquipped && !character.cWeapon.isHolstered && character.cWeapon.currentWeaponData.weaponAttackType == WeaponAttackType.Gun );
         animator.SetBool ( "isMelee", character.cWeapon.isEquipped && !character.cWeapon.isHolstered && character.cWeapon.currentWeaponData.weaponAttackType == WeaponAttackType.Melee );
@@ -114,7 +114,7 @@ public class CharacterAnimator : MonoBehaviour
 
     public void OnFootStep ()
     {
-        //if (character.IsAI) return;
-        SoundEffect.Play3D ( EntityManager.instance.footStepSoundEffects.GetRandom (), transform.position, 1, 5 );
+        if (character.cInput.rawInput == Vector2.zero) return;
+        SoundEffectManager.Play3D ( AssetManager.instance.GetAudioClip ( AudioClipAsset.Footstep ), AudioMixerGroup.SFX, transform.position, minDistance: 2, maxDistance: 15 );
     }
 }

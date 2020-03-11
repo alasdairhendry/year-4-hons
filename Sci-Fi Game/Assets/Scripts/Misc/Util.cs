@@ -1,6 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 public static class Util
 {
@@ -113,4 +115,48 @@ public static class Util
 
         return result;
     }
+
+    public static string Pluralise(this int value, string singular, string plural)
+    {
+        return (value == 1) ? singular : plural;
+    }
+
+    public static bool IsValidIndex<T> (this List<T> list, int index)
+    {
+        if (index < 0) return false;
+        if (index >= list.Count) return false;
+        return true;
+    }
+
+    public static bool IsValidIndex<T> (this T[] array, int index)
+    {
+        if (index < 0) return false;
+        if (index >= array.Length) return false;
+        return true;
+    }
+
+    public static void SetToRealisticRolloff (this AudioSource AS, float dopplerLevel = 0.0f, float spread = 60.0f)
+    {
+        var animCurve = new AnimationCurve (
+            new Keyframe ( AS.minDistance, 1f ),
+            new Keyframe ( AS.minDistance + (AS.maxDistance - AS.minDistance) / 4f, .35f ),
+            new Keyframe ( AS.maxDistance, 0f ) );
+
+        AS.rolloffMode = AudioRolloffMode.Custom;
+        animCurve.SmoothTangents ( 1, .025f );
+        AS.SetCustomCurve ( AudioSourceCurveType.CustomRolloff, animCurve );
+
+        AS.dopplerLevel = dopplerLevel;
+        AS.spread = spread;
+    }
+
+#if UNITY_EDITOR
+    [MenuItem ( "CONTEXT/AudioSource/Set to Realistic Rolloff" )]
+    public static void SetToRalisticRolloff (MenuCommand command)
+    {
+        Undo.RecordObject ( command.context, "AudioSource Realistic Setup" );
+        ((AudioSource)command.context).SetToRealisticRolloff ();
+        EditorUtility.SetDirty ( command.context );
+    }
+#endif   
 }

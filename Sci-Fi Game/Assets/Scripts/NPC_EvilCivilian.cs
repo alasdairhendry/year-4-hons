@@ -17,6 +17,7 @@ public class NPC_EvilCivilian : NPC
         {
             overrideDefaultAttackOption = true;
             attackOptionOverride = NPCAttackOption.CanBeAttacked;
+            GetComponentInChildren<Interactable> ().TextColour = ColourDescription.InteractionAttackableEnemy;
             NPCStateController.SwitchToCombatBehaviour ();
         }
     }

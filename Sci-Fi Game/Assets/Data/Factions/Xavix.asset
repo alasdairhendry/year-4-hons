@@ -14,7 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   factionName: Xavix
   factionAdjective: Xavian
-  factionDescription: 
+  factionDescription: Some say the region of Xavix Tor is surrounding with dark magic.
+    The Xavian people have learned to use this power to their advantage.
+  factionPlayerMaterial: {fileID: 2100000, guid: 3f74aff155264e942b8bd6ebc1f78268,
+    type: 2}
   factionSprite: {fileID: 21300000, guid: dbe4252253870a747bc9d5cf24ed06e8, type: 3}
   factionType: 5
   specialisationName: Life Sap

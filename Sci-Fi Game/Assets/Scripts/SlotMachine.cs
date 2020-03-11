@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class SlotMachine : MonoBehaviour
@@ -28,7 +29,7 @@ public class SlotMachine : MonoBehaviour
 
     private void Start ()
     {
-        runningAudioSource = SoundEffect.Create ( this, 1, 1, 5, this.transform );
+        runningAudioSource = SoundEffectManager.Create ( this, 1, 1, 5, this.transform );
         runningAudioSource.clip = runningAudioClip;
         runningAudioSource.loop = true;
     }
@@ -43,14 +44,14 @@ public class SlotMachine : MonoBehaviour
         }
         else
         {
-            SoundEffect.Play3D ( leverAudioClip, transform.position, 1, 5 );
+            SoundEffectManager.Play3D ( leverAudioClip, AudioMixerGroup.SFX, transform.position, minDistance: 1, maxDistance: 5 );
             leverAnimator.SetTrigger ( "pull" );
             return;
         }
 
         currentLEDIndex = ledMeshRenderers.GetRandomIndex (currentLEDIndex);
         SwitchLED ();
-        SoundEffect.Play3D ( leverAudioClip, transform.position, 1, 5 );
+        SoundEffectManager.Play3D ( leverAudioClip, AudioMixerGroup.SFX, transform.position, minDistance: 1, maxDistance: 5 );
         leverAnimator.SetTrigger ( "pull" );
         runningAudioSource.Play ();
         isRunning = true;
@@ -90,28 +91,30 @@ public class SlotMachine : MonoBehaviour
         ledMeshRenderers[currentLEDIndex].material = ledOffMaterial;
         runningAudioSource.Stop ();
 
-        Inventory.ItemStack roll = dropTable.RollTable ();
+        List<Inventory.ItemStack> drops = new List<Inventory.ItemStack> ();
+        bool wasFactionRoll = false;
 
-        if(roll == null)
+        if (dropTable.RollTable ( out drops, out wasFactionRoll ))
         {
-            OnLose ();
+            if (wasFactionRoll) MessageBox.AddMessage ( "Your Faction Specialisation helps you find an item", MessageBox.Type.Warning );
+            OnWin ( drops );
         }
         else
         {
-            OnWin ( roll );
+            OnLose ();
         }
     }
 
-    private void OnWin (Inventory.ItemStack roll)
+    private void OnWin (List<Inventory.ItemStack> roll)
     {
-        EntityManager.instance.PlayerInventory.AddItem ( roll.ID, roll.Amount );
-        SoundEffect.Play3D ( winAudioClip, transform.position, 1, 5 );
-        MessageBox.AddMessage ( "You won " + roll.Amount + " crowns on the machine!", MessageBox.Type.Info );
+        EntityManager.instance.PlayerInventory.AddMultipleItems ( roll );
+        SoundEffectManager.Play3D ( winAudioClip, AudioMixerGroup.SFX, transform.position, minDistance: 1, maxDistance: 5 );
+        MessageBox.AddMessage ( "You won " + roll.Sum ( x => x.Amount ) + " crowns on the machine!", MessageBox.Type.Info );
     }
 
     private void OnLose ()
     {
-        SoundEffect.Play3D ( loseAudioClip, transform.position, 1, 5 );
+        SoundEffectManager.Play3D ( loseAudioClip, AudioMixerGroup.SFX, transform.position,minDistance: 1,maxDistance: 5 );
         MessageBox.AddMessage ( "You didn't win anything.", MessageBox.Type.Error );
     }
 }

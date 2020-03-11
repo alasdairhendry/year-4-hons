@@ -47,7 +47,7 @@ public class WorldMapCanvas : UIPanel
 
     private void Start ()
     {
-        Close ();
+        Close ( true );
         currentPosition = regionParentTransform.transform.localPosition;
         targetPosition = regionParentTransform.transform.localPosition;
 
@@ -70,16 +70,20 @@ public class WorldMapCanvas : UIPanel
         toHide.alpha = 0.0f;
         toHide.interactable = false;
         toHide.blocksRaycasts = false;
+        UIPanelController.instance.OnPanelOpened ( this );
     }
 
-    public override void Close ()
+    public override void Close (bool bypassCloseCheck = false)
     {
+        if (isOpened == false && !bypassCloseCheck) return;
+
         base.Close ();
         isOpened = false;
         mainPanel.SetActive ( false );
         toHide.alpha = 1.0f;
         toHide.interactable = true;
         toHide.blocksRaycasts = true;
+        UIPanelController.instance.OnPanelClosed ( this );
     }
 
     private void Update ()
@@ -129,23 +133,20 @@ public class WorldMapCanvas : UIPanel
         GameObject go = Instantiate ( blipPrefab );
         go.GetComponent<TooltipItemUI> ().SetTooltipAction ( () =>
         {
-            if (string.IsNullOrEmpty ( worldMapObject.overrideName ))
-            {
-                return data.legendTitle;
-            }
-            else
-            {
-                return worldMapObject.overrideName;
-            }
+            return string.Format ( "{0}{1}", (string.IsNullOrEmpty ( worldMapObject.overrideName )) ? data.legendTitle : worldMapObject.overrideName, ColourHelper.TagColourSize ( "\n[" + worldMapObject.Region.ToString ().ToProperCase () + "]", ColourDescription.OffWhiteText, 80 ) );
         } );
+
         go.transform.SetParent ( blipsParent );
         go.transform.GetComponent<RectTransform> ().sizeDelta = new Vector2 ( 32.0f, 32.0f );
         go.transform.GetComponent<Image> ().sprite = sprite;
         go.transform.localScale = Vector3.one;
         wmb.blipGameObject = go;
+        SetBlipPosition ( wmb );
 
         blipsDict.Add ( worldMapObject, wmb );
         blipsList.Add ( wmb );
+
+        blipsList.FirstOrDefault ( x => x.worldMapObject.MapBlipType == MapBlipType.Player )?.blipGameObject.transform.SetAsLastSibling ();
     }
 
     public void UnregisterWorldMapObject(WorldMapObject worldMapObject)
@@ -155,6 +156,24 @@ public class WorldMapCanvas : UIPanel
             blipsList.Remove ( blipsDict[worldMapObject] );
             Destroy ( blipsDict[worldMapObject].blipGameObject );
             blipsDict.Remove ( worldMapObject );
+        }
+    }
+
+    private void SetBlipPosition (WorldMapBlip blip)
+    {
+        if (blip.target == null)
+        {
+            // TODO - REmove this item
+            return;
+        }
+
+        blip.worldMapObject.RefreshRegion ();
+        blip.blipGameObject.transform.localPosition = new Vector3 ( blip.target.position.x * blipXScaler, blip.target.position.z * blipYScaler, 0.0f );
+        blip.blipGameObject.transform.localScale = Vector3.one / Mathf.Clamp ( currentScale, 1, scaleRange.y );
+
+        if (blip.worldMapObject.IncludeRotation)
+        {
+            blip.blipGameObject.transform.localEulerAngles = new Vector3 ( 0.0f, 0.0f, -blip.target.localEulerAngles.y );
         }
     }
 
@@ -168,8 +187,13 @@ public class WorldMapCanvas : UIPanel
                 continue;
             }
 
-            blipsList[i].blipGameObject.transform.localPosition = new Vector3 ( blipsList[i].target.position.x * blipXScaler, blipsList[i].target.position.z * blipYScaler, 0.0f );
             blipsList[i].blipGameObject.transform.localScale = Vector3.one / Mathf.Clamp ( currentScale, 1, scaleRange.y );
+
+            if (blipsList[i].worldMapObject.IncludePosition)
+            {
+                blipsList[i].blipGameObject.transform.localPosition = new Vector3 ( blipsList[i].target.position.x * blipXScaler, blipsList[i].target.position.z * blipYScaler, 0.0f );
+                blipsList[i].worldMapObject.RefreshRegion ();
+            }
 
             if (blipsList[i].worldMapObject.IncludeRotation)
             {

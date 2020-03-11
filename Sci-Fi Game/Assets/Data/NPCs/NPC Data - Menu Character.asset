@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18e058adc300213489ad94a5f429fe16, type: 3}
+  m_Name: NPC Data - Menu Character
+  m_EditorClassIdentifier: 
+  npcName: Generic NPC
+  defaultAttackOption: 0
+  possibleFactions:
+  - {fileID: 11400000, guid: b9c2592de703e6042b9f32f284a7e5a3, type: 2}
+  - {fileID: 11400000, guid: 487a90f23d164224ab412aa4bd7e6fd4, type: 2}
+  - {fileID: 11400000, guid: 29b60328489e9c14eb73acb68b81e7a7, type: 2}
+  - {fileID: 11400000, guid: 49feedc8fa1e89241aba015f742c78ad, type: 2}
+  - {fileID: 11400000, guid: 5c99fccc02c5e4641ac3b19dd7fbf1ec, type: 2}
+  - {fileID: 11400000, guid: 4aa7bd2a8c5f09849a027b523202b230, type: 2}
+  damageTakenAudioClips: {fileID: 11400000, guid: 972e1bab4adcb8d45ba8d404c9ffba20,
+    type: 2}
+  deathAudioClips: {fileID: 11400000, guid: 2c1ef71e4dc04c74d90755ad47da9419, type: 2}
+  uniqueDropTable: {fileID: 0}
+  accessToCoinsDropTable: 0
+  accessToIngredientsDropTable: 0
+  accessToMeleeDropTable: 0
+  accessToGunDropTable: 0
+  accessToMaskTable: 0
+  accessToPartyHatTable: 0
+  combatScalesWithPlayer: 1
+  combatLevel: 1
+  baseHitChanceModifier: 1
+  baseMaxHealthModifier: 1
+  baseDamageModifier: 1
+  characterMaterials: []

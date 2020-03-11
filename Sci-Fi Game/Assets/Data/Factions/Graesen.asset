@@ -14,7 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   factionName: Graesen
   factionAdjective: Graesen
-  factionDescription: 
+  factionDescription: Graesen people are native to a region simply named Barrenlands.
+    The grueling environment has taught their people to adapt and learn quickly.
+  factionPlayerMaterial: {fileID: 2100000, guid: 5846f1c3c4e5f1e42b95451831844600,
+    type: 2}
   factionSprite: {fileID: 21300000, guid: 79e4b8aa25c68ff40a86c785b6aa2774, type: 3}
   factionType: 1
   specialisationName: Wisdom

@@ -112,7 +112,7 @@ public class NPCStateController : MonoBehaviour
             float distance = 0.0f;
 
             if (EntityManager.instance.PlayerCharacter.cWeapon.currentWeaponData.weaponAttackType == WeaponAttackType.Gun) distance = EntityManager.instance.PlayerCharacter.cWeapon.currentWeaponGunData.maxDistance;
-            else distance = EntityManager.instance.PlayerCharacter.cWeapon.MeleeStrikeDistance;
+            else distance = 10;
 
             if (Vector3.Distance ( transform.position, EntityManager.instance.PlayerCharacter.transform.position ) > distance)
             {

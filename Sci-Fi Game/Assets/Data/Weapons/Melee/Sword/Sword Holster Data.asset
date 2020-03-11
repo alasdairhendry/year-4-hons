@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   position: {x: -0.0166, y: 0.0202, z: -0.0127}
   eulerAngles: {x: 7.591358, y: 328.3629, z: 267.99646}
-  localScale: {x: 0.075, y: 0.075, z: 0.075}
+  localScale: {x: 0.1, y: 0.1, z: 0.1}

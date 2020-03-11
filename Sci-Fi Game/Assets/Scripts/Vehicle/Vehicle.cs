@@ -179,6 +179,7 @@ public class Vehicle : MonoBehaviour
 
     private void OnHealthRemoved ()
     {
+        if (health == null) return;
         ParticleSystem.EmissionModule mod = smokeParticles.emission;
         mod.rateOverTimeMultiplier = Mathf.Lerp ( 0.0f, 100.0f, Mathf.InverseLerp ( 0.65f, 0.25f, health.healthNormalised ) );
         smokeParticles.Play ();
@@ -186,6 +187,9 @@ public class Vehicle : MonoBehaviour
 
     private void OnCollisionEnter (Collision collision)
     {
+        if (health == null) return;
+        if (collision.gameObject.layer != LayerMask.NameToLayer ( "Environment" )) return;
+
         if(collision.relativeVelocity.sqrMagnitude > 25.0f)
         {
             float damage = 12.5f;

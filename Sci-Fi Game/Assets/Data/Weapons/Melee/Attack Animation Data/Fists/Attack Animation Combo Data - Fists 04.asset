@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8d607f9e49274e49814326e6c72e20b, type: 3}
+  m_Name: Attack Animation Combo Data - Fists 04
+  m_EditorClassIdentifier: 
+  clip: {fileID: 7400000, guid: bae244eee04e53c4bb8492c85d3f51ad, type: 2}
+  clipLength: 288
+  attackDelay: 0
+  data:
+  - swingAudioDelay: 170
+    resultAudioDelay: 179
+  - swingAudioDelay: 186
+    resultAudioDelay: 196
+  - swingAudioDelay: 214
+    resultAudioDelay: 224

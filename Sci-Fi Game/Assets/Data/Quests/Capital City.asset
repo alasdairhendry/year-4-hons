@@ -137,8 +137,10 @@ MonoBehaviour:
       - itemID: 51
         amount: 1
       - itemID: 73
-        amount: 10
-    decisionRewards: []
+        amount: 15
+    talentPoints: 5
+    xpRewards: []
+    annotatedRewards: []
 --- !u!114 &1377789805392180019
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -193,10 +195,6 @@ MonoBehaviour:
   conditions: []
   actions: []
   conditionRequirementType: 0
-  optionalReward:
-    mandatoryReward:
-      reward: []
-    decisionRewards: []
 --- !u!114 &2404085177277590207
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -261,10 +259,6 @@ MonoBehaviour:
   conditions: []
   actions: []
   conditionRequirementType: 0
-  questReward:
-    mandatoryReward:
-      reward: []
-    decisionRewards: []
 --- !u!114 &8412069100837242521
 MonoBehaviour:
   m_ObjectHideFlags: 0

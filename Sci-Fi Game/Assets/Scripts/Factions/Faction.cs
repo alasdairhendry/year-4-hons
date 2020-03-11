@@ -9,6 +9,7 @@ public class Faction : ScriptableObject
     public string factionAdjective;
     [NaughtyAttributes.ResizableTextArea] public string factionDescription;
     [Space]
+    public Material factionPlayerMaterial;
     public Sprite factionSprite;
     public FactionType factionType;
     [Space]

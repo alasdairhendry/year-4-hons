@@ -35,7 +35,7 @@ public class Character : MonoBehaviour
                         OnAimChanged ();
                     }
                 }
-                else if(!cInput.isAimInput && !cWeapon.ShouldAim)
+                else if (!cInput.isAimInput && !cWeapon.ShouldAim)
                 {
                     if (isAiming)
                     {
@@ -66,6 +66,7 @@ public class Character : MonoBehaviour
             return false;
         }
     }
+    public float runPercentNormalised { get; set; } = 1.0f;
     public bool isRunning { get; set; }
     public bool shouldJump { get; set; }
 
@@ -87,7 +88,7 @@ public class Character : MonoBehaviour
     public Health Health { get; protected set; }
     public FloatingTextIndicator FloatingTextIndicator { get; protected set; }
     public Animator Animator { get; protected set; }
-    
+
     public bool isGrounded { get; set; } = false;
 
     public new Collider collider;
@@ -101,7 +102,7 @@ public class Character : MonoBehaviour
     public bool IsAI { get; protected set; }
     public Vehicle currentVehicle { get; protected set; } = null;
     public bool CanMove { get; protected set; } = true;
-   [NaughtyAttributes.ShowNativeProperty] public bool isDead { get; protected set; }
+    [NaughtyAttributes.ShowNativeProperty] public bool isDead { get; protected set; }
 
     private void Awake ()
     {
@@ -128,24 +129,14 @@ public class Character : MonoBehaviour
 
         if (IsAI) return;
 
-        if (SkillManager.instance.DEBUG_LEVEL_TO_991)
-        {
-            Health.SetMaxHealth ( SkillModifiers.maxHealth, true );
-        }
+        if (EntityManager.instance.PlayerCharacter.cFaction.CurrentFaction.factionType == FactionType.Sylas)
+            EntityManager.instance.PlayerCharacter.Health.SetMaxHealth ( SkillModifiers.GetMaxHealth () * 1.35f, true );
         else
-        {
-            if (EntityManager.instance.PlayerCharacter.cFaction.CurrentFaction.factionType == FactionType.Sylas)
-                EntityManager.instance.PlayerCharacter.Health.SetMaxHealth ( SkillModifiers.GetMaxHealth () * 1.35f, true );
-            else
-                EntityManager.instance.PlayerCharacter.Health.SetMaxHealth ( SkillModifiers.GetMaxHealth (), true );
-
-        }
+            EntityManager.instance.PlayerCharacter.Health.SetMaxHealth ( SkillModifiers.GetMaxHealth (), true );
 
         Health.onDeath += OnPlayerDeath;
-
-        if (FindObjectOfType<PlayerCameraController> () == null)
-            cCameraController = Instantiate ( cameraPrefab ).GetComponent<PlayerCameraController> ().SetTarget ( this.transform );
-        else cCameraController = FindObjectOfType<PlayerCameraController> ().SetTarget ( this.transform );
+        Health.IsPlayer = true;
+        cCameraController = FindObjectOfType<PlayerCameraController> ();
     }
 
     private void Update ()
@@ -212,7 +203,7 @@ public class Character : MonoBehaviour
     {
         currentVehicle = v;
 
-        if(currentVehicle == null)
+        if (currentVehicle == null)
         {
             SetCurrentState ( State.Standing );
         }
@@ -320,23 +311,34 @@ public class Character : MonoBehaviour
 
     private void OnPlayerDeath ()
     {
-        SoundEffect.Play3D ( deathAudioClips.GetRandom (), this.transform.position, 2, 10 );
+        SoundEffectManager.Play3D ( deathAudioClips.GetRandom (), AudioMixerGroup.SFX, this.transform.position, minDistance: 2, maxDistance: 10 );
+        SoundEffectManager.Play ( AudioClipAsset.PlayerDeath, AudioMixerGroup.SFX );
 
-        cWeapon.SetHolsterState ( true );
+        cWeapon.SetHolsterState ( true, true );
+        cWeapon.BreakCurrentWeapon ();
+
+        MessageBox.AddMessage ( "Oh dear, you are dead..", MessageBox.Type.Error );
 
         GetComponent<Animator> ().SetBool ( "die", true );
         CanMove = false;
         isDead = true;
 
-        Invoke ( nameof ( Revive ), 3.0f );
+        Invoke ( nameof ( Revive ), 6.0f );
     }
 
     private void Revive ()
     {
-        transform.position = Vector3.zero;
+        Health.Revive ();
+        transform.position = EntityManager.instance.PlayerRespawnWorldPosition;
+        transform.rotation = EntityManager.instance.PlayerRespawnRotation;
+        EntityManager.instance.CameraController.SnapToTargetPosition ();
+
         GetComponent<Animator> ().SetBool ( "die", false );
 
         isDead = false;
         CanMove = true;
+        OnRespawn?.Invoke ();
     }
+
+    public System.Action OnRespawn;
 }

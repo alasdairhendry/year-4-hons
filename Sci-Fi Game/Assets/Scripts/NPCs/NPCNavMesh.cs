@@ -44,7 +44,7 @@ public class NPCNavMesh : MonoBehaviour
     private void LateUpdate ()
     {
         if (!HasPath) return;
-        if (npc.MeshRenderer.isVisible == false) return;
+        if (npc.MeshRenderer.isVisible == false && !currentPathIsMandatory) return;
 
         if (currentPath.corners.Length > 0)
             pathSeeker.transform.position = currentPath.corners[currentPathCornerIndex];
@@ -120,16 +120,12 @@ public class NPCNavMesh : MonoBehaviour
                     ClearCurrentPath ();
 
                 CheckIsOnNavMesh ();
-
-                Debug.LogError ( "Could not calculate path", this.gameObject );
             }
         }
         else
         {
             if (disableCurrentPathIfFails)
                 ClearCurrentPath ();
-
-            Debug.LogError ( "Sample position failed", this.gameObject );
         }
     }
 

@@ -34,21 +34,6 @@ MonoBehaviour:
   defaultConversation: {fileID: 11400000, guid: 9433191b925e5214f9e2a0f43d55e6a7,
     type: 2}
   questsGiven: []
---- !u!114 &-4723964809892917741
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2781211700501265285}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 692839ed47ca66c42bf9839e255c9d80, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  predeterminedPathPositions: []
-  movementType: 0
-  movementDelayRange: {x: 2.5, y: 5}
 --- !u!1001 &4503310286324923422
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -56,6 +41,36 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 107084486, guid: 1f4854dc3d3a0804f8dc7a334c6a9af0, type: 3}
+      propertyPath: aiStateControllerData
+      value: 
+      objectReference: {fileID: 11400000, guid: caf16866b991bef46938896a0705609c,
+        type: 2}
+    - target: {fileID: 381146146569786415, guid: 1f4854dc3d3a0804f8dc7a334c6a9af0,
+        type: 3}
+      propertyPath: cursorType
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 381146146569786415, guid: 1f4854dc3d3a0804f8dc7a334c6a9af0,
+        type: 3}
+      propertyPath: onInteractEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 161478678}
+    - target: {fileID: 381146146569786415, guid: 1f4854dc3d3a0804f8dc7a334c6a9af0,
+        type: 3}
+      propertyPath: onInteractEvent.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: StartDialogue
+      objectReference: {fileID: 0}
+    - target: {fileID: 1792655094367536331, guid: 1f4854dc3d3a0804f8dc7a334c6a9af0,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1793513838286578587, guid: 1f4854dc3d3a0804f8dc7a334c6a9af0,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1794158433244268443, guid: 1f4854dc3d3a0804f8dc7a334c6a9af0,
         type: 3}
       propertyPath: m_Name
@@ -122,36 +137,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 28f834c3cba725142a53538c4a62150c,
         type: 2}
-    - target: {fileID: 107084486, guid: 1f4854dc3d3a0804f8dc7a334c6a9af0, type: 3}
-      propertyPath: aiStateControllerData
-      value: 
-      objectReference: {fileID: 11400000, guid: caf16866b991bef46938896a0705609c,
-        type: 2}
-    - target: {fileID: 381146146569786415, guid: 1f4854dc3d3a0804f8dc7a334c6a9af0,
-        type: 3}
-      propertyPath: cursorType
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 381146146569786415, guid: 1f4854dc3d3a0804f8dc7a334c6a9af0,
-        type: 3}
-      propertyPath: onInteractEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 161478678}
-    - target: {fileID: 381146146569786415, guid: 1f4854dc3d3a0804f8dc7a334c6a9af0,
-        type: 3}
-      propertyPath: onInteractEvent.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: StartDialogue
-      objectReference: {fileID: 0}
-    - target: {fileID: 1793513838286578587, guid: 1f4854dc3d3a0804f8dc7a334c6a9af0,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1792655094367536331, guid: 1f4854dc3d3a0804f8dc7a334c6a9af0,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1f4854dc3d3a0804f8dc7a334c6a9af0, type: 3}
 --- !u!1 &2781211700501265285 stripped

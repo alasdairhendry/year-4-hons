@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f02c3b641b898ad4595bb5d3691e0153, type: 3}
   m_Name: QuestFlow.ActionOpenHorviksShop
   m_EditorClassIdentifier: 
+  shopID: 0
 --- !u!114 &-6486439128123043422
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -512,7 +513,8 @@ MonoBehaviour:
   conditionRequirementType: 0
   conditions: []
   actions: []
-  dialogue: Sorry, your inventory is too full. Come back when you have some free space.
+  dialogue: Sorry, your inventory is too full. Come back when you have some free
+    space.
   actorOverride: {fileID: 11400000, guid: dc345dd7dddc20941989a2529141dba2, type: 2}
 --- !u!114 &-839412598648332210
 MonoBehaviour:
@@ -605,8 +607,6 @@ MonoBehaviour:
   nodes:
   - {fileID: -6486439128123043422}
   - {fileID: 3747449627998941171}
-  - {fileID: -839412598648332210}
-  - {fileID: 1897706260488357185}
   - {fileID: 3476560886968093835}
   - {fileID: 4558255581358780574}
   - {fileID: -6069670969689521127}
@@ -635,6 +635,8 @@ MonoBehaviour:
   - {fileID: 6136267077218398551}
   - {fileID: 4032716340373480648}
   - {fileID: 0}
+  - {fileID: -839412598648332210}
+  - {fileID: 1897706260488357185}
   defaultActor: {fileID: 11400000, guid: dc345dd7dddc20941989a2529141dba2, type: 2}
 --- !u!114 &486391313267148244
 MonoBehaviour:
@@ -689,6 +691,19 @@ MonoBehaviour:
   actions:
   - {fileID: -312444592275190183}
   dialogue: '*You take the item from Horvik*'
+--- !u!114 &836575238567158664
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f02c3b641b898ad4595bb5d3691e0153, type: 3}
+  m_Name: QuestFlow.ActionOpenShop
+  m_EditorClassIdentifier: 
+  shopID: 0
 --- !u!114 &1567836450817045848
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -752,7 +767,7 @@ MonoBehaviour:
   m_Name: Answer
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: 88, y: -184}
+  position: {x: 392, y: -200}
   ports:
     keys:
     - input
@@ -787,7 +802,7 @@ MonoBehaviour:
   conditionRequirementType: 0
   conditions: []
   actions:
-  - {fileID: -8778182967470643185}
+  - {fileID: 836575238567158664}
   dialogue: What have you got for sale?
 --- !u!114 &1918803047240539853
 MonoBehaviour:

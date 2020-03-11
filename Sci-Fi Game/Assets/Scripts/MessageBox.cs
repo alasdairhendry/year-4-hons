@@ -3,16 +3,19 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MessageBox : UIPanel
 {
     public static MessageBox instance;
 
     public enum Type { Info, Warning, Error }
-    [SerializeField] private TextMeshProUGUI textField;
-    [SerializeField] private GameObject panel;
+    [SerializeField] private GameObject mainPanel;
+    [SerializeField] private GameObject messageBoxEntryPrefab;
+    [SerializeField] private Transform entriesPanel;
 
     private List<Message> messages = new List<Message> ();
+    private List<Message> messagesQueue = new List<Message> ();
 
     private void Awake ()
     {
@@ -22,32 +25,70 @@ public class MessageBox : UIPanel
         AddMessage ( "Welcome to the game." );
     }
 
+    private void Update ()
+    {
+        CheckQueue ();
+    }
+
+    private void CheckQueue ()
+    {
+        for (int i = messagesQueue.Count - 1; i >= 0; i--)
+        {
+            if (messagesQueue[i] == null)
+            {
+                messagesQueue.RemoveAt ( i );
+                continue;
+            }
+        }
+
+        for (int i = 0; i < messagesQueue.Count; i++)
+        {
+            messagesQueue[i].delay -= Time.deltaTime;
+
+            if (messagesQueue[i].delay <= 0.0f)
+            {
+                CreateMessage ( messagesQueue[i] );
+                messagesQueue[i] = null;
+            }
+        }
+    }
+
     public override void Open ()
     {
-        panel.SetActive ( true );
+        mainPanel.SetActive ( true );
         isOpened = true;
+        UIPanelController.instance.OnPanelOpened ( this );
     }
 
-    public override void Close ()
+    public override void Close (bool bypassCloseCheck = false)
     {
-        panel.SetActive ( false );
+        if (isOpened == false && !bypassCloseCheck) return;
+
+        mainPanel.SetActive ( false );
         isOpened = false;
+        UIPanelController.instance.OnPanelClosed ( this );
     }
 
-    public static void AddMessage (string message, Type type = Type.Info)
+    public static void AddMessage (string message, Type type = Type.Info, float delay = 0)
+    {
+        if (instance == null) return;
+        instance.messagesQueue.Add ( new Message ( message, null, type, delay ) );
+    }
+
+    public static void CreateMessage (Message message)
     {
         if (instance == null) return;
 
-        Message _message = new Message ( message, type );
+        if(instance.messages.Count > 20)
+        {
+            DeleteFirstMessage ();
+        }
 
-        instance.messages.Add ( _message );
-        instance.UpdateMessageList ( _message );
-    }
+        GameObject go = Instantiate ( instance.messageBoxEntryPrefab );
+        go.transform.SetParent ( instance.entriesPanel );
 
-    private void UpdateMessageList (Message message)
-    {
-        if (messages.Count > 1)
-            textField.text += "\n";
+        message.time = DateTime.Now;
+        message.gameObject = go;
 
         string colourisedMessage = "";
 
@@ -67,20 +108,30 @@ public class MessageBox : UIPanel
                 break;
         }
 
-        textField.text += string.Format ( "[{0}] {1}", message.time.ToShortTimeString (), colourisedMessage );
+        go.GetComponentInChildren<TextMeshProUGUI> ().text = string.Format ( "[{0}] {1}", message.time.ToShortTimeString (), colourisedMessage );
+        instance.messages.Add ( message );
+    }
+
+    private static void DeleteFirstMessage ()
+    {
+        Destroy ( instance.messages[0].gameObject );
+        instance.messages.RemoveAt ( 0 );
     }
 
     public class Message
     {
         public string message;
         public Type type;
+        public GameObject gameObject;
         public DateTime time;
+        public float delay;
 
-        public Message (string message, Type type = Type.Info)
+        public Message (string message, GameObject gameObject = null, Type type = Type.Info, float delay = 0)
         {
             this.message = message;
+            this.gameObject = gameObject;
             this.type = type;
-            this.time = DateTime.Now;
+            this.delay = delay;
         }
     }
 }

@@ -79,7 +79,7 @@ public class TooltipCanvas : MonoBehaviour
         CheckInput (); 
 
         boundsMax.x = canvasRect.sizeDelta.x - tooltipRect.sizeDelta.x - boundsMin.x;
-        boundsMax.y = canvasRect.sizeDelta.y - tooltipRect.sizeDelta.y - (boundsMin.y * 2);
+        boundsMax.y = canvasRect.sizeDelta.y + tooltipRect.sizeDelta.y - (boundsMin.y * 2);
 
         targetPosition = new Vector2 ( Input.mousePosition.x, Input.mousePosition.y ) + displayOffset;
         targetPosition.x = Mathf.Clamp ( targetPosition.x, boundsMin.x, boundsMax.x );
@@ -101,6 +101,9 @@ public class TooltipCanvas : MonoBehaviour
 
         if (Input.GetKeyDown ( KeyCode.Space )) Refresh ();
         if (Input.GetKeyUp ( KeyCode.Space )) Refresh ();
+
+        if (Input.GetKeyDown ( KeyCode.Escape )) Refresh ();
+        if (Input.GetKeyUp ( KeyCode.Escape )) Refresh ();
 
         if (Input.GetMouseButtonDown ( 0 )) Refresh ();
         if (Input.GetMouseButtonDown ( 1 )) Refresh ();

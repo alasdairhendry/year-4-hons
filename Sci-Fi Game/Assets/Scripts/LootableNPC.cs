@@ -4,25 +4,20 @@ using UnityEngine;
 
 public class LootableNPC : MonoBehaviour
 {
+    [SerializeField] private Interactable interactable;
     private NPCData data;
     private Inventory droppedItems = new Inventory ( 12, true, false );
+    private bool rolledTable = false;
 
     private void Start ()
-    {
-        RollDropTables ();
-
-        if (droppedItems.IsEmpty)
-        {
-            Destroy ( this.gameObject );
-            return;
-        }
-
+    {    
         droppedItems.RegisterItemRemoved ( (x, y) =>
         {
+            GetComponentInParent<SelfDestruct> ().Initialise ( 10, true );
+
             if (droppedItems.IsEmpty)
             {
                 ItemContainerCanvas.instance.Close ();
-                GetComponentInParent<SelfDestruct> ().Initialise ( 3, true );
                 Destroy ( this.gameObject );
                 return;
             }
@@ -34,52 +29,62 @@ public class LootableNPC : MonoBehaviour
         transform.SetParent ( target );
         transform.localPosition = Vector3.zero;
         this.data = npcData;
+        interactable.SetInteractName ( npcData.NpcName );
     }
 
     public void Interact ()
     {
+        RollDropTables ();
         ItemContainerCanvas.instance.SetContainerInventory ( droppedItems, data.NpcName );
         ItemContainerCanvas.instance.Open ();
+        GetComponentInParent<SelfDestruct> ().Initialise ( 10, true );
     }
 
     private void RollDropTables ()
     {
-        if (data.UniqueDropTable != null)
-        {
-            AddItemToDrop ( data.UniqueDropTable.RollTable () );
-        }
+        if (rolledTable) return;
+        rolledTable = true;
 
-        if (data.AccessToCoinsDropTable)
-        {
-            AddItemToDrop ( DropTableManager.instance.CoinsDropTable.RollTable () );
-        }
+        bool isFactionRoll = false;
 
-        if (data.AccessToGlobalDropTable)
-        {
-            AddItemToDrop ( DropTableManager.instance.GlobalDropTable.RollTable () );
-        }
+        if (ValidateDropTable ( data.UniqueDropTable != null, data.UniqueDropTable )) isFactionRoll = true;
+        if (ValidateDropTable ( data.AccessToCoinsDropTable, DropTableManager.instance.CoinsDropTable )) isFactionRoll = true;
+        if (ValidateDropTable ( data.AccessToIngredientsDropTable, DropTableManager.instance.IngredientsDropTable )) isFactionRoll = true;
+        if (ValidateDropTable ( data.AccessToMeleeDropTable, DropTableManager.instance.MeleeDropTable )) isFactionRoll = true;
+        if (ValidateDropTable ( data.AccessToGunDropTable, DropTableManager.instance.GunDropTable )) isFactionRoll = true;
+        if (ValidateDropTable ( data.AccessToMaskTable, DropTableManager.instance.MaskDropTable )) isFactionRoll = true;
+        if (ValidateDropTable ( data.AccessToPartyHatTable, DropTableManager.instance.PartyHatDropTable )) isFactionRoll = true;
 
-        if (data.AccessToRareDropTable)
-        {
-            AddItemToDrop ( DropTableManager.instance.RareDropTable.RollTable () );
-        }
+        if (isFactionRoll) MessageBox.AddMessage ( "Your Faction Specialisation helps you find an item", MessageBox.Type.Warning );
 
-        if (data.AccessToSuperRareDropTable)
+        if (droppedItems.IsEmpty)
         {
-            AddItemToDrop ( DropTableManager.instance.SuperRareDropTable.RollTable () );
+            Destroy ( this.gameObject );
+            GetComponentInParent<SelfDestruct> ().Initialise ( 6, true );
+            return;
         }
     }
 
-    private void AddItemToDrop (Inventory.ItemStack drop)
+    private bool ValidateDropTable (bool hasAccess, DropTable dropTable)
     {
-        if (drop == null) return;
-        if (drop.ID == -1) return;
-        if (drop.Amount == 0) { return; }
-
-        if (ItemDatabase.ItemExists ( drop.ID ))
+        if (hasAccess)
         {
-            droppedItems.AddItem ( drop.ID, drop.Amount, true );
-            //droppedItems.Add ( new Inventory.ItemStack () { ID = drop.ID, Amount = drop.Amount } );
+            List<Inventory.ItemStack> drops = new List<Inventory.ItemStack> ();
+            bool wasFactionRoll = false;
+
+            if (dropTable.RollTable ( out drops, out wasFactionRoll ))
+            {
+                AddItemsToDrop ( drops );
+            }
+
+            return wasFactionRoll;
         }
+
+        return false;
+    }
+
+    private void AddItemsToDrop (List<Inventory.ItemStack> drops)
+    {
+        droppedItems.AddMultipleItems ( drops, true );
     }
 }

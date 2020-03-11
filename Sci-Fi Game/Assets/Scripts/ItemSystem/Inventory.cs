@@ -122,6 +122,15 @@ public class Inventory
     /// <param name="id"></param>
     /// <param name="amount"></param>
     /// <returns></returns>
+
+    public void AddMultipleItems (List<ItemStack> items, bool bypassRecieveCriteria = false)
+    {
+        for (int i = 0; i < items.Count; i++)
+        {
+            AddItem ( items[i].ID, items[i].Amount, bypassRecieveCriteria );
+        }
+    }
+
     public int AddItem (int id, int amount = 1, bool bypassRecieveCriteria = false, int index = -1)
     {
         if (amount <= 0) { Debug.LogError ( "Adding a value of " + amount ); return amount; }
@@ -287,7 +296,6 @@ public class Inventory
     public int RemoveItem (int id, int amount = 1)
     {
         if (amount <= 0) { Debug.LogError ( "Removing a value of " + amount ); return 0; }
-        //int amountNotRemoved = RemoveItemRecursively ( id, amount );
         int amountNotRemoved = 0;
 
         ItemBaseData item = null;
@@ -335,7 +343,7 @@ public class Inventory
                         if (stacks[i].ID == id)
                         {
                             amountRemoved++;
-                            stacks.RemoveAt ( i );
+                            stacks[i].Amount--;
                             if (amountRemoved >= amount)
                                 break;
                         }
@@ -393,7 +401,7 @@ public class Inventory
 
     private void RemoveEmptyStacks ()
     {
-        for (int x = 0; x < stacks.Count; x++)
+        for (int x = stacks.Count - 1; x >= 0; x--)
         {
             if (stacks[x].Amount <= 0)
             {
@@ -414,14 +422,8 @@ public class Inventory
         stacks[indexA] = stacks[indexB];
         stacks[indexB] = stackA;
 
-        //Stack stackB = stacks[indexB];
-
-        //stacks.RemoveAt ( indexA );
-        //stacks.Insert ( indexA, stackB );
-        //stacks.RemoveAt ( indexB );
-        //stacks.Insert ( indexB, stackA );
-
         OnInventoryChanged?.Invoke ();
+        SoundEffectManager.Play ( AudioClipAsset.InventoryUpdated, AudioMixerGroup.SFX );
     }
 
     public void RegisterItemAdded (System.Action<int, int> action) { OnItemAdded += action; }

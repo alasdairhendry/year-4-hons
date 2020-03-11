@@ -10,4 +10,10 @@ public class MeleeAttackAnimation : ScriptableObject
     public float attackDelay;
     public float swingAudioDelay;
     public float resultAudioDelay;
+
+    [NaughtyAttributes.Button]
+    private void SetClipLength ()
+    {
+        clipLength = clip.length * 60.0f;
+    }
 }

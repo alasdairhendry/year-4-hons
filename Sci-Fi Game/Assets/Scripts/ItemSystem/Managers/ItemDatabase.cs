@@ -94,31 +94,86 @@ public static class ItemDatabase
         { 74, new ItemData_SwordOfAHundredTruths(74) },
         { 75, new ItemData_ExperienceGem(75) },
         { 76, new ItemData_1GBFlashDrive(76) },
-        //{ 77, new ItemData_Wrench(77) },
-        //{ 78, new ItemData_Wrench(78) },
-        //{ 79, new ItemData_Wrench(79) },
+        { 77, new ItemData_EmporersMask(77) },
+        { 78, new ItemData_Balaclava(78) },
+        { 79, new ItemData_GasMask(79) },
 
-        //{ 80, new ItemData_Wrench(80) },
-        //{ 81, new ItemData_Wrench(81) },
-        //{ 82, new ItemData_Wrench(82) },
-        //{ 83, new ItemData_Wrench(83) },
-        //{ 84, new ItemData_Wrench(84) },
-        //{ 85, new ItemData_Wrench(85) },
-        //{ 86, new ItemData_Wrench(86) },
-        //{ 87, new ItemData_Wrench(87) },
-        //{ 88, new ItemData_Wrench(88) },
-        //{ 89, new ItemData_Wrench(89) },
+        { 80, new ItemData_PaperBag(80) },
+        { 81, new ItemData_LuchadorMask(81) },
+        { 82, new ItemData_HorseHead(82) },
+        { 83, new ItemData_HockeyMask(83) },
+        { 84, new ItemData_ClownMask(84) },
+        { 85, new ItemData_ChickenHead(85) },
+        { 86, new ItemData_AlienMask(86) },
+        { 87, new ItemData_CapMask(87) },
+        { 88, new ItemData_PandaHead(88) },
+        { 89, new ItemData_TigerHead(89) },
 
-        //{ 90, new ItemData_Wrench(90) },
-        //{ 91, new ItemData_Wrench(91) },
-        //{ 92, new ItemData_Wrench(92) },
-        //{ 93, new ItemData_Wrench(93) },
-        //{ 94, new ItemData_Wrench(94) },
-        //{ 95, new ItemData_Wrench(95) },
-        //{ 96, new ItemData_Wrench(96) },
-        //{ 97, new ItemData_Wrench(97) },
-        //{ 98, new ItemData_Wrench(98) },
-        //{ 99, new ItemData_Wrench(99) },
+        { 90, new ItemData_WelderMask(90) },
+        { 91, new ItemData_PartyHatWhite(91) },
+        { 92, new ItemData_PartyHatRed(92) },
+        { 93, new ItemData_PartyHatYellow(93) },
+        { 94, new ItemData_PartyHatBlue(94) },
+        { 95, new ItemData_PartyHatGreen(95) },
+        { 96, new ItemData_ChristmasCracker(96) },
+        { 97, new ItemData_StainedSweatPants(97) },
+        { 98, new ItemData_EnergyDrink(98) },
+        { 99, new ItemData_BronyAntiqueHead(99) },
+
+        { 100, new ItemData_VitroBits(100) },
+        { 101, new ItemData_HydroBits(101) },
+        { 102, new ItemData_NitroBits(102) },
+        { 103, new ItemData_Hoverboard(103) },
+        //{ 104, new ItemData_Wrench(104) },
+        //{ 105, new ItemData_Wrench(105) },
+        //{ 106, new ItemData_Wrench(106) },
+        //{ 107, new ItemData_Wrench(107) },
+        //{ 108, new ItemData_Wrench(108) },
+        //{ 109, new ItemData_Wrench(109) },
+
+        //{ 110, new ItemData_Wrench(110) },
+        //{ 111, new ItemData_Wrench(111) },
+        //{ 112, new ItemData_Wrench(112) },
+        //{ 113, new ItemData_Wrench(113) },
+        //{ 114, new ItemData_Wrench(114) },
+        //{ 115, new ItemData_Wrench(115) },
+        //{ 116, new ItemData_Wrench(116) },
+        //{ 117, new ItemData_Wrench(117) },
+        //{ 118, new ItemData_Wrench(118) },
+        //{ 119, new ItemData_Wrench(119) },
+
+        //{ 120, new ItemData_Wrench(120) },
+        //{ 121, new ItemData_Wrench(121) },
+        //{ 122, new ItemData_Wrench(122) },
+        //{ 123, new ItemData_Wrench(123) },
+        //{ 124, new ItemData_Wrench(124) },
+        //{ 125, new ItemData_Wrench(125) },
+        //{ 126, new ItemData_Wrench(126) },
+        //{ 127, new ItemData_Wrench(127) },
+        //{ 128, new ItemData_Wrench(128) },
+        //{ 129, new ItemData_Wrench(129) },
+
+        //{ 130, new ItemData_Wrench(130) },
+        //{ 131, new ItemData_Wrench(131) },
+        //{ 132, new ItemData_Wrench(132) },
+        //{ 133, new ItemData_Wrench(133) },
+        //{ 134, new ItemData_Wrench(134) },
+        //{ 135, new ItemData_Wrench(135) },
+        //{ 136, new ItemData_Wrench(136) },
+        //{ 137, new ItemData_Wrench(137) },
+        //{ 138, new ItemData_Wrench(138) },
+        //{ 139, new ItemData_Wrench(139) },
+
+        //{ 140, new ItemData_Wrench(140) },
+        //{ 141, new ItemData_Wrench(141) },
+        //{ 142, new ItemData_Wrench(142) },
+        //{ 143, new ItemData_Wrench(143) },
+        //{ 144, new ItemData_Wrench(144) },
+        //{ 145, new ItemData_Wrench(145) },
+        //{ 146, new ItemData_Wrench(146) },
+        //{ 147, new ItemData_Wrench(147) },
+        //{ 148, new ItemData_Wrench(148) },
+        //{ 149, new ItemData_Wrench(149) },
     };
 
     public static void Initialise ()
@@ -139,16 +194,6 @@ public static class ItemDatabase
 
     private static void ValidateItem(ItemBaseData item)
     {
-        if (item.IsSoulbound && item.IsSellable)
-        {
-            Debug.LogWarning ( string.Format ( "Item [{0} : {1}] is flagged as soulbound and sellable", item.ID, item.Name ) );
-        }
-
-        if (item.IsUnique && item.IsStackable)
-        {
-            Debug.LogWarning ( string.Format ( "Item [{0} : {1}] is flagged as unique and has a max stack greater than 1", item.ID, item.Name ) );
-        }
-
         if (string.IsNullOrEmpty ( item.Name ))
         {
             Debug.LogWarning ( string.Format ( "Item [{0}] does not have a name", item.ID ) );
@@ -165,7 +210,7 @@ public static class ItemDatabase
         }
     }
 
-    public static bool GetItem(int id, out ItemBaseData item)
+    public static bool GetItem (int id, out ItemBaseData item)
     {
         if (itemDictionary.ContainsKey ( id ))
         {
@@ -195,13 +240,18 @@ public static class ItemDatabase
         return itemDictionary.Values.Select ( x => x.ID + " - " +  x.Name + " [" + x.category + "]" ).ToArray ();
     }
 
-    public static void SendTo (this Inventory from, Inventory to, int id, int amount)
+    public static void SendTo (this Inventory from, Inventory to, int id, int amount, bool playSFX)
     {
         int amountReturned = to.AddItem ( id, amount );
         int amountAdded = amount - amountReturned;
 
         if (amountAdded > 0)
+        {
             from.RemoveItem ( id, amountAdded );
+
+            if (playSFX)
+                SoundEffectManager.Play ( AudioClipAsset.InventoryUpdated, AudioMixerGroup.SFX );
+        }
     }
 
     public static string GetInteractionPrefix (int itemID)
@@ -212,17 +262,10 @@ public static class ItemDatabase
 
         if (ItemContainerCanvas.instance.isOpened)
         {
-            if (item.IsSoulbound || !ItemContainerCanvas.instance.targetInventory.canRecieveItems)
-            {
-                return "";
-            }
+            if (Input.GetKey ( KeyCode.LeftShift ))
+                return "Store All ";
             else
-            {
-                if (Input.GetKey ( KeyCode.LeftShift ))
-                    return "Store All ";
-                else
-                    return "Store ";
-            }
+                return "Store ";
         }
         else if (StoreCanvas.instance.isOpened)
         {
@@ -230,6 +273,13 @@ public static class ItemDatabase
                 return "Sell All ";
             else
                 return "Sell ";
+        }
+        else if (BankCanvas.instance.isOpened)
+        {
+            if (Input.GetKey ( KeyCode.LeftShift ))
+                return "Store All ";
+            else
+                return "Store ";
         }
         else
         {
@@ -249,19 +299,12 @@ public static class ItemDatabase
 
         if (ItemContainerCanvas.instance.isOpened)
         {
-            if (item.IsSoulbound)
-            {
-                Debug.LogError ( "Cannot remove a soulbound item from your inventory" );
-            }
-            else
-            {
-                int shiftClick = playerInventory.GetStackAtIndex ( inventoryIndex ).Amount;
+            int shiftClick = playerInventory.GetStackAtIndex ( inventoryIndex ).Amount;
 
-                if (Input.GetKey ( KeyCode.LeftShift ))
-                    playerInventory.SendTo ( ItemContainerCanvas.instance.targetInventory, item.ID, shiftClick );
-                else
-                    playerInventory.SendTo ( ItemContainerCanvas.instance.targetInventory, item.ID, 1 );
-            }
+            if (Input.GetKey ( KeyCode.LeftShift ))
+                PlayerInventoryController.SendItemFromInventoryToContainer ( item.ID, shiftClick );
+            else
+                PlayerInventoryController.SendItemFromInventoryToContainer ( item.ID, 1 );
         }
         else if (StoreCanvas.instance.isOpened)
         {
@@ -272,12 +315,40 @@ public static class ItemDatabase
             else
                 StoreCanvas.instance.currentShopkeeper.TrySellItem ( item.ID, 1 );
         }
+        else if (BankCanvas.instance.isOpened)
+        {
+            int shiftClick = playerInventory.GetStackAtIndex ( inventoryIndex ).Amount;
+
+            if (Input.GetKey ( KeyCode.LeftShift ))
+                PlayerInventoryController.SendItemFromInventoryToBank ( item.ID, shiftClick );
+            else
+                PlayerInventoryController.SendItemFromInventoryToBank ( item.ID, 1 );
+        }
         else
         {
             item.GetDefaultInteractionData ().onInteract?.Invoke ( inventoryIndex );
         }
     }
 
-    public const float GLOBAL_ITEM_SELL_MODIFER = 0.4f;
+    public const float GLOBAL_ITEM_SELL_MODIFER = 0.55f;
     public const float GLOBAL_ITEM_BUY_MODIFER = 1.0f;
+
+    public static float GetGlobalItemSellPrice (int itemID)
+    {
+        ItemBaseData item = null;
+
+        if (GetItem ( itemID, out item ))
+        {
+            return GetGlobalItemSellPrice ( item );
+        }
+        else
+        {
+            return 0.0f;
+        }
+    }
+
+    public static float GetGlobalItemSellPrice (ItemBaseData item)
+    {
+        return Mathf.FloorToInt ( ((float)item.BuyPrice * 0.75f) * GLOBAL_ITEM_SELL_MODIFER );
+    }
 }

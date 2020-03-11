@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,12 +17,13 @@ public class CraftingCanvas : UIPanel
             return;
         }
 
-        Close ();
+        Close ( true );
     }
 
     [SerializeField] private GameObject panel;
     [SerializeField] private GameObject notBeingCraftedPanel;
     [SerializeField] private GameObject beingCraftedPanel;
+    [SerializeField] private TMP_Dropdown dropdownFilter;
     [Space]
     [SerializeField] private Image recipeResultImage;
     [SerializeField] private TextMeshProUGUI recipeResultName;
@@ -42,6 +44,11 @@ public class CraftingCanvas : UIPanel
     private CraftingTable currentTable;
     private CraftingBench currentBench;
     private CraftingRecipe currentRecipe;
+
+    private void Start ()
+    {
+        dropdownFilter.onValueChanged.AddListener ( (value) => { UpdateRecipeButtons (); } );
+    }
 
     private void Update ()
     {
@@ -72,14 +79,12 @@ public class CraftingCanvas : UIPanel
         currentTable = table;
         currentBench = bench;
         benchNameText.text = currentBench.CraftingBenchName;
-        UpdateRecipeButtons ();
+        UpdateRecipeButtons ();        
         ShowRecipe ( table.recipes[0] );
     }
 
     public override void Open ()
     {
-        base.Open ();
-
         if(currentTable == null)
         {
             return;
@@ -87,7 +92,6 @@ public class CraftingCanvas : UIPanel
 
         if (currentBench == null) return;
 
-        isOpened = true;
 
         if (currentTable.recipes.Count <= 0)
         {
@@ -95,37 +99,111 @@ public class CraftingCanvas : UIPanel
             return;
         }
 
+        base.Open ();
+        isOpened = true;
         panel.SetActive ( true );
-
         UpdateDisplayedPanel ();
+        UIPanelController.instance.OnPanelOpened ( this );
     }
 
-    public override void Close ()
+    public override void Close (bool bypassCloseCheck = false)
     {
+        if (isOpened == false && !bypassCloseCheck) return;
+
         base.Close ();
-        isOpened = true;
+        isOpened = false;
         panel.SetActive ( false );
         currentTable = null;
         currentBench = null;
         currentRecipe = null;
+        UIPanelController.instance.OnPanelClosed ( this );
     }
 
     private void UpdateRecipeButtons ()
     {
+        int currentFilter = dropdownFilter.value;
+
+        List<CraftingRecipe> filteredRecipes = new List<CraftingRecipe> ( currentTable.recipes );
+
+        if (currentFilter == 1)
+        {
+            filteredRecipes.Clear ();
+
+            for (int i = 0; i < currentTable.recipes.Count; i++)
+            {
+                bool doBreak = false;
+
+                for (int y = 0; y < currentTable.recipes[i].ingredientsRequired.Count; y++)
+                {
+                    if (!EntityManager.instance.PlayerInventory.CheckHasItemQuantity ( currentTable.recipes[i].ingredientsRequired[y].ID, currentTable.recipes[i].ingredientsRequired[y].Amount ))
+                    {
+                        doBreak = true;
+                        break;
+                    }
+                }
+
+                if (doBreak) continue;
+
+                for (int y = 0; y < currentTable.recipes[i].toolsRequired.Count; y++)
+                {
+                    if (!EntityManager.instance.PlayerInventory.CheckHasItemQuantity ( currentTable.recipes[i].toolsRequired[y].ID, currentTable.recipes[i].toolsRequired[y].Amount ))
+                    {
+                        doBreak = true;
+                        break;
+                    }
+                }
+
+                if (doBreak) continue;
+
+                filteredRecipes.Add ( currentTable.recipes[i] );
+            }
+        }
+        else if (currentFilter == 2)
+        {
+            filteredRecipes.Clear ();
+
+            for (int i = 0; i < currentTable.recipes.Count; i++)
+            {
+                bool doBreak = false;
+
+                for (int y = 0; y < currentTable.recipes[i].ingredientsRequired.Count; y++)
+                {
+                    if (!EntityManager.instance.PlayerInventory.CheckHasItemQuantity ( currentTable.recipes[i].ingredientsRequired[y].ID, currentTable.recipes[i].ingredientsRequired[y].Amount ))
+                    {
+                        filteredRecipes.Add ( currentTable.recipes[i] );
+                        doBreak = true;
+                        break;
+                    }
+                }
+
+                if (doBreak) continue;
+
+                for (int y = 0; y < currentTable.recipes[i].toolsRequired.Count; y++)
+                {
+                    if (!EntityManager.instance.PlayerInventory.CheckHasItemQuantity ( currentTable.recipes[i].toolsRequired[y].ID, currentTable.recipes[i].toolsRequired[y].Amount ))
+                    {
+                        filteredRecipes.Add ( currentTable.recipes[i] );
+                        break;
+                    }
+                }                
+            }
+        }
+
+
         for (int i = 0; i < recipeButtons.Count; i++)
         {
             recipeButtons[i].button.onClick.RemoveAllListeners ();
 
-            if (i >= currentTable.recipes.Count)
+            if (i >= filteredRecipes.Count)
             {
                 recipeButtons[i].gameObject.SetActive ( false );
             }
             else
             {
                 recipeButtons[i].gameObject.SetActive ( true );
-                recipeButtons[i].text.text = currentTable.recipes[i].recipeName;
+                recipeButtons[i].text.text = filteredRecipes[i].recipeName;
                 int x = i;
-                recipeButtons[i].button.onClick.AddListener ( () => { ShowRecipe ( currentTable.recipes[x] ); } );
+                recipeButtons[i].button.onClick.AddListener ( () => { ShowRecipe ( filteredRecipes[x] ); } );
             }
         }
     }

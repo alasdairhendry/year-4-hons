@@ -9,8 +9,6 @@ public class NPC : MonoBehaviour
     [SerializeField] protected bool overrideDefaultAttackOption = false;
     [NaughtyAttributes.ShowIf ( nameof ( overrideDefaultAttackOption ) )] [SerializeField] protected NPCAttackOption attackOptionOverride = NPCAttackOption.CanBeAttacked;
     [Space]
-    [SerializeField] protected GameObject lootableNPCPrefab;
-    [Space]
     [SerializeField] protected Transform healthIndicatorPlaceholder;
     [SerializeField] protected bool setInteractableNameToNPCDataName = true;
 
@@ -49,9 +47,11 @@ public class NPC : MonoBehaviour
     protected virtual void Awake ()
     {
         InitialiseData ();
+        SetMaterial ();
         CreateHealthIndicator ();
         SubscribeToEvents ();
-        QuestFlow.DialogueEngine.DialogueManager.instance.onConversationEnd += OnConversationEnd;
+
+        if (QuestFlow.DialogueEngine.DialogueManager.instance) QuestFlow.DialogueEngine.DialogueManager.instance.onConversationEnd += OnConversationEnd;
     }
 
     protected virtual void OnConversationEnd (Conversation obj)
@@ -80,12 +80,37 @@ public class NPC : MonoBehaviour
         NPCStateController = GetComponent<NPCStateController> ();
         Character = GetComponent<Character> ();
 
-        if (setInteractableNameToNPCDataName)
-            GetComponentInChildren<Interactable> ().SetInteractName ( NpcData.NpcName + " [" + Character.cFaction.CurrentFaction.factionName + "]" );
+        Interactable interactable = GetComponentInChildren<Interactable> ();
+
+        switch (NPCAttackOption)
+        {
+            case NPCAttackOption.CanBeAttacked:
+                interactable.TextColour = ColourDescription.InteractionAttackableEnemy;
+                if (setInteractableNameToNPCDataName)
+                {
+                    interactable.SetInteractType ( "Level " + NpcData.CombatLevel.ToString ( "0" ) );
+                    interactable.SetInteractName ( NpcData.NpcName + " [" + Character.cFaction.CurrentFaction.factionName + "]" );
+                }
+                break;
+            case NPCAttackOption.CannotBeAttack:
+                interactable.TextColour = ColourDescription.InteractionDefault;
+                if (setInteractableNameToNPCDataName)
+                    interactable.SetInteractName ( NpcData.NpcName + " [" + Character.cFaction.CurrentFaction.factionName + "]" );
+                break;
+        }
+    }
+
+    private void SetMaterial ()
+    {
+        if (npcData.CharacterMaterials.Count > 0)
+        {
+            MeshRenderer.sharedMaterial = npcData.CharacterMaterials.GetRandom ();
+        }
     }
 
     protected virtual void CreateHealthIndicator ()
     {
+        if (NPCHealthCanvas.instance == null) return;
         healthBar = NPCHealthCanvas.instance.SpawnHealthIndicator ( healthIndicatorPlaceholder ).GetComponent<HealthBarUI> ();
         healthBar.Initialise ( Health, healthIndicatorPlaceholder );
         healthBar.SetInactive ();
@@ -98,7 +123,6 @@ public class NPC : MonoBehaviour
         Health.onHealthAdded += OnHealthAdded;
         Health.onHealthRemoved += OnHealthRemoved;
         Character.cWeapon.OnAttack += OnAttack;
-        SkillManager.instance.OnCharacterLevelIncreased += RefreshMaxHealth;
     }
 
     protected virtual void UnsubscribeToEvents ()
@@ -108,13 +132,6 @@ public class NPC : MonoBehaviour
         Health.onHealthAdded -= OnHealthAdded;
         Health.onHealthRemoved -= OnHealthRemoved;
         Character.cWeapon.OnAttack -= OnAttack;
-        SkillManager.instance.OnCharacterLevelIncreased -= RefreshMaxHealth;
-    }
-
-    protected virtual void RefreshMaxHealth ()
-    {
-        Health.SetMaxHealth ( NPCCombatStats.GetMaxHealth ( NpcData ), !IsInCombat );
-
     }
 
     protected virtual void CheckShouldShowHealthIndicator ()
@@ -148,7 +165,7 @@ public class NPC : MonoBehaviour
 
         if (Random.value < 0.65f)
         {
-            SoundEffect.Play3D ( npcData.DamageTakenAudioClips.GetRandom(), this.transform.position, 2, 10 );
+            SoundEffectManager.Play3D ( npcData.DamageTakenAudioClips.GetRandom(), AudioMixerGroup.SFX, this.transform.position, minDistance: 2, maxDistance: 10 );
         }
     }
 
@@ -167,12 +184,12 @@ public class NPC : MonoBehaviour
         if (Random.value > 0.65f)
             Character.cWeapon.Unequip ( true );
 
-        SoundEffect.Play3D ( npcData.DeathAudioClips.GetRandom (), this.transform.position, 2, 10 );
+        SoundEffectManager.Play3D ( npcData.DeathAudioClips.GetRandom (), AudioMixerGroup.SFX, this.transform.position, minDistance: 2, maxDistance: 10 );
         Destroy ( healthBar.gameObject );
 
         Destroy ( GetComponentInChildren<Interactable> ().gameObject );
 
-        GameObject lootableNPC = Instantiate ( lootableNPCPrefab );        
+        GameObject lootableNPC = Instantiate ( AssetManager.instance.GetPrefab ( PrefabAsset.LootableNPC ) );
         lootableNPC.GetComponent<LootableNPC> ().Initialise ( GetComponent<Animator> ().GetBoneTransform ( HumanBodyBones.Chest ), npcData );
 
         GetComponent<Animator> ().SetBool ( "die", true );
@@ -207,6 +224,7 @@ public class NPC : MonoBehaviour
 
     protected virtual void OnDestroy ()
     {
+        if(QuestFlow.DialogueEngine.DialogueManager.instance)
         QuestFlow.DialogueEngine.DialogueManager.instance.onConversationEnd -= OnConversationEnd;
     }
 

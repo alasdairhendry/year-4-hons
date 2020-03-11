@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 919377fd9be021246891a1f26e73579a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lootTables: []
+  interactable: {fileID: 3701865369580869770}
 --- !u!135 &3701865369580869768
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -71,10 +71,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f35ba63567156d4a94ff800f65683ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interactableType: 0
   cursorType: 5
   interactType: Loot
   interactableName: NPC Name
+  textColour: 10
   onInteractEvent:
     m_PersistentCalls:
       m_Calls:
@@ -89,8 +89,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   squaredInteractionRadius: 4
   mustFaceObject: 1
   space: 0

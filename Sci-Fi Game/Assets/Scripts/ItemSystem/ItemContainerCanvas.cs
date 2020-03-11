@@ -16,7 +16,7 @@ public class ItemContainerCanvas : UIPanel
     {
         if (instance == null) instance = this;
         else if (instance != this) { Destroy ( this.gameObject ); return; }
-        Close ();
+        Close ( true );
     }
 
     private void Start ()
@@ -42,16 +42,20 @@ public class ItemContainerCanvas : UIPanel
         if (targetInventory == null) return;
 
         StoreCanvas.instance.Close ();
+        BankCanvas.instance.Close ();
         EntityManager.instance.InventoryCanvas.Open ();
         base.Open ();
         isOpened = true;
 
         cGroup.alpha = 1;
         cGroup.blocksRaycasts = true;
+        UIPanelController.instance.OnPanelOpened ( this );
     }
 
-    public override void Close ()
+    public override void Close (bool bypassCloseCheck = false)
     {
+        if (isOpened == false && !bypassCloseCheck) return;
+
         base.Close ();
         isOpened = false;
         if (targetInventory != null)
@@ -62,6 +66,7 @@ public class ItemContainerCanvas : UIPanel
         cGroup.alpha = 0;
         cGroup.blocksRaycasts = false;
         OnContainerClosed?.Invoke ();
+        UIPanelController.instance.OnPanelClosed ( this );
     }
 
     public void SetContainerInventory (Inventory target, string name)
@@ -119,9 +124,9 @@ public class ItemContainerCanvas : UIPanel
                         containerPanels[i].PanelButton.onClick.AddListener ( () =>
                         {
                             if (Input.GetKey ( KeyCode.LeftShift ))
-                                targetInventory.SendTo ( EntityManager.instance.PlayerInventory, id, shiftClick );
+                                PlayerInventoryController.SendItemFromContainerToInventory ( id, shiftClick );
                             else
-                                targetInventory.SendTo ( EntityManager.instance.PlayerInventory, id, 1 );
+                                PlayerInventoryController.SendItemFromContainerToInventory ( id, 1);
                         } );
                     }
                 }

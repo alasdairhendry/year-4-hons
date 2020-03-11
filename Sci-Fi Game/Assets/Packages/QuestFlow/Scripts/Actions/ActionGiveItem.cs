@@ -12,7 +12,13 @@ namespace QuestFlow
 
         public override void DoAction ()
         {
-            EntityManager.instance.PlayerInventory.AddItem ( itemID, itemAmount );
+            if (EntityManager.instance.PlayerInventory.CheckCanRecieveItem ( itemID, itemAmount ))
+                EntityManager.instance.PlayerInventory.AddItem ( itemID, itemAmount );
+            else
+            {
+                EntityManager.instance.PlayerBankInventory.AddItem ( itemID, itemAmount );
+                MessageBox.AddMessage ( "Some items were sent to your bank.", MessageBox.Type.Warning );
+            }
         }
     }
 }

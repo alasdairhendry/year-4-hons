@@ -45,16 +45,23 @@ public class ItemContainerPanel : MonoBehaviour, IBeginDragHandler, IDragHandler
         itemAmountText.text = this.ItemAmount.ToString ();
         tooltipItem.SetTooltipAction ( () =>
         {
-            string action = "Take ";
-            if (Input.GetKey ( KeyCode.LeftShift )) action = "Take All ";
-            return action + ColourHelper.TagColour ( ItemDatabase.GetItem ( itemID ).Name, ColourDescription.OffWhiteText ) + "\n" + ColourHelper.TagSize ( ItemDatabase.GetItem ( itemID ).Description, 75.0f );
+            string s = "Take ";
+            if (Input.GetKey ( KeyCode.LeftShift )) s = "Take All ";
+
+            s += ColourHelper.TagColour ( ItemDatabase.GetItem ( itemID ).Name, ColourDescription.OffWhiteText );
+
+            s += ColourHelper.TagColourSize ( "\n" + ItemDatabase.GetGlobalItemSellPrice ( itemID ) + " Crowns", ColourDescription.DarkYellowText, 80.0f );
+            s += ColourHelper.TagColourSize ( "\n" + ItemDatabase.GetItem ( itemID ).category.ToString (), ColourDescription.OffWhiteText, 80.0f );
+            s += ColourHelper.TagColourSize ( "\n" + ItemDatabase.GetItem ( itemID ).Description, ColourDescription.OffWhiteText, 80.0f );
+
+            return s;
         }
         );
     }
 
     void IBeginDragHandler.OnBeginDrag (PointerEventData eventData)
     {
-        DragHandler.OnBeginDrag ( inventoryIndex, ItemID, ItemAmount, DragHandler.Master.ItemContainer, contentPanel.transform );
+        DragHandler.OnBeginDrag ( inventoryIndex, ItemID, ItemAmount, DragHandler.Master.ItemContainer, contentPanel.transform, ItemDatabase.GetItem ( ItemID ).Sprite );
     }
 
     void IDragHandler.OnDrag (PointerEventData eventData)

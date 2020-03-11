@@ -25,8 +25,6 @@ public abstract class ItemBaseData
     public ItemCategory category { get; protected set; }    // The category this item belongs to
 
     public bool IsSellable { get; protected set; }          // Is the item able to be sold to shops?
-    public bool IsSoulbound { get; protected set; }         // Can the item be destroyed?
-    public bool IsUnique { get; protected set; }            // Can the player have multiple of these items?
     public bool IsStackable { get; protected set; }             // Can this item be stacked on top of itself in an inventory?
 
     public string[] RelatedQuestIDs { get; protected set; }    // Does this item relate to any quest IDs? If so, it is considered a quest item
@@ -46,13 +44,17 @@ public abstract class ItemBaseData
         {
             int amount = EntityManager.instance.PlayerInventory.GetStackAtIndex ( inventoryIndex ).Amount;
             EntityManager.instance.PlayerInventory.RemoveItem ( ID, amount );
-            SoundEffect.Play ( EntityManager.instance.dropItemSoundEffects.GetRandom () );
+            SoundEffectManager.Play ( EntityManager.instance.dropItemSoundEffects.GetRandom (), AudioMixerGroup.SFX );
         } ), false );
     }
 
     protected void FetchSprite ()
     {
         Sprite = Resources.Load<Sprite> ( "Items/Sprites/" + ID) as Sprite;
+        if(Sprite == null)
+        {
+            Debug.LogError ( Name + " has no sprite [ID: " + ID + "]" );
+        }
     }
 
     public void AddInteractionData (InventoryInteractionData data, bool setAsDefault = false)
@@ -195,8 +197,8 @@ public class InventoryInteractionData
         base.category = ItemCategory.Consumable;
 
         base.IsSellable = true;
-        base.IsSoulbound = false;
-        base.IsUnique = false;
+        
+        
 
         base.IsStackable = true; 10;
         base.RelatedQuestIDs = new int[] { };

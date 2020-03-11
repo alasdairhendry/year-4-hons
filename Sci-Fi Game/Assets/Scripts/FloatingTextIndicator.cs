@@ -9,12 +9,17 @@ public class FloatingTextIndicator : MonoBehaviour
 
     private void Awake ()
     {
-        if (EntityManager.instance.PlayerCharacter.transform == transform) isPlayer = true;
+        if (EntityManager.instance != null && EntityManager.instance.PlayerCharacter.transform == transform) isPlayer = true;
     }
 
     public void CreateDamageText (float text, bool isCritical = false)
     {
         DamageCanvas.instance.SpawnDamageIndicator ( damageIndicatorPlaceholder, 0.5f, text, isCritical, isPlayer );
+    }
+
+    public void CreateHealText (float text, bool isCritical = false)
+    {
+        DamageCanvas.instance.SpawnHealIndicator ( damageIndicatorPlaceholder, 0.5f, text, isCritical, isPlayer );
     }
 
     public void CreateInfoText(string text, ColourDescription colourDescription = ColourDescription.None)

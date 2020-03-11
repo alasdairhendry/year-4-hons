@@ -9,6 +9,6 @@ namespace QuestFlow.QuestEngine
     [System.Serializable]
     public class NodeQuestEnd : NodeBase
     {
-        public QuestReward optionalReward;
+
     }
 }

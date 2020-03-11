@@ -26,7 +26,6 @@ namespace QuestFlow.QuestEngine
             EditorGUI.DrawConditions ( serializedObject, target as NodeBase, "Offer Conditions" );
             EditorGUI.DrawActions ( serializedObject, target as NodeBase, "On Accepted Actions" );
             EditorGUI.DrawOutputs ( target, serializedObject );
-            EditorGUI.DrawRewards ( serializedObject, "Mandatory Rewards", "questReward" );
         }
 
         public override Color GetTint ()

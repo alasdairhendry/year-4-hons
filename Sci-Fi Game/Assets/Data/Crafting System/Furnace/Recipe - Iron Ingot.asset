@@ -15,6 +15,7 @@ MonoBehaviour:
   recipeName: Iron Ingot
   timeToCraft: 1.5
   tableResourceUsage: 10
+  resultSprite: {fileID: 21300000, guid: 2eadae1799dfabe4a99e7678ac3cdb12, type: 3}
   ingredientsRequired:
   - ID: 17
     Amount: 2

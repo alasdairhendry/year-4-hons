@@ -211,10 +211,6 @@ MonoBehaviour:
   - {fileID: 2120286786574642481}
   actions: []
   conditionRequirementType: 0
-  questReward:
-    mandatoryReward:
-      reward: []
-    decisionRewards: []
 --- !u!114 &-4628849113030647878
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -426,10 +422,6 @@ MonoBehaviour:
   conditions: []
   actions: []
   conditionRequirementType: 0
-  optionalReward:
-    mandatoryReward:
-      reward: []
-    decisionRewards: []
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -443,7 +435,6 @@ MonoBehaviour:
   m_Name: One Small Favour
   m_EditorClassIdentifier: 
   nodes:
-  - {fileID: -5050781351255987923}
   - {fileID: -4628849113030647878}
   - {fileID: -5941177986866438917}
   - {fileID: 8207783127784163935}
@@ -454,6 +445,8 @@ MonoBehaviour:
   - {fileID: 3792699996334711671}
   - {fileID: -6433261418784729780}
   - {fileID: -978046826338906151}
+  - {fileID: 0}
+  - {fileID: -5050781351255987923}
   questID: onesmallfavour
   questName: One Small Favour
   collateQuestLog: 1
@@ -466,7 +459,21 @@ MonoBehaviour:
         amount: 2
       - itemID: 2
         amount: 10
-    decisionRewards: []
+    talentPoints: 10
+    xpRewards:
+    - skill: 0
+      xp: 250
+    - skill: 1
+      xp: 250
+    - skill: 2
+      xp: 250
+    - skill: 3
+      xp: 250
+    - skill: 4
+      xp: 250
+    - skill: 5
+      xp: 250
+    annotatedRewards: []
 --- !u!114 &2120286786574642481
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95280342ab59ddc43b018dc874eeff74, type: 3}
+  m_Name: NPC AI Data - Scavenger
+  m_EditorClassIdentifier: 
+  nearMissRadius: 1
+  fleesBelowHealthPercent: 0.275
+  weaponChoices:
+  - {fileID: 11400000, guid: f321294e4e04c2147be46ef4bf329d7e, type: 2}
+  - {fileID: 11400000, guid: 6279241a4c4537e408da71af52ccbb76, type: 2}
+  - {fileID: 11400000, guid: d2ae50bbd89385c4696b2a209468248a, type: 2}
+  - {fileID: 11400000, guid: 042e9e8727cef694a91d2c032420bf6b, type: 2}
+  - {fileID: 11400000, guid: 0009cfbafc0aa3a40a4b96c1e1d3d3cf, type: 2}
+  - {fileID: 11400000, guid: 2f18692bc14b9b043aae46d195795715, type: 2}
+  weaponAlwaysEquipped: 1
+  weaponAlwaysUnholstered: 0
+  idleBehaviour: {fileID: 11400000, guid: 23e8c8f7a471f4744aac2450414741f5, type: 2}
+  nearMissBehaviour: {fileID: 0}
+  fleeBehaviour: {fileID: 11400000, guid: a5d50708b0ab7954aac59b7cbddddb65, type: 2}
+  combatBehaviour: {fileID: 11400000, guid: 98d2b50f421a4c942a63de6675f057e5, type: 2}
+  stopsAttackingAfterLastAttackDelay: 10
+  stopsAttackingSqrDistanceDelay: 100
+  stopsAttackingSqrDistanceIsPlayerWeaponDistace: 1
+  strategicReloadChance: 0.0001
+  emptyClipReloadChance: 0.5
+  stopCombatAfterPlayerDeathChance: 1
+  fireChance: 0.5
+  stopFiringChance: 0.3

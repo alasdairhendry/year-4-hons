@@ -31,8 +31,6 @@ MonoBehaviour:
   npcData: {fileID: 11400000, guid: 9552dbfe491c2a5498c5861897d0b9ee, type: 2}
   overrideDefaultAttackOption: 0
   attackOptionOverride: 0
-  lootableNPCPrefab: {fileID: 3701865369580869750, guid: 029f67d4782222043976e7f7ec384edc,
-    type: 3}
   healthIndicatorPlaceholder: {fileID: 3336651953343330258}
   setInteractableNameToNPCDataName: 1
   swordof100truthsQuest: {fileID: 11400000, guid: d3baab95e0a9c2d40bff26c3d48a63e3,
@@ -186,6 +184,11 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 5846f1c3c4e5f1e42b95451831844600, type: 2}
+    - target: {fileID: 1805669482559567759, guid: 1f4854dc3d3a0804f8dc7a334c6a9af0,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 4334c1afd5d33194b851aae4a7c4f9e3, type: 2}
     - target: {fileID: 1893421918157256857, guid: 1f4854dc3d3a0804f8dc7a334c6a9af0,
         type: 3}
       propertyPath: skinnedRendererObject

@@ -106,6 +106,60 @@ MonoBehaviour:
   actions: []
   dialogue: Adventurer, you must help me!
   actorOverride: {fileID: 11400000, guid: 7bd65b892e2d16b47a0add6d74b974dc, type: 2}
+--- !u!114 &-8952149048363847249
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 078f4eb91c2b70142b841f30d392aa03, type: 3}
+  m_Name: Dialogue
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 904, y: 3016}
+  ports:
+    keys:
+    - input
+    - output
+    values:
+    - _fieldName: input
+      _node: {fileID: -8952149048363847249}
+      _typeQualifiedName: QuestFlow.DialogueEngine.DialogueEntry, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: output
+        node: {fileID: 7495346989219498223}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: output
+      _node: {fileID: -8952149048363847249}
+      _typeQualifiedName: QuestFlow.DialogueEngine.DialogueEntry, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: input
+        node: {fileID: 6195497787939678862}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  input: {fileID: 0}
+  output: {fileID: 0}
+  conditionsFoldout: 0
+  actionsFoldout: 0
+  outputFoldout: 0
+  conditionRequirementType: 0
+  conditions: []
+  actions: []
+  dialogue: It looks like you currently have a weapon.. I don't just hand them out
+    for nothing!
+  actorOverride: {fileID: 11400000, guid: 7bd65b892e2d16b47a0add6d74b974dc, type: 2}
 --- !u!114 &-8644666912946361850
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -307,6 +361,59 @@ MonoBehaviour:
   dialogue: Well, sometimes weapons get broken when you use them in combat. That's
     just the way it is.
   actorOverride: {fileID: 11400000, guid: 7bd65b892e2d16b47a0add6d74b974dc, type: 2}
+--- !u!114 &-7799648474736387523
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e84f761f53030e341a007ce748ce046f, type: 3}
+  m_Name: Answer
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 1656, y: 3112}
+  ports:
+    keys:
+    - input
+    - output
+    values:
+    - _fieldName: input
+      _node: {fileID: -7799648474736387523}
+      _typeQualifiedName: QuestFlow.DialogueEngine.DialogueEntry, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: output
+        node: {fileID: -235047516296559987}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: output
+      _node: {fileID: -7799648474736387523}
+      _typeQualifiedName: QuestFlow.DialogueEngine.DialogueEntry, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: input
+        node: {fileID: 7985232097650898588}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  input: {fileID: 0}
+  output: {fileID: 0}
+  conditionsFoldout: 0
+  actionsFoldout: 1
+  outputFoldout: 0
+  conditionRequirementType: 0
+  conditions: []
+  actions:
+  - {fileID: 7743384995754808769}
+  dialogue: A wrench.
 --- !u!114 &-7566538598719175810
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -438,6 +545,60 @@ MonoBehaviour:
   conditions: []
   actions: []
   dialogue: Frankly, I just find her a little weird.
+  actorOverride: {fileID: 11400000, guid: 7bd65b892e2d16b47a0add6d74b974dc, type: 2}
+--- !u!114 &-6847744712838429159
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 078f4eb91c2b70142b841f30d392aa03, type: 3}
+  m_Name: Dialogue
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 1230.8782, y: 1267.4833}
+  ports:
+    keys:
+    - input
+    - output
+    values:
+    - _fieldName: input
+      _node: {fileID: -6847744712838429159}
+      _typeQualifiedName: QuestFlow.DialogueEngine.DialogueEntry, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: output
+        node: {fileID: 513769486767136545}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: output
+      _node: {fileID: -6847744712838429159}
+      _typeQualifiedName: QuestFlow.DialogueEngine.DialogueEntry, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: input
+        node: {fileID: 7683446331440133072}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  input: {fileID: 0}
+  output: {fileID: 0}
+  conditionsFoldout: 0
+  actionsFoldout: 0
+  outputFoldout: 0
+  conditionRequirementType: 0
+  conditions: []
+  actions: []
+  dialogue: Come to me any time you need a new weapon! I'm sure Salzman will have
+    something lying around!
   actorOverride: {fileID: 11400000, guid: 7bd65b892e2d16b47a0add6d74b974dc, type: 2}
 --- !u!114 &-6486439128123043422
 MonoBehaviour:
@@ -913,6 +1074,59 @@ MonoBehaviour:
   conditions: []
   actions: []
   dialogue: Why would I want to repair it?
+--- !u!114 &-4813860275040203717
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e84f761f53030e341a007ce748ce046f, type: 3}
+  m_Name: Answer
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 1656, y: 2792}
+  ports:
+    keys:
+    - input
+    - output
+    values:
+    - _fieldName: input
+      _node: {fileID: -4813860275040203717}
+      _typeQualifiedName: QuestFlow.DialogueEngine.DialogueEntry, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: output
+        node: {fileID: -235047516296559987}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: output
+      _node: {fileID: -4813860275040203717}
+      _typeQualifiedName: QuestFlow.DialogueEngine.DialogueEntry, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: input
+        node: {fileID: 7985232097650898588}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  input: {fileID: 0}
+  output: {fileID: 0}
+  conditionsFoldout: 0
+  actionsFoldout: 1
+  outputFoldout: 0
+  conditionRequirementType: 0
+  conditions: []
+  actions:
+  - {fileID: 5246650369111556963}
+  dialogue: A hammer.
 --- !u!114 &-4619963215156128928
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -965,6 +1179,121 @@ MonoBehaviour:
   conditions: []
   actions: []
   dialogue: Excellent! Give it to me and I'll end this issue once and for all.
+--- !u!114 &-4325095624401390342
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34b894890433faf4bacebc7d7ab00617, type: 3}
+  m_Name: QuestFlow.ActionGiveRecipeIngredients
+  m_EditorClassIdentifier: 
+  recipe: {fileID: 11400000, guid: 81a4b8fef018d2448ad92715945b6213, type: 2}
+--- !u!114 &-4125929835743036399
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e84f761f53030e341a007ce748ce046f, type: 3}
+  m_Name: Answer
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 2574.3208, y: 3077.098}
+  ports:
+    keys:
+    - input
+    - output
+    values:
+    - _fieldName: input
+      _node: {fileID: -4125929835743036399}
+      _typeQualifiedName: QuestFlow.DialogueEngine.DialogueEntry, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: output
+        node: {fileID: 7985232097650898588}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: output
+      _node: {fileID: -4125929835743036399}
+      _typeQualifiedName: QuestFlow.DialogueEngine.DialogueEntry, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  input: {fileID: 0}
+  output: {fileID: 0}
+  conditionsFoldout: 0
+  actionsFoldout: 0
+  outputFoldout: 0
+  conditionRequirementType: 0
+  conditions: []
+  actions: []
+  dialogue: Thanks. I'll take this to the repair bench!
+--- !u!114 &-3988086196847249051
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e84f761f53030e341a007ce748ce046f, type: 3}
+  m_Name: Answer
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 1656, y: 3432}
+  ports:
+    keys:
+    - input
+    - output
+    values:
+    - _fieldName: input
+      _node: {fileID: -3988086196847249051}
+      _typeQualifiedName: QuestFlow.DialogueEngine.DialogueEntry, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: output
+        node: {fileID: -235047516296559987}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: output
+      _node: {fileID: -3988086196847249051}
+      _typeQualifiedName: QuestFlow.DialogueEngine.DialogueEntry, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: input
+        node: {fileID: 7985232097650898588}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  input: {fileID: 0}
+  output: {fileID: 0}
+  conditionsFoldout: 0
+  actionsFoldout: 1
+  outputFoldout: 0
+  conditionRequirementType: 0
+  conditions: []
+  actions:
+  - {fileID: 1771176608790970208}
+  dialogue: A granite maul.
 --- !u!114 &-3849325458205387877
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -978,6 +1307,58 @@ MonoBehaviour:
   m_Name: QuestFlow.ActionRemoveItemFromInvOrGear
   m_EditorClassIdentifier: 
   itemID: 74
+--- !u!114 &-3774838773839753160
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c8e9fa8d698dae4ea21fa9af221a3e8, type: 3}
+  m_Name: Group
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 936, y: 2280}
+  ports:
+    keys:
+    - input
+    - output
+    values:
+    - _fieldName: input
+      _node: {fileID: -3774838773839753160}
+      _typeQualifiedName: QuestFlow.DialogueEngine.DialogueEntry, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: output
+        node: {fileID: 2208801210399216843}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: output
+      _node: {fileID: -3774838773839753160}
+      _typeQualifiedName: QuestFlow.DialogueEngine.DialogueEntry, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: input
+        node: {fileID: -235047516296559987}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  input: {fileID: 0}
+  output: {fileID: 0}
+  conditionsFoldout: 1
+  actionsFoldout: 0
+  outputFoldout: 0
+  conditionRequirementType: 0
+  conditions:
+  - {fileID: 3548876417380097861}
+  actions: []
 --- !u!114 &-3526404380475605642
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1791,6 +2172,68 @@ MonoBehaviour:
   actions: []
   dialogue: Will you help, citizen?
   actorOverride: {fileID: 11400000, guid: 7bd65b892e2d16b47a0add6d74b974dc, type: 2}
+--- !u!114 &-235047516296559987
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 078f4eb91c2b70142b841f30d392aa03, type: 3}
+  m_Name: Dialogue
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 1326.6022, y: 2413.1726}
+  ports:
+    keys:
+    - input
+    - output
+    values:
+    - _fieldName: input
+      _node: {fileID: -235047516296559987}
+      _typeQualifiedName: QuestFlow.DialogueEngine.DialogueEntry, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: output
+        node: {fileID: -3774838773839753160}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: output
+      _node: {fileID: -235047516296559987}
+      _typeQualifiedName: QuestFlow.DialogueEngine.DialogueEntry, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: input
+        node: {fileID: -114557280756636273}
+        reroutePoints: []
+      - fieldName: input
+        node: {fileID: -4813860275040203717}
+        reroutePoints: []
+      - fieldName: input
+        node: {fileID: -7799648474736387523}
+        reroutePoints: []
+      - fieldName: input
+        node: {fileID: -3988086196847249051}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  input: {fileID: 0}
+  output: {fileID: 0}
+  conditionsFoldout: 0
+  actionsFoldout: 1
+  outputFoldout: 0
+  conditionRequirementType: 0
+  conditions: []
+  actions: []
+  dialogue: Sure! What would you like?
+  actorOverride: {fileID: 11400000, guid: 7bd65b892e2d16b47a0add6d74b974dc, type: 2}
 --- !u!114 &-129223045490519655
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1830,6 +2273,9 @@ MonoBehaviour:
       - fieldName: input
         node: {fileID: -8166887270922326319}
         reroutePoints: []
+      - fieldName: input
+        node: {fileID: 2208801210399216843}
+        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _typeConstraint: 0
@@ -1843,6 +2289,59 @@ MonoBehaviour:
   conditions:
   - {fileID: 3005571929589566828}
   actions: []
+--- !u!114 &-114557280756636273
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e84f761f53030e341a007ce748ce046f, type: 3}
+  m_Name: Answer
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 1656.2784, y: 2492.4214}
+  ports:
+    keys:
+    - input
+    - output
+    values:
+    - _fieldName: input
+      _node: {fileID: -114557280756636273}
+      _typeQualifiedName: QuestFlow.DialogueEngine.DialogueEntry, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: output
+        node: {fileID: -235047516296559987}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: output
+      _node: {fileID: -114557280756636273}
+      _typeQualifiedName: QuestFlow.DialogueEngine.DialogueEntry, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: input
+        node: {fileID: 7985232097650898588}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  input: {fileID: 0}
+  output: {fileID: 0}
+  conditionsFoldout: 0
+  actionsFoldout: 1
+  outputFoldout: 0
+  conditionRequirementType: 0
+  conditions: []
+  actions:
+  - {fileID: -4325095624401390342}
+  dialogue: A sword.
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1914,8 +2413,6 @@ MonoBehaviour:
   - {fileID: 2042033897198752266}
   - {fileID: -8644666912946361850}
   - {fileID: 513769486767136545}
-  - {fileID: 7683446331440133072}
-  - {fileID: 0}
   - {fileID: -129223045490519655}
   - {fileID: -8166887270922326319}
   - {fileID: 5249088269572974108}
@@ -1928,6 +2425,21 @@ MonoBehaviour:
   - {fileID: 8460200024642918762}
   - {fileID: 8712239867332184149}
   - {fileID: 3208465141383675929}
+  - {fileID: 7683446331440133072}
+  - {fileID: -6847744712838429159}
+  - {fileID: 2208801210399216843}
+  - {fileID: -3774838773839753160}
+  - {fileID: -8952149048363847249}
+  - {fileID: 6195497787939678862}
+  - {fileID: -235047516296559987}
+  - {fileID: -114557280756636273}
+  - {fileID: -4813860275040203717}
+  - {fileID: 7495346989219498223}
+  - {fileID: -7799648474736387523}
+  - {fileID: -3988086196847249051}
+  - {fileID: 7985232097650898588}
+  - {fileID: -4125929835743036399}
+  - {fileID: 0}
   defaultActor: {fileID: 11400000, guid: 7bd65b892e2d16b47a0add6d74b974dc, type: 2}
 --- !u!114 &113252829077595413
 MonoBehaviour:
@@ -2019,7 +2531,7 @@ MonoBehaviour:
         Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: input
-        node: {fileID: 7683446331440133072}
+        node: {fileID: -6847744712838429159}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
@@ -2470,6 +2982,19 @@ MonoBehaviour:
   actions: []
   dialogue: That flash-drive has been gone for centuries..
   actorOverride: {fileID: 11400000, guid: 7bd65b892e2d16b47a0add6d74b974dc, type: 2}
+--- !u!114 &1771176608790970208
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34b894890433faf4bacebc7d7ab00617, type: 3}
+  m_Name: QuestFlow.ActionGiveRecipeIngredients
+  m_EditorClassIdentifier: 
+  recipe: {fileID: 11400000, guid: 361606be92ad1d24fbf9c3d863e171ea, type: 2}
 --- !u!114 &2042033897198752266
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2573,6 +3098,61 @@ MonoBehaviour:
   actions:
   - {fileID: 5354013734835775279}
   dialogue: Okay. I'll go talk to Salzman.
+--- !u!114 &2208801210399216843
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e84f761f53030e341a007ce748ce046f, type: 3}
+  m_Name: Answer
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 575.3203, y: 2261.0156}
+  ports:
+    keys:
+    - input
+    - output
+    values:
+    - _fieldName: input
+      _node: {fileID: 2208801210399216843}
+      _typeQualifiedName: QuestFlow.DialogueEngine.DialogueEntry, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: output
+        node: {fileID: -129223045490519655}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: output
+      _node: {fileID: 2208801210399216843}
+      _typeQualifiedName: QuestFlow.DialogueEngine.DialogueEntry, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: input
+        node: {fileID: -3774838773839753160}
+        reroutePoints: []
+      - fieldName: input
+        node: {fileID: 7495346989219498223}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  input: {fileID: 0}
+  output: {fileID: 0}
+  conditionsFoldout: 0
+  actionsFoldout: 0
+  outputFoldout: 0
+  conditionRequirementType: 0
+  conditions: []
+  actions: []
+  dialogue: Can I have another weapon please?
 --- !u!114 &2218700180118967976
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3008,6 +3588,19 @@ MonoBehaviour:
   dialogue: Well.. Don't take my word for it, but I'm sure I heard that she wanders
     around near The Gates..
   actorOverride: {fileID: 11400000, guid: 7bd65b892e2d16b47a0add6d74b974dc, type: 2}
+--- !u!114 &3548876417380097861
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34b552ad01ed9d841a91e31bdffd5d41, type: 3}
+  m_Name: QuestFlow.ConditionPlayerDoesntHaveItem
+  m_EditorClassIdentifier: 
+  item: 0f0000001700000018000000190000001a0000001b0000002c0000002d0000002e0000002f0000003000000031000000320000003300000034000000350000003c0000003d0000003e0000003f000000400000004100000042000000430000004400000045000000
 --- !u!114 &3566648209242306249
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3322,6 +3915,19 @@ MonoBehaviour:
   conditions: []
   actions: []
   dialogue: Well that's good news.
+--- !u!114 &5246650369111556963
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34b894890433faf4bacebc7d7ab00617, type: 3}
+  m_Name: QuestFlow.ActionGiveRecipeIngredients
+  m_EditorClassIdentifier: 
+  recipe: {fileID: 11400000, guid: fac821590b6719240b49592c4c38103a, type: 2}
 --- !u!114 &5249088269572974108
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3560,6 +4166,55 @@ MonoBehaviour:
   conditions: []
   actions: []
   dialogue: Sure.
+--- !u!114 &6195497787939678862
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e84f761f53030e341a007ce748ce046f, type: 3}
+  m_Name: Answer
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 1224, y: 3112}
+  ports:
+    keys:
+    - input
+    - output
+    values:
+    - _fieldName: input
+      _node: {fileID: 6195497787939678862}
+      _typeQualifiedName: QuestFlow.DialogueEngine.DialogueEntry, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: output
+        node: {fileID: -8952149048363847249}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: output
+      _node: {fileID: 6195497787939678862}
+      _typeQualifiedName: QuestFlow.DialogueEngine.DialogueEntry, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  input: {fileID: 0}
+  output: {fileID: 0}
+  conditionsFoldout: 0
+  actionsFoldout: 0
+  outputFoldout: 0
+  conditionRequirementType: 0
+  conditions: []
+  actions: []
+  dialogue: Oh.. sorry.
 --- !u!114 &6994073954055828182
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3626,6 +4281,57 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   quest: {fileID: 11400000, guid: d3baab95e0a9c2d40bff26c3d48a63e3, type: 2}
   state: {fileID: -2656396389477123404, guid: d3baab95e0a9c2d40bff26c3d48a63e3, type: 2}
+--- !u!114 &7495346989219498223
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c8e9fa8d698dae4ea21fa9af221a3e8, type: 3}
+  m_Name: Group
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 584, y: 2968}
+  ports:
+    keys:
+    - input
+    - output
+    values:
+    - _fieldName: input
+      _node: {fileID: 7495346989219498223}
+      _typeQualifiedName: QuestFlow.DialogueEngine.DialogueEntry, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: output
+        node: {fileID: 2208801210399216843}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: output
+      _node: {fileID: 7495346989219498223}
+      _typeQualifiedName: QuestFlow.DialogueEngine.DialogueEntry, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: input
+        node: {fileID: -8952149048363847249}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  input: {fileID: 0}
+  output: {fileID: 0}
+  conditionsFoldout: 0
+  actionsFoldout: 0
+  outputFoldout: 0
+  conditionRequirementType: 0
+  conditions: []
+  actions: []
 --- !u!114 &7683446331440133072
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3639,7 +4345,7 @@ MonoBehaviour:
   m_Name: Dialogue
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: 1229.5999, y: 1193.9052}
+  position: {x: 1608, y: 1240}
   ports:
     keys:
     - input
@@ -3651,7 +4357,7 @@ MonoBehaviour:
         Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: output
-        node: {fileID: 513769486767136545}
+        node: {fileID: -6847744712838429159}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -3676,8 +4382,22 @@ MonoBehaviour:
   actions:
   - {fileID: -1171417268297857627}
   - {fileID: -3849325458205387877}
-  dialogue: Take this as a way of me saying thank you!
+  dialogue: I don't have much on me currently, but I can give you this as a way of
+    saying thank you.
   actorOverride: {fileID: 11400000, guid: 7bd65b892e2d16b47a0add6d74b974dc, type: 2}
+--- !u!114 &7743384995754808769
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34b894890433faf4bacebc7d7ab00617, type: 3}
+  m_Name: QuestFlow.ActionGiveRecipeIngredients
+  m_EditorClassIdentifier: 
+  recipe: {fileID: 11400000, guid: 3db88e5ec12e7ef409faebd1913128e3, type: 2}
 --- !u!114 &7896934943792233964
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3733,6 +4453,68 @@ MonoBehaviour:
   - {fileID: 727953278169984298}
   - {fileID: -8415061219271173388}
   dialogue: '*You take the sword from him*'
+--- !u!114 &7985232097650898588
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 078f4eb91c2b70142b841f30d392aa03, type: 3}
+  m_Name: Dialogue
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 2211.0542, y: 3017.053}
+  ports:
+    keys:
+    - input
+    - output
+    values:
+    - _fieldName: input
+      _node: {fileID: 7985232097650898588}
+      _typeQualifiedName: QuestFlow.DialogueEngine.DialogueEntry, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: output
+        node: {fileID: -4813860275040203717}
+        reroutePoints: []
+      - fieldName: output
+        node: {fileID: -7799648474736387523}
+        reroutePoints: []
+      - fieldName: output
+        node: {fileID: -114557280756636273}
+        reroutePoints: []
+      - fieldName: output
+        node: {fileID: -3988086196847249051}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: output
+      _node: {fileID: 7985232097650898588}
+      _typeQualifiedName: QuestFlow.DialogueEngine.DialogueEntry, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: input
+        node: {fileID: -4125929835743036399}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  input: {fileID: 0}
+  output: {fileID: 0}
+  conditionsFoldout: 0
+  actionsFoldout: 0
+  outputFoldout: 0
+  conditionRequirementType: 0
+  conditions: []
+  actions: []
+  dialogue: Here you go.
+  actorOverride: {fileID: 11400000, guid: 7bd65b892e2d16b47a0add6d74b974dc, type: 2}
 --- !u!114 &8168568711259940006
 MonoBehaviour:
   m_ObjectHideFlags: 0

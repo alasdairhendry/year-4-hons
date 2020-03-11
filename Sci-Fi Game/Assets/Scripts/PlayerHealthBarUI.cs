@@ -1,13 +1,16 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerHealthBarUI : MonoBehaviour
 {
-    [SerializeField] private RectTransform fillImage;
+    [SerializeField] private Image fillImage;
+    [SerializeField] private TextMeshProUGUI healthText;
+    private float velocity = 0;
 
     private void Update ()
     {
-        fillImage.localScale = new Vector3 ( 1.0f, EntityManager.instance.PlayerCharacter.Health.healthNormalised, 1.0f );
+        fillImage.fillAmount = Mathf.SmoothDamp ( fillImage.fillAmount, EntityManager.instance.PlayerCharacter.Health.healthNormalised, ref velocity, 0.5f );
+        healthText.text = string.Format ( "{0:0.#} / {1:0}", EntityManager.instance.PlayerCharacter.Health.currentHealth, EntityManager.instance.PlayerCharacter.Health.MaxHealth );
     }
 }

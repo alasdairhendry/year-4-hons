@@ -25,10 +25,7 @@ public class SkillManager : MonoBehaviour
     public float CharacterLevel { get; protected set; } = 1.0f;
     public float CombatLevel { get; protected set; } = 1.0f;
     public List<Skill> Skills { get => skills; protected set => skills = value; }
-    public bool DEBUG_LEVEL_TO_991 { get => DEBUG_LEVEL_TO_99; set => DEBUG_LEVEL_TO_99 = value; }
     public List<float> XpRatesByLevel { get => xpRatesByLevel; protected set => xpRatesByLevel = value; }
-
-    [SerializeField] private bool DEBUG_LEVEL_TO_99;
 
     /// <summary>
     /// Called when the character level changes, even by 0.1f
@@ -100,6 +97,7 @@ public class SkillManager : MonoBehaviour
     {
         CheckCharacterLevel ();
         CheckCombatLevel ();
+        LevelUpCanvas.instance.Show ( GetSkill ( skillType ).skillName );
 
         if (EntityManager.instance.PlayerCharacter.cFaction.CurrentFaction.factionType == FactionType.Sylas)
             EntityManager.instance.PlayerCharacter.Health.SetMaxHealth ( SkillModifiers.GetMaxHealth () * 1.35f, false );
@@ -131,6 +129,7 @@ public class SkillManager : MonoBehaviour
         {
             OnCharacterLevelIncremented?.Invoke ();
             MessageBox.AddMessage ( "Congratulations. You have just reached Character Level " + Mathf.FloorToInt ( CharacterLevel ).ToString ( "00" ) );
+            TalentManager.instance.AddTalentPoint ();
         }
     }
 

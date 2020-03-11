@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -9,14 +10,32 @@ public class HotbarEntryPanel : MonoBehaviour, IBeginDragHandler, IDragHandler, 
     public int index { get; protected set; } = 0;
     public int currentItemID { get; protected set; } = -1;
     [SerializeField] private Image image;
+    [SerializeField] private CooldownUIPanel cooldownPanel;
 
     public void Initialise (int index)
     {
         this.index = index;
         GetComponent<Button> ().onClick.AddListener ( () => { Interact (); } );
         RemoveItem ();
+        GameManager.instance.OnGlobalCooldownStateChange += OnCooldownStateChange;
     }
 
+    private void OnCooldownStateChange (bool state)
+    {
+        if (state)
+        {
+            if (ItemDatabase.ItemExists ( currentItemID ))
+            {
+                if (ItemDatabase.GetItem ( currentItemID ).category == ItemCategory.Consumable)
+                    cooldownPanel?.SetActive ( state );
+            }
+        }
+        else
+        {
+            cooldownPanel?.SetActive ( state );
+        }
+    }
+    
     public void SetItem (int ID)
     {
         if (ID < 0) { RemoveItem (); return; }
@@ -53,7 +72,7 @@ public class HotbarEntryPanel : MonoBehaviour, IBeginDragHandler, IDragHandler, 
 
     void IBeginDragHandler.OnBeginDrag (PointerEventData eventData)
     {
-        DragHandler.OnBeginDrag ( index, currentItemID, 0, DragHandler.Master.Hotbar, image.transform );
+        DragHandler.OnBeginDrag ( index, currentItemID, 0, DragHandler.Master.Hotbar, image.transform, ItemDatabase.GetItem ( currentItemID ).Sprite );
     }
 
     void IDragHandler.OnDrag (PointerEventData eventData)

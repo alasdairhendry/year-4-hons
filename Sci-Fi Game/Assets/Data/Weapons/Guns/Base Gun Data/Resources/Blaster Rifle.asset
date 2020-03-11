@@ -15,17 +15,19 @@ MonoBehaviour:
   weaponName: Blaster Rifle
   weaponAttackType: 1
   weaponItemID: 25
+  isBreakable: 1
   brokenVariantItemID: 57
   offsetPosition: {x: 0.0112, y: 0.0015, z: -0.0023}
   offsetRotation: {x: -0.00016392455, y: 90.00003, z: 263.84988}
   localScale: {x: 0.1, y: 0.1, z: 0.10000002}
   prefab: {fileID: 2865452233086558167, guid: 0a1bb50fd32ffca46adc9f287b7c127e, type: 3}
-  baseDamage: 15
+  baseDamage: 4
   activeBodyPart: 18
   holsterBodyPart: 54
   holsterData: {fileID: 11400000, guid: 0e0026fd662c234479b1aefb1e32ade2, type: 2}
   sheatheSoundData: {fileID: 11400000, guid: 17449ef03929a5246b4b8de3ff7dd4f4, type: 2}
   unsheatheSoundData: {fileID: 11400000, guid: ab967c0c7a6c0ef45a9c84ba7f6dafae, type: 2}
+  dps: 40
   weaponType: 1
   ammoType: 1
   fireTypes: 02000000

@@ -24,7 +24,6 @@ namespace QuestFlow
             index = EditorGUILayout.Popup ( "State", index, action.quest.nodes.Where ( x => x != null ).Select ( x => x.name ).ToArray () );
             if (EditorGUI.EndChangeCheck ())
             {
-                Debug.Log ( index );
                 action.state = action.quest.nodes[index] as QuestEngine.NodeBase;
             }
             EditorUtility.SetDirty ( action );

@@ -18,16 +18,6 @@ public class TalentManager : MonoBehaviour
         else if (instance != this) { Destroy ( this.gameObject ); return; }
 
         CreateDictionary ();
-
-        for (int i = 1; i < 11; i++)
-        {
-            //Debug.Log ( i + "  -  " + GetTalentModifier ( i ) );
-        }
-    }
-
-    private void Start ()
-    {
-        Add10TalentPoint ();
     }
 
     private void CreateDictionary ()
@@ -43,24 +33,8 @@ public class TalentManager : MonoBehaviour
         return talentDictionary[type];
     }
 
-    //public float GetTalentModifier (int level)
-    //{
-    //    float baseModifier = 0.05f;
-    //    float divisiveModifier = 0.5f;
-    //    float currentModifier = 0;
-
-    //    for (int i = 1; i < level; i++)
-    //    {
-    //        currentModifier += baseModifier;
-    //        baseModifier *= divisiveModifier;
-    //    }
-
-    //    return currentModifier;
-    //}
-
     public float GetTalentModifier (TalentType type)
     {
-        //return GetTalentModifier ( GetTalent ( type ).currentLevel );
         int level = GetTalent ( type ).currentLevel;
         float baseModifier = 0.05f;
         float divisiveModifier = 0.5f;
@@ -75,19 +49,11 @@ public class TalentManager : MonoBehaviour
         return currentModifier;
     }
 
-    [NaughtyAttributes.Button]
-    public void Add10TalentPoint ()
+    public void AddTalentPoint (int amount = 1)
     {
-        for (int i = 0; i < 10; i++)
-        {
-            AddTalentPoint ();
-        }
-    }
-
-    public void AddTalentPoint ()
-    {
-        CurrentTalentPoints++;
-        MessageBox.AddMessage ( "You've just recieved a new talent point. You have " + CurrentTalentPoints + " to spend" );
+        if (amount <= 0) return;
+        CurrentTalentPoints += amount;
+        MessageBox.AddMessage ( "You've just recieved " + ColourHelper.TagColour ( amount.ToString (), ColourDescription.DarkYellowText ) + " talent " + amount.Pluralise ( "point", "points" ) + ". You have " + CurrentTalentPoints + " to spend" );
     }
 
     public void UpgradeTalent (TalentType type)

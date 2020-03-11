@@ -55,7 +55,7 @@ public class EnergyBarrier : MonoBehaviour
             return;
         }
 
-        if(EntityManager.instance.PlayerInventory.CheckHasItemQuantity(3, tollCost ))
+        if (EntityManager.instance.PlayerInventory.CheckHasItemQuantity ( 3, tollCost ))
         {
             MessageBox.AddMessage ( "The pay the toll of 10 crowns to pass through.", MessageBox.Type.Info );
             EntityManager.instance.PlayerInventory.RemoveCoins ( tollCost );
@@ -66,9 +66,20 @@ public class EnergyBarrier : MonoBehaviour
                 disabledCounter = 5.0f;
             }
         }
+        else if (EntityManager.instance.PlayerBankInventory.CheckHasItemQuantity ( 3, tollCost ))
+        {
+            MessageBox.AddMessage ( "The barrier takes 10 crowns straight out of your bank.", MessageBox.Type.Info );
+            EntityManager.instance.PlayerBankInventory.RemoveCoins ( tollCost );
+
+            for (int i = 0; i < barriers.Count; i++)
+            {
+                barriers[i].SetActive ( false );
+                disabledCounter = 5.0f;
+            }
+        }
         else
         {
-            MessageBox.AddMessage ( "The toll costs 10 crowns to pass.", MessageBox.Type.Warning );
+            MessageBox.AddMessage ( "I need 10 crowns to pay the toll.", MessageBox.Type.Warning );
         }
     }
 }

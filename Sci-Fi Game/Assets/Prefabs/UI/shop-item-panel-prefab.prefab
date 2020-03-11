@@ -65,8 +65,6 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
-      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_Sprite: {fileID: 21300000, guid: 1b74679b7f5a0684ba82a30f78db7ecd, type: 3}
   m_Type: 1
   m_PreserveAspect: 1
@@ -140,8 +138,6 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
-      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_Sprite: {fileID: 21300000, guid: 6c6a9ad254d4af7489af76d91a7ef86b, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
@@ -215,8 +211,6 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
-      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_Sprite: {fileID: 0}
   m_Type: 1
   m_PreserveAspect: 0
@@ -241,6 +235,8 @@ GameObject:
   - component: {fileID: 2042428588424806766}
   - component: {fileID: 7479989331719480924}
   - component: {fileID: 8030924723334310126}
+  - component: {fileID: 2453713768906557037}
+  - component: {fileID: 6998751725018598051}
   m_Layer: 0
   m_Name: shop-item-panel-prefab
   m_TagString: Untagged
@@ -294,8 +290,6 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
-      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_Sprite: {fileID: 21300000, guid: e8bd5d981128d1e459b9a2a4a3b92301, type: 3}
   m_Type: 1
   m_PreserveAspect: 1
@@ -360,8 +354,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
-      Culture=neutral, PublicKeyToken=null
 --- !u!114 &7479989331719480924
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -389,5 +381,30 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   contentPanel: {fileID: 2042428587320433484}
   itemIcon: {fileID: 2042428587447438043}
-  itemCostText: {fileID: 0}
   tooltipItem: {fileID: 7479989331719480924}
+--- !u!114 &2453713768906557037
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2042428588424806762}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates: []
+--- !u!114 &6998751725018598051
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2042428588424806762}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1da4df511b8b23941af948d2e05fd968, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  eventTrigger: {fileID: 2453713768906557037}

@@ -14,18 +14,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   npcName: Guard
   defaultAttackOption: 1
-  faction: {fileID: 11400000, guid: 4aa7bd2a8c5f09849a027b523202b230, type: 2}
-  travelsOnNavMesh: 1
+  possibleFactions:
+  - {fileID: 11400000, guid: 4aa7bd2a8c5f09849a027b523202b230, type: 2}
   damageTakenAudioClips: {fileID: 11400000, guid: 972e1bab4adcb8d45ba8d404c9ffba20,
     type: 2}
   deathAudioClips: {fileID: 11400000, guid: 2c1ef71e4dc04c74d90755ad47da9419, type: 2}
-  uniqueDropTable: {fileID: 11400000, guid: 4137bd11efd320d4c8d52ba2b6549bd6, type: 2}
-  accessToCoinsDropTable: 0
-  accessToGlobalDropTable: 0
-  accessToRareDropTable: 0
-  accessToSuperRareDropTable: 0
+  uniqueDropTable: {fileID: 0}
+  accessToCoinsDropTable: 1
+  accessToIngredientsDropTable: 1
+  accessToMeleeDropTable: 1
+  accessToGunDropTable: 1
+  accessToMaskTable: 1
+  accessToPartyHatTable: 1
   combatScalesWithPlayer: 0
   combatLevel: 1
   baseHitChanceModifier: 1
   baseMaxHealthModifier: 1
   baseDamageModifier: 1
+  characterMaterials: []

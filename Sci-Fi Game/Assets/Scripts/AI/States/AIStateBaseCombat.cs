@@ -3,6 +3,8 @@
 [CreateAssetMenu ( menuName = "AI/New Combat State Data" )]
 public class AIStateBaseCombat : AIStateBase
 {
+    [SerializeField] private LayerMask viewLayerMask;
+
     public override void OnEnter (NPC npc)
     {
         npc.NPCNavMesh.ClearCurrentPath ();
@@ -43,15 +45,13 @@ public class AIStateBaseCombat : AIStateBase
     private bool CheckCanSeePlayer (NPC npc)
     {
         Transform headTransform = npc.Character.Animator.GetBoneTransform ( HumanBodyBones.Head );
-        Vector3 origin = headTransform.position + (headTransform.forward * 0.25f);
+        Vector3 origin = headTransform.position;
         Vector3 direction = EntityManager.instance.PlayerCharacter.collider.bounds.center - origin;
 
         Ray ray = new Ray ( origin, direction );
         RaycastHit hit;
 
-        Debug.DrawRay ( origin, direction * 150.0f );
-
-        if (Physics.Raycast ( ray, out hit, 150 ))
+        if (Physics.Raycast ( ray, out hit, 150, viewLayerMask ))
         {
             return hit.collider == EntityManager.instance.PlayerCharacter.collider;
         }

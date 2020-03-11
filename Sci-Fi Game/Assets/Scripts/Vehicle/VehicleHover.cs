@@ -5,8 +5,8 @@ using UnityEngine;
 public class VehicleHover : Vehicle
 {
     [Header ( "Base Vehicle Hover" )]
-    [SerializeField] private VehicleHoverData vehicleData;
-    [SerializeField] private Hover hover;
+    [SerializeField] protected VehicleHoverData vehicleData;
+    [SerializeField] protected Hover hover;
 
     public float currentEngineForce = 0.0f;
 
@@ -20,8 +20,6 @@ public class VehicleHover : Vehicle
 
     public override void OnUpdate ()
     {
-        base.OnUpdate ();
-
         if (hover.DetectedHoverableSurface)
         {
             rigidbody.useGravity = true;

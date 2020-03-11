@@ -13,7 +13,7 @@ namespace QuestFlow
         {
             if (EntityManager.instance.PlayerInventory.CheckHasItem ( itemID ))
                 EntityManager.instance.PlayerInventory.RemoveItem ( itemID );
-            else if (EntityManager.instance.PlayerCharacter.cGear.WeaponSlotID == itemID)
+            else if (EntityManager.instance.PlayerCharacter.cGear.WeaponSlotID.currentEquippedID == itemID)
             {
                 EntityManager.instance.PlayerCharacter.cWeapon.SetHolsterState ( true );
                 EntityManager.instance.PlayerCharacter.cGear.SetWeaponIndexNull ();

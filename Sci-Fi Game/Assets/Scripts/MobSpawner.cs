@@ -102,22 +102,9 @@ public class MobSpawner : MonoBehaviour
 
         if(sampledPositionSuccessfully == false)
         {
-            Debug.LogError ( "Couldnt sample any spawn positions for npc", instance );
             Destroy ( instance );
             return;
         }
-
-        //ray = new Ray ( spawnPosition + (Vector3.up * radius * 4), Vector3.down );
-        //hit = new RaycastHit ();
-
-        //if(Physics.Raycast(ray, out hit, radius * 10 ))
-        //{
-        //    spawnPosition = hit.point + (Vector3.up * 0.25f);
-        //}
-        //else
-        //{
-        //    Debug.LogError ( "Error ray casting suitable terrain" );
-        //}
 
         instance.transform.position = navMeshHit.position;
         instance.transform.localEulerAngles = new Vector3 ( 0.0f, Random.Range ( 0.0f, 360.0f ), 0.0f );

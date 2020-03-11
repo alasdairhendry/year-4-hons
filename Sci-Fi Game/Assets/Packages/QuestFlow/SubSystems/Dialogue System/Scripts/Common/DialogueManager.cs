@@ -83,6 +83,7 @@ namespace QuestFlow.DialogueEngine
 
         public void StartConversation (Conversation conversation)
         {
+            EndCurrentConversation ();
             currentState = DialogueState.None;
             conversationIsActive = true;
             currentConversation = conversation;

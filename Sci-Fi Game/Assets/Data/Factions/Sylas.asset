@@ -14,7 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   factionName: Sylas
   factionAdjective: Sylan
-  factionDescription: 
+  factionDescription: The Sylan Strait is no place for a weak species. Sylan people
+    are more durable than most.
+  factionPlayerMaterial: {fileID: 2100000, guid: 129704b08c93bae4a89513e33c890d5e,
+    type: 2}
   factionSprite: {fileID: 21300000, guid: 4ad13f53f37e2204faeca5c19cdbb600, type: 3}
   factionType: 3
   specialisationName: Juggernaut

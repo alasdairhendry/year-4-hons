@@ -12,4 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae0172c6799c584478d7477ebf8d0c90, type: 3}
   m_Name: AI State - Combat - Base
   m_EditorClassIdentifier: 
-  weaponData: {fileID: 11400000, guid: 6a80dae4ab5211441bc6e8b3d1e34df4, type: 2}
+  viewLayerMask:
+    serializedVersion: 2
+    m_Bits: 20753

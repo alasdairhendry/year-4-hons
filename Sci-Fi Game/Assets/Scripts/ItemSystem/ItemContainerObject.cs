@@ -8,6 +8,8 @@ public class ItemContainerObject : MonoBehaviour
     [SerializeField] private string inventoryName;
     [SerializeField] private DropTable dropTable = null;
     [SerializeField] private int rollsOnOpened = 4;
+    [SerializeField] private int maxItemsPerRoll = 4;
+    [SerializeField] private bool guaranteeDrops = false;
     [Space]
     [SerializeField] private GameObject graphicsParent = null;
     [SerializeField] private Interactable interactable = null;
@@ -23,6 +25,7 @@ public class ItemContainerObject : MonoBehaviour
 
     private Inventory inventory = null;
     private float resupplyCounter = 0.0f;
+    private bool isOpen = false;
 
     private float hideAfterLootCounter = 0.0f;
     private bool shouldCountHide = false;
@@ -32,7 +35,6 @@ public class ItemContainerObject : MonoBehaviour
     {
         inventory = new Inventory ( 12, stacksEveryItem, canRecieveItems );
         inventory.RegisterInventoryChanged ( () => { if (inventory.IsEmpty) ItemContainerCanvas.instance.Close (); } );
-        ResupplyContainer ();
     }
 
     private void Update ()
@@ -73,28 +75,69 @@ public class ItemContainerObject : MonoBehaviour
 
     private void HideContainer ()
     {
-        isHidden = true;
-        graphicsParent.SetActive ( false );
-        interactable.IsInteractable = false;
+        if (resuppliesWhenEmpty)
+        {
+            isHidden = true;
+            graphicsParent.SetActive ( false );
+            interactable.IsInteractable = false;
+        }
+        else
+        {
+            Destroy ( this.gameObject );
+        }
     }
 
     private void ResupplyContainer ()
     {
+        bool anyWereFactionRolls = false;
+
+            int count = 0;
+
         for (int i = 0; i < rollsOnOpened; i++)
         {
-            Inventory.ItemStack roll = dropTable.RollTable ();
+            List<Inventory.ItemStack> drops = new List<Inventory.ItemStack> ();
+            bool wasFactionRoll = false;
 
-            if (roll != null)
+            if (guaranteeDrops)
             {
-                inventory.AddItem ( roll.ID, roll.Amount );
+                if (dropTable.RollTableGuaranteed ( out drops, out wasFactionRoll ))
+                {
+                    inventory.AddMultipleItems ( drops, true );
+                    if (wasFactionRoll) anyWereFactionRolls = true;
+                    count++;
+                }
             }
+            else
+            {
+                if (dropTable.RollTable ( out drops, out wasFactionRoll ))
+                {
+                    inventory.AddMultipleItems ( drops, true );
+                    if (wasFactionRoll) anyWereFactionRolls = true;
+                    count++;
+                }
+            }
+
+            if (count >= maxItemsPerRoll)
+            {
+                break;
+            }
+        }
+        
+
+        if (anyWereFactionRolls)
+        {
+            MessageBox.AddMessage ( "Your Faction Specialisation helps you find an item", MessageBox.Type.Warning );
         }
     }
 
     public void Open ()
     {
+        if (isOpen) return;
+        isOpen = true;
+
         if(shouldCountHide == false)
         {
+            inventory.ClearInventoryStacks ();
             ResupplyContainer ();
 
             if (inventory.IsEmpty)
@@ -121,10 +164,13 @@ public class ItemContainerObject : MonoBehaviour
         {
             animator.SetBool ( "open", true );
         }
+
+        SoundEffectManager.Play ( AudioClipAsset.ChestOpen, AudioMixerGroup.SFX , 1);
     }
 
     private void Close ()
     {
+        isOpen = false;
         if (inventory.IsEmpty)
         {
             hideAfterLootCounter = hideAfterLootDelay * 0.75f;
@@ -139,5 +185,6 @@ public class ItemContainerObject : MonoBehaviour
         }
 
         ItemContainerCanvas.instance.OnContainerClosed -= Close;
+        SoundEffectManager.Play ( AudioClipAsset.ChestClose, AudioMixerGroup.SFX , 1);
     }
 }

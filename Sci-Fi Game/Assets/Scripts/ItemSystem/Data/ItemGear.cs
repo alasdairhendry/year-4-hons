@@ -12,5 +12,9 @@ public abstract class ItemGear : ItemBaseData
        
     }
 
-    protected virtual void EquipItem () { EntityManager.instance.PlayerCharacter.cGear.EquipGear ( ID ); }
+    protected virtual void EquipItem ()
+    {
+        if (DragHandler.isDragging) return;
+        EntityManager.instance.PlayerCharacter.cGear.EquipGear ( ID );
+    }
 }

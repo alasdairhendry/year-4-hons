@@ -28,7 +28,7 @@ public class GearCanvas : UIPanel
         else if (instance != this) { Destroy ( this.gameObject ); return; }
 
         RefreshUI ( EntityManager.instance.PlayerCharacter.cGear );
-        Close ();
+        Close ( true );
     }
 
     public override void Open ()
@@ -37,29 +37,33 @@ public class GearCanvas : UIPanel
         isOpened = true;
         RefreshUI ( EntityManager.instance.PlayerCharacter.cGear );
         mainPanel.SetActive ( true );
+        UIPanelController.instance.OnPanelOpened ( this );
     }
 
-    public override void Close ()
+    public override void Close (bool bypassCloseCheck = false)
     {
+        if (isOpened == false && !bypassCloseCheck) return;
+
         base.Close ();
         mainPanel.SetActive ( false );
         isOpened = false;
+        UIPanelController.instance.OnPanelClosed ( this );
     }
 
     public void RefreshUI (CharacterGear cGear)
     {
-        weaponSlot.SetItem ( cGear.WeaponSlotID );
-        attachment01Slot.SetItem ( cGear.AttachmentSlot01ID );
-        attachment02Slot.SetItem ( cGear.AttachmentSlot02ID );
-        attachment03Slot.SetItem ( cGear.AttachmentSlot03ID );
-        attachment04Slot.SetItem ( cGear.AttachmentSlot04ID );
+        weaponSlot.SetItem ( cGear.WeaponSlotID.currentEquippedID );
+        attachment01Slot.SetItem ( cGear.AttachmentSlot01ID.currentEquippedID );
+        attachment02Slot.SetItem ( cGear.AttachmentSlot02ID.currentEquippedID );
+        attachment03Slot.SetItem ( cGear.AttachmentSlot03ID.currentEquippedID );
+        attachment04Slot.SetItem ( cGear.AttachmentSlot04ID.currentEquippedID );
 
-        headSlot.SetItem ( cGear.HeadSlotID );
-        bodySlot.SetItem ( cGear.BodySlotID );
-        feetSlot.SetItem ( cGear.FeetSlotID );
+        headSlot.SetItem ( cGear.HeadSlotID.currentEquippedID );
+        bodySlot.SetItem ( cGear.BodySlotID.currentEquippedID );
+        feetSlot.SetItem ( cGear.FeetSlotID.currentEquippedID );
 
-        neckSlot.SetItem ( cGear.NeckSlotID );
-        wristSlot.SetItem ( cGear.WristSlotID );
-        fingerSlot.SetItem ( cGear.FingerSlotID );
+        neckSlot.SetItem ( cGear.NeckSlotID.currentEquippedID );
+        wristSlot.SetItem ( cGear.WristSlotID.currentEquippedID );
+        fingerSlot.SetItem ( cGear.FingerSlotID.currentEquippedID );
     }
 }

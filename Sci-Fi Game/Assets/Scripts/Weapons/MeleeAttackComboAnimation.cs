@@ -10,6 +10,12 @@ public class MeleeAttackComboAnimation : ScriptableObject
     public float attackDelay;
     public List<Data> data = new List<Data> ();
 
+    [NaughtyAttributes.Button]
+    private void SetClipLength ()
+    {
+        clipLength = clip.length * 60.0f;
+    }
+
     [System.Serializable]
     public class Data
     {

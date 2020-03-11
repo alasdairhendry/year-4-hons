@@ -98,6 +98,30 @@ namespace QuestFlow.QuestEngine
             }
         }
 
+        public List<KeyValuePair<Quest, QuestState>> GetPrerequisiteQuests ()
+        {
+            Start startNode = GetStartNode ();
+
+            if (startNode == null)
+            {
+                Debug.LogError ( questID + " cannot be offered as it does not have a start node" );
+                return new List<KeyValuePair<Quest, QuestState>> ();
+            }
+
+            List<KeyValuePair<Quest, QuestState>> quests = new List<KeyValuePair<Quest, QuestState>> ();
+
+            for (int i = 0; i < startNode.conditions.Count; i++)
+            {
+                if(startNode.conditions[i] is ConditionQuestState)
+                {
+                    ConditionQuestState s = startNode.conditions[i] as ConditionQuestState;
+                    quests.Add ( new KeyValuePair<Quest, QuestState> ( s.quest, s.state ) );
+                }
+            }
+
+            return quests;
+        }
+
         public override void RemoveNode (Node node)
         {
             if (node is State)

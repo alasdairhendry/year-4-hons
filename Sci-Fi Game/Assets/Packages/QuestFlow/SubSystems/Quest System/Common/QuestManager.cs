@@ -11,6 +11,7 @@ namespace QuestFlow.QuestEngine
 
         [SerializeField] private List<Quest> quests = new List<Quest> ();
         public List<Quest> GetQuests { get => quests; }
+        public List<QuestData> GetQuestDatas { get => questData; }
 
         private Dictionary<string, QuestData> questDataByID = new Dictionary<string, QuestData> ();
         private List<QuestData> questData = new List<QuestData> ();
@@ -33,6 +34,10 @@ namespace QuestFlow.QuestEngine
                 questDataByID.Add ( quests[i].questID, _questData );
                 questData.Add ( _questData );
             }
+
+            onQuestStarted += (q) => { SoundEffectManager.Play ( AudioClipAsset.QuestAccepted, AudioMixerGroup.SFX ); };
+            onQuestSubStateChanged += (q) => { SoundEffectManager.Play ( AudioClipAsset.QuestLogUpdated, AudioMixerGroup.SFX ); };
+            onQuestComplete += (q) => { SoundEffectManager.Play ( AudioClipAsset.QuestCompleted, AudioMixerGroup.SFX ); };
         }
 
         private void Update ()

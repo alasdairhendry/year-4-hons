@@ -15,29 +15,31 @@ MonoBehaviour:
   weaponName: Blaster
   weaponAttackType: 1
   weaponItemID: 24
+  isBreakable: 1
   brokenVariantItemID: 56
   offsetPosition: {x: 0.0123, y: 0.0029, z: -0.0015}
   offsetRotation: {x: 348.52664, y: 76.296906, z: 258.73965}
   localScale: {x: 0.1, y: 0.1, z: 0.1}
   prefab: {fileID: 6796601723829823505, guid: 29d60bcad919d714980ab879ef139660, type: 3}
-  baseDamage: 20
+  baseDamage: 12.5
   activeBodyPart: 18
   holsterBodyPart: 0
   holsterData: {fileID: 11400000, guid: b6213500024745849b99a86a8290b352, type: 2}
   sheatheSoundData: {fileID: 11400000, guid: 17449ef03929a5246b4b8de3ff7dd4f4, type: 2}
   unsheatheSoundData: {fileID: 11400000, guid: ab967c0c7a6c0ef45a9c84ba7f6dafae, type: 2}
+  dps: 50
   weaponType: 0
   ammoType: 1
   fireTypes: 00000000
   attachmentSlots: 1
   ikData: {fileID: 11400000, guid: 38aaf1c99bd9c054a969caaaf9b19ad4, type: 2}
   inVehicleIkData: {fileID: 11400000, guid: 19ec7fb1e1a4b3749a51f795cbb41fbe, type: 2}
-  fireRate: 150
+  fireRate: 240
   burstDelay: 240
   reloadTime: 0.5
-  clipSize: 8
-  spinUpDelaySeconds: 0.25
-  spinDownDelaySeconds: 0.25
+  clipSize: 16
+  spinUpDelaySeconds: 0
+  spinDownDelaySeconds: 0
   maxDistance: 50
   damageByDistanceFalloff:
     serializedVersion: 2

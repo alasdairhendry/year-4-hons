@@ -14,7 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   factionName: Kyrish
   factionAdjective: Kyrish
-  factionDescription: 
+  factionDescription: Natives of the Kyrtion region, Kyrish people have always thought
+    of themselves as extremely lucky.
+  factionPlayerMaterial: {fileID: 2100000, guid: d29677146096e2e44a5d0dc42b09e592,
+    type: 2}
   factionSprite: {fileID: 21300000, guid: 062d732d53b3c6248ade426c16648640, type: 3}
   factionType: 2
   specialisationName: Luck o' the Kyrish

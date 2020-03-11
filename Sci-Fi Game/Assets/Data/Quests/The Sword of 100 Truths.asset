@@ -239,6 +239,7 @@ MonoBehaviour:
   - {fileID: -2656396389477123404}
   - {fileID: -8086591925794025778}
   - {fileID: -169161494093330714}
+  - {fileID: 0}
   questID: theswordof100truths
   questName: The Sword Of 100 Truths
   collateQuestLog: 1
@@ -253,7 +254,13 @@ MonoBehaviour:
         amount: 3
       - itemID: 20
         amount: 10
-    decisionRewards: []
+    talentPoints: 3
+    xpRewards:
+    - skill: 1
+      xp: 750
+    - skill: 4
+      xp: 375
+    annotatedRewards: []
 --- !u!114 &357065567561818119
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -305,10 +312,6 @@ MonoBehaviour:
   - {fileID: 5765960881565248726}
   actions: []
   conditionRequirementType: 0
-  questReward:
-    mandatoryReward:
-      reward: []
-    decisionRewards: []
 --- !u!114 &581977638747914389
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -412,10 +415,6 @@ MonoBehaviour:
   conditions: []
   actions: []
   conditionRequirementType: 0
-  optionalReward:
-    mandatoryReward:
-      reward: []
-    decisionRewards: []
 --- !u!114 &1568770722461413689
 MonoBehaviour:
   m_ObjectHideFlags: 0

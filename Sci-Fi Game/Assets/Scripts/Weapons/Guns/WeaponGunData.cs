@@ -10,6 +10,7 @@ public class WeaponGunData : WeaponData
     public enum AmmoType { Bullets, Energy, Plasma }
     public enum FireType { Single, Burst, Auto }
 
+    public float dps = 0.0f;
     //public string weaponName;
     [Header("Gun Data")]
     public WeaponType weaponType = WeaponType.Pistol;
@@ -45,4 +46,15 @@ public class WeaponGunData : WeaponData
     //public Vector3 localScale;
     public Vector3 clipTextLocalPosition;
     public Vector3 clipTextHolsteredLocalPosition;
+
+    private void OnEnable ()
+    {
+        dps = (fireRate / 60.0f) * baseDamage;
+    }
+
+    private void OnValidate ()
+    {
+        dps = (fireRate / 60.0f) * baseDamage;
+    }
+    
 }

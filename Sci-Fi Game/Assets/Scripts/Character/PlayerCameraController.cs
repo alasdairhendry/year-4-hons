@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -72,7 +73,17 @@ public class PlayerCameraController : MonoBehaviour
 
     private void Update ()
     {
+        CheckBackfaceCulling ();
         CheckObstructions ();
+
+        if(cameraIsBackfaced || cameraIsObstructed)
+        {
+            camera.useOcclusionCulling = false;
+        }
+        else
+        {
+            camera.useOcclusionCulling = true;
+        }
 
         if (character.currentVehicle != null && character.currentVehicle.CurrentVehicleMode == VehicleMode.Hover)
         {
@@ -254,6 +265,25 @@ public class PlayerCameraController : MonoBehaviour
     }
 
     [Space] [SerializeField] private GameObject hitGo;
+    [SerializeField] private float backfaceCullingOcclusionLimit = 0.5f;
+
+    private bool cameraIsBackfaced = false;
+    private bool cameraIsObstructed = false;
+
+    private void CheckBackfaceCulling ()
+    {
+        Ray ray = new Ray ( cameraTransform.position, cameraTransform.forward );
+        RaycastHit hit;
+
+        if(Physics.Raycast(ray, out hit, backfaceCullingOcclusionLimit ))
+        {
+            cameraIsBackfaced = true;
+        }
+        else
+        {
+            cameraIsBackfaced = false;
+        }
+    }
 
     private void CheckObstructions ()
     {
@@ -271,29 +301,24 @@ public class PlayerCameraController : MonoBehaviour
             hit = hits[hits.Length - 1];
             hitGo = hit.collider.gameObject;
             obstructionPosition = cameraRoot.InverseTransformPoint ( hit.point ) + new Vector3 ( 0.0f, 0.0f, cameraObsForwardDistance );
-            camera.useOcclusionCulling = false;
+            cameraIsObstructed = true;
         }
         else
         {
             hitGo = null;
             obstructionPosition = Vector3.zero;
-            camera.useOcclusionCulling = true;
+            cameraIsObstructed = false;
         }
 
         Debug.DrawRay ( ray.origin, ray.direction * dist );
 
         return;
+    }
 
-
-        if (Physics.Raycast(ray, out hit, cameraObsDistanceDeduction, obstructionLayerMask, QueryTriggerInteraction.Ignore ))
-        {
-            obstructionPosition = cameraRoot.InverseTransformPoint ( hit.point ) + new Vector3 ( 0.0f, 0.0f, cameraObsForwardDistance );
-        }
-        else
-        {
-            obstructionPosition = Vector3.zero;
-        }
-    }    
+    public void SnapToTargetPosition ()
+    {
+        transform.position = target.TransformPoint ( globalOffset );
+    }
 
     public void SetCinematicComboView (Transform transform)
     {

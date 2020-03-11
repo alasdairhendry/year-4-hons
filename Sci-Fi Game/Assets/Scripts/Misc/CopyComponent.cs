@@ -24,6 +24,13 @@ public static class CopyComponent
             scale = (Selection.objects[0] as WeaponData).localScale;
             Debug.Log ( "Copied Weapon IK Data" );
         }
+        else if (Selection.objects[0] as GearData != null)
+        {
+            pos = (Selection.objects[0] as GearData).offsetPosition;
+            rot = (Selection.objects[0] as GearData).offsetRotation;
+            scale = (Selection.objects[0] as GearData).localScale;
+            Debug.Log ( "Copied Gear Equip Data" );
+        }
         else
         {
             pos = Selection.gameObjects[0].GetComponent<Transform> ().localPosition;
@@ -37,12 +44,31 @@ public static class CopyComponent
     public static void PasteTransform ()
     {
         WeaponData weaponData = Selection.objects[0] as WeaponData;
+        GearData gearData = Selection.objects[0] as GearData;
 
-        if(weaponData== null)
+        if(weaponData != null)
+        {
+            ((WeaponData)Selection.objects[0]).offsetPosition = pos;
+            ((WeaponData)Selection.objects[0]).offsetRotation = rot;
+            ((WeaponData)Selection.objects[0]).localScale = scale;
+            EditorUtility.SetDirty ( Selection.objects[0] );
+            AssetDatabase.SaveAssets ();
+            Debug.Log ( "Pasted weapon IK data" );
+        }
+        else if(gearData != null)
+        {
+            ((GearData)Selection.objects[0]).offsetPosition = pos;
+            ((GearData)Selection.objects[0]).offsetRotation = rot;
+            ((GearData)Selection.objects[0]).localScale = scale;
+            EditorUtility.SetDirty ( Selection.objects[0] );
+            AssetDatabase.SaveAssets ();
+            Debug.Log ( "Pasted transform data to gear" );
+        }
+        else
         {
             TransformData transformData = Selection.objects[0] as TransformData;
 
-            if(transformData == null)
+            if (transformData == null)
             {
                 Debug.LogError ( "No weapon or transform data found" );
             }
@@ -53,19 +79,8 @@ public static class CopyComponent
                 ((TransformData)Selection.objects[0]).localScale = scale;
                 EditorUtility.SetDirty ( Selection.objects[0] );
                 AssetDatabase.SaveAssets ();
-                Debug.Log ( "Pasted transform data" );
+                Debug.Log ( "Pasted transform data to transform data" );
             }
         }
-        else
-        {
-            ((WeaponData)Selection.objects[0]).offsetPosition = pos;
-            ((WeaponData)Selection.objects[0]).offsetRotation = rot;
-            ((WeaponData)Selection.objects[0]).localScale = scale;
-            EditorUtility.SetDirty ( Selection.objects[0] );
-            AssetDatabase.SaveAssets ();
-            Debug.Log ( "Pasted weapon IK data" );
-        }
-
-       
     }
 }

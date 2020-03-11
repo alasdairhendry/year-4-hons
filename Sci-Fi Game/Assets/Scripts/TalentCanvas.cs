@@ -18,7 +18,7 @@ public class TalentCanvas : UIPanel
 
     private void Start ()
     {
-        Close ();
+        Close ( true );
     }
 
     public override void Open ()
@@ -26,13 +26,17 @@ public class TalentCanvas : UIPanel
         base.Open ();
         isOpened = true;
         mainPanel.SetActive ( true );
+        UIPanelController.instance.OnPanelOpened ( this );
     }
 
-    public override void Close ()
+    public override void Close (bool bypassCloseCheck = false)
     {
+        if (isOpened == false && !bypassCloseCheck) return;
+
         base.Close ();
         isOpened = false;
         mainPanel.SetActive ( false );
+        UIPanelController.instance.OnPanelClosed ( this );
     }
 
     private void Update ()

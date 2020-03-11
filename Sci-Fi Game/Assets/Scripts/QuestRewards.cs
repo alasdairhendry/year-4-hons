@@ -34,7 +34,7 @@ public class QuestRewards : MonoBehaviour
 
         for (int i = 0; i < itemPanels.Count; i++)
         {
-            if(i >= reward.rewards.Count)
+            if (i >= reward.rewards.Count)
             {
                 itemPanels[i].gameObject.SetActive ( false );
             }
@@ -49,9 +49,33 @@ public class QuestRewards : MonoBehaviour
         questRewardPanel.alpha = 1;
         questRewardPanel.blocksRaycasts = true;
 
+        bool someSentToBank = false;
+        bool allSentToBank = true;
+
         for (int i = 0; i < reward.rewards.Count; i++)
         {
-            EntityManager.instance.PlayerInventory.AddItem ( reward.rewards[i].ID, reward.rewards[i].Amount );
+            if (EntityManager.instance.PlayerInventory.CheckCanRecieveItem ( reward.rewards[i].ID, reward.rewards[i].Amount ))
+            {
+                Debug.Log ( "Player can recieve item " + ItemDatabase.GetItem ( reward.rewards[i].ID ).Name );
+                int returned = EntityManager.instance.PlayerInventory.AddItem ( reward.rewards[i].ID, reward.rewards[i].Amount );
+                Debug.Log ( "Returned " + returned );
+                allSentToBank = false;
+            }
+            else
+            {
+                Debug.Log ( "Item sent to inventory" );
+                EntityManager.instance.PlayerBankInventory.AddItem ( reward.rewards[i].ID, reward.rewards[i].Amount );
+                someSentToBank = true;
+            }
+        }
+
+        if (allSentToBank)
+        {
+            MessageBox.AddMessage ( "Your rewards have been sent to your bank" );
+        }
+        else if (someSentToBank)
+        {
+            MessageBox.AddMessage ( "Some of your rewards have been sent to your bank" );
         }
     }
 

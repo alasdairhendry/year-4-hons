@@ -87,13 +87,19 @@ public class CharacterWeapon : MonoBehaviour
     private void Awake ()
     {
         character = GetComponent<Character> ();
-        spinUpDelaySource = SoundEffect.Create ( this, 1.0f, parent: this.transform );
-        spinDownDelaySource = SoundEffect.Create ( this, 1.0f, parent: this.transform );
+        spinUpDelaySource = SoundEffectManager.Create ( this, 1.0f, parent: this.transform );
+        spinDownDelaySource = SoundEffectManager.Create ( this, 1.0f, parent: this.transform );
+        if (character.IsAI == false)
+            Equip ( EntityManager.instance.FistsWeaponData, true );
+
+        SetWeaponUI (); 
     }
 
     private void Update ()
     {
-        if(currentWeaponData != null)
+        CheckMeleeAttackDelay ();
+
+        if (currentWeaponData != null)
         {
             if (currentWeaponData.weaponAttackType == WeaponAttackType.Gun)
             {
@@ -106,7 +112,6 @@ public class CharacterWeapon : MonoBehaviour
             }
             else
             {
-                CheckMeleeAttackDelay ();
                 CheckMeleeAttack ();
             }
         }        
@@ -141,12 +146,12 @@ public class CharacterWeapon : MonoBehaviour
         }
     }
 
-    public void SetHolsterState (bool state)
+    public void SetHolsterState (bool state, bool bypassAnimationDelay = false)
     {
         if (!isEquipped) return;
         if (isHolstered == state) return;
 
-        if (state)
+        if (state && !bypassAnimationDelay)
         {
             if (currentMeleeAnimationLength > 0 || nextAttackAnimationDelay > 0)
                 return;
@@ -162,15 +167,19 @@ public class CharacterWeapon : MonoBehaviour
                 AimingCanvas.instance.SetReticle ( ReticleType.Off );
             }
 
-            currentWeaponObject.transform.SetParent ( GetComponent<Animator> ().GetBoneTransform ( currentWeaponData.holsterBodyPart ) );
-            currentWeaponData.holsterData.SetLocal ( currentWeaponObject.transform );
+            if (currentWeaponObject != null)
+            {
+                currentWeaponObject.transform.SetParent ( GetComponent<Animator> ().GetBoneTransform ( currentWeaponData.holsterBodyPart ) );
+                currentWeaponData.holsterData.SetLocal ( currentWeaponObject.transform );
+            }
 
             onWeaponHolstered?.Invoke ( currentWeaponData );
 
             if (currentWeaponData.sheatheSoundData.AudioClips.Count > 0)
-                SoundEffect.Play3D ( currentWeaponData.sheatheSoundData.GetRandom (), transform.position + (Vector3.up), 1, 5 );
+                SoundEffectManager.Play3D ( currentWeaponData.sheatheSoundData.GetRandom (), AudioMixerGroup.SFX, transform.position + (Vector3.up),minDistance: 1,maxDistance: 5 );
 
-            currentWeaponObject.GetComponent<WeaponObject> ().OnHolstered ();
+            if (currentWeaponObject != null)
+                currentWeaponObject.GetComponent<WeaponObject> ().OnHolstered ();
         }
         else
         {
@@ -180,22 +189,33 @@ public class CharacterWeapon : MonoBehaviour
                 AimingCanvas.instance.SetReticle ( ReticleType.CanFire );
             }
 
-            currentWeaponObject.transform.SetParent ( GetComponent<Animator> ().GetBoneTransform ( currentWeaponData.activeBodyPart ).Find ( "weapon-holder" ) );
-            currentWeaponObject.transform.localPosition = currentWeaponData.offsetPosition;
-            currentWeaponObject.transform.localEulerAngles = currentWeaponData.offsetRotation;
-            currentWeaponObject.transform.localScale = currentWeaponData.localScale;
+            if (currentWeaponObject != null)
+            {
+                currentWeaponObject.transform.SetParent ( GetComponent<Animator> ().GetBoneTransform ( currentWeaponData.activeBodyPart ).Find ( "weapon-holder" ) );
+                currentWeaponObject.transform.localPosition = currentWeaponData.offsetPosition;
+                currentWeaponObject.transform.localEulerAngles = currentWeaponData.offsetRotation;
+                currentWeaponObject.transform.localScale = currentWeaponData.localScale;
+            }
 
             onWeaponUnholstered?.Invoke ( currentWeaponData );
 
-            SoundEffect.Play3D ( currentWeaponData.unsheatheSoundData.GetRandom (), transform.position + (Vector3.up), 1, 5 );
-            currentWeaponObject.GetComponent<WeaponObject> ().OnUnholstered ();
+            SoundEffectManager.Play3D ( currentWeaponData.unsheatheSoundData.GetRandom (), AudioMixerGroup.SFX, transform.position + (Vector3.up), minDistance: 1, maxDistance: 5 );
+
+            if (currentWeaponObject != null)
+                currentWeaponObject.GetComponent<WeaponObject> ().OnUnholstered ();
         }
     }
 
-    public void Equip (WeaponData weaponData)
+    public bool CanEquip ()
     {
         if (currentMeleeAnimationLength > 0 || nextAttackAnimationDelay > 0)
-            return;
+            return false;
+        return true;
+    }
+
+    public void Equip (WeaponData weaponData, bool bypassEquipCheck = false)
+    {
+        if (!CanEquip () && !bypassEquipCheck) return;
 
         if (currentWeaponData)
         {
@@ -206,21 +226,26 @@ public class CharacterWeapon : MonoBehaviour
         currentWeaponGunData = weaponData as WeaponGunData;
         currentWeaponMeleeData = weaponData as WeaponMeleeData;
 
-        currentWeaponObject = Instantiate ( weaponData.prefab );
+        if (weaponData.prefab != null)
+            currentWeaponObject = Instantiate ( weaponData.prefab );
+        else currentWeaponObject = null;
 
-        if (isHolstered)
+        if (currentWeaponObject != null)
         {
-            currentWeaponObject.transform.SetParent ( GetComponent<Animator> ().GetBoneTransform ( currentWeaponData.holsterBodyPart ) );
-            currentWeaponData.holsterData.SetLocal ( currentWeaponObject.transform );
-            currentWeaponObject.GetComponent<WeaponObject> ().OnHolstered ();
-        }
-        else
-        {
-            currentWeaponObject.transform.SetParent ( GetComponent<Animator> ().GetBoneTransform ( weaponData.activeBodyPart ).Find ( "weapon-holder" ) );
-            currentWeaponObject.transform.localPosition = weaponData.offsetPosition;
-            currentWeaponObject.transform.localEulerAngles = weaponData.offsetRotation;
-            currentWeaponObject.transform.localScale = weaponData.localScale;
-            currentWeaponObject.GetComponent<WeaponObject> ().OnUnholstered ();
+            if (isHolstered)
+            {
+                currentWeaponObject.transform.SetParent ( GetComponent<Animator> ().GetBoneTransform ( currentWeaponData.holsterBodyPart ) );
+                currentWeaponData.holsterData.SetLocal ( currentWeaponObject.transform );
+                currentWeaponObject.GetComponent<WeaponObject> ().OnHolstered ();
+            }
+            else
+            {
+                currentWeaponObject.transform.SetParent ( GetComponent<Animator> ().GetBoneTransform ( weaponData.activeBodyPart ).Find ( "weapon-holder" ) );
+                currentWeaponObject.transform.localPosition = weaponData.offsetPosition;
+                currentWeaponObject.transform.localEulerAngles = weaponData.offsetRotation;
+                currentWeaponObject.transform.localScale = weaponData.localScale;
+                currentWeaponObject.GetComponent<WeaponObject> ().OnUnholstered ();
+            }
         }
 
         onWeaponEquiped?.Invoke ( currentWeaponData );
@@ -262,7 +287,6 @@ public class CharacterWeapon : MonoBehaviour
             {
                 currentWeaponObject.transform.SetParent ( null );
                 currentWeaponObject.GetComponentInChildren<MeshRenderer> ().gameObject.AddComponent<MeshCollider> ().convex = true;
-                //currentWeaponObject.transform.GetChild ( 0 ).gameObject.AddComponent<BoxCollider> ();
                 currentWeaponObject.AddComponent<Rigidbody> ().AddForce ( Vector3.up * 2.0f, ForceMode.VelocityChange );
             }
             else
@@ -272,24 +296,40 @@ public class CharacterWeapon : MonoBehaviour
         }
 
         onWeaponUnequiped?.Invoke ( w );
+
+        if (character.IsAI == false)
+            Equip ( EntityManager.instance.FistsWeaponData, true );
     }
 
-    private void OnWeaponBreak ()
+    public void BreakCurrentWeapon ()
     {
-        if (currentWeaponData == null)
+        if (currentWeaponData == null || !currentWeaponData.isBreakable || !ItemDatabase.ItemExists ( currentWeaponData.weaponItemID ))
         {
-            Debug.LogError ( "How can a null object break!?" );
             return;
         }
+
+        isFiring = false;
+        currentBurstCooldown = 0.0f;
+        currentBurstCounter = 0;
 
         MessageBox.AddMessage ( "Your weapon has broken and will need to be repaired.", MessageBox.Type.Error );
 
         WeaponData data = currentWeaponData;
-        SetHolsterState ( true );
+        SetHolsterState ( true, true );
         character.cGear.SetWeaponIndexNull ();
         Unequip ( false, true );
 
-        EntityManager.instance.PlayerInventory.AddItem ( data.brokenVariantItemID );
+        SoundEffectManager.Play ( AudioClipAsset.WeaponBreak, AudioMixerGroup.SFX );
+
+        if (EntityManager.instance.PlayerInventory.CheckCanRecieveItem ( data.brokenVariantItemID, 1 ))
+        {
+            EntityManager.instance.PlayerInventory.AddItem ( data.brokenVariantItemID );
+        }
+        else
+        {
+            EntityManager.instance.PlayerBankInventory.AddItem ( data.brokenVariantItemID );
+            MessageBox.AddMessage ( "Your broken weapon has been sent to your bank.", MessageBox.Type.Info );
+        }
     }
 
     #region Melee
@@ -299,6 +339,7 @@ public class CharacterWeapon : MonoBehaviour
 
     private void CheckMeleeAttack ()
     {
+        if (character.IsAI) return;
         if (Mouse.Down ( 0 ) && !isHolstered && nextAttackAnimationDelay <= 0.0f && !character.isDead)
         {
             MeleeAttack ();
@@ -338,41 +379,125 @@ public class CharacterWeapon : MonoBehaviour
         EntityManager.instance.CameraController.SetCinematicComboView ( null );
         currentMeleeAnimationLength = 0;
 
-        NPC potentialTarget = GetPotentialMeleeHitNPC ();
+        //NPC potentialTarget = GetPotentialMeleeHitNPC ();
 
-        if (potentialTarget == null)
+        List<NPC> potentialNPCs = new List<NPC> ();
+
+        if(GetMeleeHitData(out potentialNPCs ))
         {
-            DoGenericMeleeAttack ();
-        }
-        else
-        {
-            if (attackTypeRoll <= SkillModifiers.MeleeSpecialChance)
+            //if (potentialTarget.NPCAttackOption == NPCAttackOption.CannotBeAttack)
+            if (potentialNPCs.Exists ( x => x.NPCAttackOption == NPCAttackOption.CannotBeAttack ))
             {
-                // Attack is a special attack
-                DoSpecialMeleeAttack ();
+                DoGenericMeleeAttack ( true );
+                Debug.Log ( "Generic: Unattackable Target" );
             }
             else
             {
-                attackTypeRoll -= SkillModifiers.MeleeSpecialChance;
-
-                if (attackTypeRoll <= SkillModifiers.MeleeComboChance)
+                if (Input.GetKey ( KeyCode.LeftAlt ))
                 {
-                    // Attack is a combo attack
-                    comboNPCTarget = potentialTarget;
+                    DoSpecialMeleeAttack ();
+                    Debug.Log ( "Special: Debug" );
+                    return;
+                }
+
+                if (Input.GetKey ( KeyCode.LeftControl ))
+                {
+                    comboNPCTarget = potentialNPCs[0];
                     DoComboMeleeAttack ();
+                    Debug.Log ( "Combo: Debug" );
+                    return;
+                }
+                if (attackTypeRoll <= SkillModifiers.MeleeSpecialChance)
+                {
+                    // Attack is a special attack
+                    DoSpecialMeleeAttack ();
+                    Debug.Log ( "Special: Chance" );
                 }
                 else
                 {
-                    // Attack is a generic attack
-                    DoGenericMeleeAttack ();
+                    attackTypeRoll -= SkillModifiers.MeleeSpecialChance;
+
+                    if (attackTypeRoll <= SkillModifiers.MeleeComboChance)
+                    {
+                        // Attack is a combo attack
+                        comboNPCTarget = potentialNPCs[0];
+                        DoComboMeleeAttack ();
+                        Debug.Log ( "Combo: Chance" );
+                    }
+                    else
+                    {
+                        // Attack is a generic attack
+                        DoGenericMeleeAttack ();
+                        Debug.Log ( "Generic: Chance" );
+                    }
                 }
             }
         }
+        else
+        {
+            DoGenericMeleeAttack ();
+            Debug.Log ( "Generic: Null Target" );
+        }
+
+        //if (potentialTarget == null)
+        //{
+        //    DoGenericMeleeAttack ();
+        //    Debug.Log ( "Generic: Null Target" );
+        //}
+        //else
+        //{
+        //    if (potentialTarget.NPCAttackOption == NPCAttackOption.CannotBeAttack)
+        //    {
+        //        DoGenericMeleeAttack ( true );
+        //        Debug.Log ( "Generic: Unattackable Target" );
+        //    }
+        //    else
+        //    {
+        //        if (Input.GetKey ( KeyCode.LeftAlt ))
+        //        {
+        //            DoSpecialMeleeAttack ();
+        //            Debug.Log ( "Special: Debug" );
+        //            return;
+        //        }
+
+        //        if (Input.GetKey ( KeyCode.LeftControl ))
+        //        {
+        //            comboNPCTarget = potentialTarget;
+        //            DoComboMeleeAttack ();
+        //            Debug.Log ( "Combo: Debug" );
+        //            return;
+        //        }
+        //        if (attackTypeRoll <= SkillModifiers.MeleeSpecialChance)
+        //        {
+        //            // Attack is a special attack
+        //            DoSpecialMeleeAttack ();
+        //            Debug.Log ( "Special: Chance" );
+        //        }
+        //        else
+        //        {
+        //            attackTypeRoll -= SkillModifiers.MeleeSpecialChance;
+
+        //            if (attackTypeRoll <= SkillModifiers.MeleeComboChance)
+        //            {
+        //                // Attack is a combo attack
+        //                comboNPCTarget = potentialTarget;
+        //                DoComboMeleeAttack ();
+        //                Debug.Log ( "Combo: Chance" );
+        //            }
+        //            else
+        //            {
+        //                // Attack is a generic attack
+        //                DoGenericMeleeAttack ();
+        //                Debug.Log ( "Generic: Chance" );
+        //            }
+        //        }
+        //    }
+        //}
     }
 
     public enum MeleeAttackType { Generic, Special, Combo }
 
-    private IEnumerator DoAttackDelayed(float delay, MeleeAttackType attackType)
+    private IEnumerator DoAttackDelayed(float delay, MeleeAttackType attackType, bool mustMiss = false)
     {
         yield return new WaitForSeconds ( delay );
         List<NPC> hitNPCs = new List<NPC> ();
@@ -380,7 +505,7 @@ public class CharacterWeapon : MonoBehaviour
         switch (attackType)
         {
             case MeleeAttackType.Generic:
-                if (GetMeleeHitData ( out hitNPCs ) && DetermineMeleeHitChance())
+                if (GetMeleeHitData ( out hitNPCs ) && DetermineMeleeHitChance() && !mustMiss)
                 {
                     PerformHit ( hitNPCs.ToArray () );
                 }
@@ -413,17 +538,17 @@ public class CharacterWeapon : MonoBehaviour
 
     }
 
-    private void DoGenericMeleeAttack ()
+    private void DoGenericMeleeAttack (bool mustMiss = false)
     {
         MeleeAttackAnimation selectedClip = GetComponent<CharacterAnimator> ().RandomiseAttackAnimation ( currentWeaponMeleeData.genericAnimationClips, previousGernericAttackAnimation );
         previousGernericAttackAnimation = selectedClip;
         GetComponent<Animator> ().SetTrigger ( "meleeAttack" );
         character.cMovement.SnapCharacterRotationToCamera ();
 
-        SoundEffect.Play3D ( currentWeaponMeleeData.swingSoundData.GetRandom (), currentWeaponObject.transform.position, 1, 5, delay: selectedClip.swingAudioDelay / 60.0f );
-        StartCoroutine ( DoAttackDelayed ( selectedClip.resultAudioDelay / 60.0f, MeleeAttackType.Generic ) );
-        //Invoke ( nameof ( DetermineMeleeHitChance ), selectedClip.resultAudioDelay / 60.0f );
+        SoundEffectManager.Play3D ( currentWeaponMeleeData.swingSoundData.GetRandom (), AudioMixerGroup.SFX, character.Animator.GetBoneTransform(currentWeaponData.activeBodyPart).position, minDistance: 1, maxDistance: 5, delay: selectedClip.swingAudioDelay / 60.0f );
+        StartCoroutine ( DoAttackDelayed ( selectedClip.resultAudioDelay / 60.0f, MeleeAttackType.Generic, mustMiss ) );
         nextAttackAnimationDelay = Mathf.Min ( (selectedClip.resultAudioDelay / 60.0f) + 0.25f, selectedClip.clipLength / 60.0f );
+        //nextAttackAnimationDelay = Mathf.Max ( 0.5f, Mathf.Min ( (selectedClip.resultAudioDelay / 60.0f) + 0.5f, selectedClip.clipLength / 60.0f ) );
         currentMeleeAnimationLength = selectedClip.clipLength / 60.0f;
     }
 
@@ -434,9 +559,8 @@ public class CharacterWeapon : MonoBehaviour
         GetComponent<Animator> ().SetTrigger ( "meleeAttack" );
         character.cMovement.SnapCharacterRotationToCamera ();
 
-        SoundEffect.Play3D ( currentWeaponMeleeData.swingSoundData.GetRandom (), currentWeaponObject.transform.position, 1, 5, delay: selectedClip.swingAudioDelay / 60.0f );
+        SoundEffectManager.Play3D ( currentWeaponMeleeData.swingSoundData.GetRandom (), AudioMixerGroup.SFX, character.Animator.GetBoneTransform ( currentWeaponData.activeBodyPart ).position, minDistance: 1, maxDistance: 5, delay: selectedClip.swingAudioDelay / 60.0f );
         StartCoroutine ( DoAttackDelayed ( selectedClip.resultAudioDelay / 60.0f, MeleeAttackType.Special ) );
-        //Invoke ( nameof ( PerformHit ), selectedClip.resultAudioDelay / 60.0f );
         nextAttackAnimationDelay = Mathf.Min ( (selectedClip.resultAudioDelay / 60.0f) + 0.25f, selectedClip.clipLength / 60.0f );
         currentMeleeAnimationLength = selectedClip.clipLength / 60.0f;
 
@@ -466,7 +590,7 @@ public class CharacterWeapon : MonoBehaviour
 
         for (int i = 0; i < selectedClip.data.Count; i++)
         {
-            SoundEffect.Play3D ( currentWeaponMeleeData.swingSoundData.GetRandom (), currentWeaponObject.transform.position, 1, 5, delay: selectedClip.data[i].swingAudioDelay / 60.0f );
+            SoundEffectManager.Play3D ( currentWeaponMeleeData.swingSoundData.GetRandom (), AudioMixerGroup.SFX, character.Animator.GetBoneTransform ( currentWeaponData.activeBodyPart ).position, minDistance: 1, maxDistance: 5, delay: selectedClip.data[i].swingAudioDelay / 60.0f );
             StartCoroutine ( DoAttackDelayed ( selectedClip.data[i].resultAudioDelay / 60.0f, MeleeAttackType.Combo ) );
             //Invoke ( nameof ( PerformComboHit ), selectedClip.data[i].resultAudioDelay / 60.0f );
         }
@@ -530,8 +654,11 @@ public class CharacterWeapon : MonoBehaviour
                 damage -= factionBasedReduction;
             }
 
-            damage = (ItemDatabase.GetItem ( currentWeaponData.weaponItemID ) as ItemGearWeapon).GetWeaponDamage ( damage, hitNPCs[i] );
-            damage = hitNPCs[i].OnBeforeDamagedByWeapon ( damage, currentWeaponData );
+            if (ItemDatabase.ItemExists ( currentWeaponData.weaponItemID ))
+            {
+                damage = (ItemDatabase.GetItem ( currentWeaponData.weaponItemID ) as ItemGearWeapon).GetWeaponDamage ( damage, hitNPCs[i] );
+                damage = hitNPCs[i].OnBeforeDamagedByWeapon ( damage, currentWeaponData );
+            }
 
             healthRemoved += hitNPCs[i].Health.RemoveHealth ( damage, DamageType.PlayerAttack, isCritical );
         }
@@ -542,14 +669,16 @@ public class CharacterWeapon : MonoBehaviour
         }
 
         SkillManager.instance.AddXpToSkill ( SkillType.Melee, healthRemoved * 0.25f );
-        SoundEffect.Play3D ( currentWeaponMeleeData.hitSoundData.GetRandom (), currentWeaponObject.transform.position, 1, 5 );
+        
+        SoundEffectManager.Play3D ( currentWeaponMeleeData.hitSoundData.GetRandom (), AudioMixerGroup.SFX, character.Animator.GetBoneTransform ( currentWeaponData.activeBodyPart ).position, minDistance: 1, maxDistance: 5 );
     }
 
     private void PerformMiss ()
     {
         OnAttack?.Invoke ( WeaponAttackType.Melee );
         SkillManager.instance.AddXpToSkill ( SkillType.Melee, 0.25f );
-        SoundEffect.Play3D ( currentWeaponMeleeData.missSoundData.GetRandom (), currentWeaponObject.transform.position, 1, 5 );
+        SoundEffectManager.Play3D ( currentWeaponMeleeData.missSoundData.GetRandom (), AudioMixerGroup.SFX, character.Animator.GetBoneTransform ( currentWeaponData.activeBodyPart ).position, minDistance: 1, maxDistance: 5 );
+        DamageCanvas.instance.SpawnInfoText ( character.Animator.GetBoneTransform ( currentWeaponData.activeBodyPart ), 1.0f, "Miss", ColourDescription.MessageBoxError );
     }
 
     private float GetBaseHitModifier ()
@@ -564,12 +693,10 @@ public class CharacterWeapon : MonoBehaviour
 
         if(baseLine <= SkillModifiers.CriticalHitChance)
         {
-            Debug.Log ( string.Format ( "{0} - {1} - {2}", baseLine.ToString ( "0.0000" ), modifiedLine.ToString ( "0.0000" ), SkillModifiers.CriticalHitChance.ToString ( "0.0000" ) ) );
             return true;
         }
         else if(modifiedLine <= SkillModifiers.CriticalHitChance)
         {
-            Debug.Log ( string.Format ( "{0} - {1} - {2}", baseLine.ToString ( "0.0000" ), modifiedLine.ToString ( "0.0000" ), SkillModifiers.CriticalHitChance.ToString ( "0.0000" ) ) );
             MessageBox.AddMessage ( "You perform a critical hit because of your " + TalentManager.instance.GetTalent ( TalentType.BigShot ).talentData.talentName + " talent." );
             return true;
         }
@@ -585,8 +712,10 @@ public class CharacterWeapon : MonoBehaviour
     private bool GetMeleeHitData (out List<NPC> hitNPCs)
     {
         hitNPCs = new List<NPC> ();
+        float playerToCameraDistance = (EntityManager.instance.PlayerCharacter.transform.position - EntityManager.instance.MainCamera.transform.parent.position).magnitude - 0.1f;
+        Vector3 origin = EntityManager.instance.MainCamera.transform.parent.position + (EntityManager.instance.MainCamera.transform.parent.forward * playerToCameraDistance);
         attackSphereHit = new RaycastHit[0];
-        attackSphereHit = Physics.SphereCastAll ( EntityManager.instance.MainCamera.transform.parent.position, 0.25f, EntityManager.instance.MainCamera.transform.parent.forward, meleeStrikeDistance );
+        attackSphereHit = Physics.SphereCastAll ( origin, 0.25f, EntityManager.instance.MainCamera.transform.parent.forward, meleeStrikeDistance );
 
         bool hit = false;
 
@@ -602,21 +731,21 @@ public class CharacterWeapon : MonoBehaviour
         return hit;
     }
 
-    private NPC GetPotentialMeleeHitNPC ()
-    {
-        attackSphereHit = new RaycastHit[0];
-        attackSphereHit = Physics.SphereCastAll ( EntityManager.instance.MainCamera.transform.parent.position, 0.25f, EntityManager.instance.MainCamera.transform.parent.forward, meleeStrikeDistance );
+    //private NPC GetPotentialMeleeHitNPC ()
+    //{
+    //    attackSphereHit = new RaycastHit[0];
+    //    attackSphereHit = Physics.SphereCastAll ( EntityManager.instance.MainCamera.transform.parent.position, 0.25f, EntityManager.instance.MainCamera.transform.parent.forward, meleeStrikeDistance );
 
-        for (int i = 0; i < attackSphereHit.Length; i++)
-        {
-            if (attackSphereHit[i].collider.gameObject.CompareTag ( "NPC" ))
-            {
-                return attackSphereHit[i].collider.gameObject.GetComponent<NPC> ();
-            }
-        }
+    //    for (int i = 0; i < attackSphereHit.Length; i++)
+    //    {
+    //        if (attackSphereHit[i].collider.gameObject.CompareTag ( "NPC" ))
+    //        {
+    //            return attackSphereHit[i].collider.gameObject.GetComponent<NPC> ();
+    //        }
+    //    }
 
-        return null;
-    }
+    //    return null;
+    //}
     #endregion
 
     #region Gun
@@ -626,7 +755,7 @@ public class CharacterWeapon : MonoBehaviour
 
         if (character.IsAI)
         {
-            AimPosition = EntityManager.instance.PlayerCharacter.Animator.GetBoneTransform ( HumanBodyBones.Head ).position;
+            if (EntityManager.instance) AimPosition = EntityManager.instance.PlayerCharacter.Animator.GetBoneTransform ( HumanBodyBones.Head ).position;
         }
         else
         {
@@ -697,7 +826,7 @@ public class CharacterWeapon : MonoBehaviour
     {
         if (character.IsAI) return;
 
-        if (currentWeaponData == null || character.currentState != Character.State.Standing)
+        if (currentWeaponData == null || character.currentState != Character.State.Standing || currentWeaponObject == null || currentWeaponData.weaponAttackType == WeaponAttackType.Melee)
         {
             clipText.text = "";
         }
@@ -904,7 +1033,7 @@ public class CharacterWeapon : MonoBehaviour
             {
                 currentReloadTime = 0.0f;
                 currentAmmo = currentWeaponGunData.clipSize;
-                SoundEffect.Play3D ( currentWeaponGunData.weaponSoundData.audioClipReloadFinished.GetRandom (), currentWeaponObject.transform.position, 1, 10 );
+                SoundEffectManager.Play3D ( currentWeaponGunData.weaponSoundData.audioClipReloadFinished.GetRandom (), AudioMixerGroup.SFX, character.Animator.GetBoneTransform ( currentWeaponData.activeBodyPart ).position, minDistance: 1, maxDistance: 10 );
             }
         }
         else
@@ -924,7 +1053,7 @@ public class CharacterWeapon : MonoBehaviour
         if (currentReloadTime > 0.0f) return;
         if (isHolstered || currentWeaponData == null) { return; }
         currentReloadTime = currentWeaponGunData.reloadTime - (currentWeaponGunData.reloadTime * TalentManager.instance.GetTalentModifier ( TalentType.SleightOfHand ));
-        SoundEffect.Play ( currentWeaponGunData.weaponSoundData.audioClipReload.GetRandom (), true );
+        SoundEffectManager.Play ( currentWeaponGunData.weaponSoundData.audioClipReload.GetRandom (), AudioMixerGroup.SFX );
     }
 
     public void Fire ()
@@ -944,7 +1073,7 @@ public class CharacterWeapon : MonoBehaviour
         {
             if (currentWeaponData.isBreakable)
             {
-                if (UnityEngine.Random.value <= 1 / currentWeaponGunData.fireRate)
+                if (UnityEngine.Random.value <= (1 / currentWeaponGunData.fireRate) * ((currentWeaponData.weaponAttackType == WeaponAttackType.Melee) ? 0.5f: 1.0f))
                 {
                     if (UnityEngine.Random.value <= TalentManager.instance.GetTalentModifier ( TalentType.Unbreakable ))
                     {
@@ -952,16 +1081,13 @@ public class CharacterWeapon : MonoBehaviour
                     }
                     else
                     {
-                        OnWeaponBreak ();
-                        isFiring = false;
-                        currentBurstCooldown = 0.0f;
-                        currentBurstCounter = 0;
+                        BreakCurrentWeapon ();
                         return;
                     }
                 }
             }
 
-            SoundEffect.Play3D ( currentWeaponGunData.weaponSoundData.audioClipFire.GetRandom (), muzzlePoint.position, 10, 100 );
+            SoundEffectManager.Play3D ( currentWeaponGunData.weaponSoundData.audioClipFire.GetRandom (), AudioMixerGroup.SFX, muzzlePoint.position, volume: 0.3f, minDistance: 5, maxDistance: 50 );
             character.cIK.AddRecoil ( currentWeaponGunData.recoilData );
 
             if(UnityEngine.Random.value <= TalentManager.instance.GetTalentModifier ( TalentType.SecondChance ))
@@ -988,7 +1114,7 @@ public class CharacterWeapon : MonoBehaviour
         }
         else
         {
-            SoundEffect.Play3D ( currentWeaponGunData.weaponSoundData.audioClipEmptyFire.GetRandom (), muzzlePoint.position, 2, 10 );
+            SoundEffectManager.Play3D ( currentWeaponGunData.weaponSoundData.audioClipEmptyFire.GetRandom (), AudioMixerGroup.SFX, muzzlePoint.position, minDistance: 2, maxDistance: 10 );
             character.cIK.AddRecoil ( currentWeaponGunData.recoilData );
         }
 
@@ -1047,8 +1173,11 @@ public class CharacterWeapon : MonoBehaviour
                         baseDamage -= factionBasedReduction;
                     }
 
-                    baseDamage = (ItemDatabase.GetItem ( currentWeaponData.weaponItemID ) as ItemGearWeapon).GetWeaponDamage ( baseDamage, npcInSights );
-                    baseDamage = npcInSights.OnBeforeDamagedByWeapon ( baseDamage, currentWeaponData );
+                    if (ItemDatabase.ItemExists ( currentWeaponData.weaponItemID ))
+                    {
+                        baseDamage = (ItemDatabase.GetItem ( currentWeaponData.weaponItemID ) as ItemGearWeapon).GetWeaponDamage ( baseDamage, npcInSights );
+                        baseDamage = npcInSights.OnBeforeDamagedByWeapon ( baseDamage, currentWeaponData );
+                    }
 
                     float healthRemoved = npcInSights.Health.RemoveHealth ( baseDamage, DamageType.PlayerAttack, isCritical );
 
@@ -1095,7 +1224,7 @@ public class CharacterWeapon : MonoBehaviour
 
         if (currentAmmo > 0)
         {
-            SoundEffect.Play3D ( currentWeaponGunData.weaponSoundData.audioClipFire.GetRandom (), muzzlePoint.position, 10, 100 );
+            SoundEffectManager.Play3D ( currentWeaponGunData.weaponSoundData.audioClipFire.GetRandom (), AudioMixerGroup.SFX, muzzlePoint.position, volume: 0.3f, minDistance: 5,maxDistance: 50 );
             character.cIK.AddRecoil ( currentWeaponGunData.recoilData );
             currentAmmo--;
             NPC_Bullet ();
@@ -1107,7 +1236,7 @@ public class CharacterWeapon : MonoBehaviour
         }
         else
         {
-            SoundEffect.Play3D ( currentWeaponGunData.weaponSoundData.audioClipEmptyFire.GetRandom (), muzzlePoint.position, 2, 10 );
+            SoundEffectManager.Play3D ( currentWeaponGunData.weaponSoundData.audioClipEmptyFire.GetRandom (), AudioMixerGroup.SFX, muzzlePoint.position, minDistance: 2, maxDistance: 10 );
             character.cIK.AddRecoil ( currentWeaponGunData.recoilData );
         }
 

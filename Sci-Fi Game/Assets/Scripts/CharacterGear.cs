@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,29 +17,53 @@ public enum GearSlot
 
 public class CharacterGear : MonoBehaviour
 {
-    private int weaponSlotID = -1;
-    private int headSlotID = -1;
-    private int neckSlotID = -1;
-    private int bodySlotID = -1;
-    private int wristSlotID = -1;
-    private int feetSlotID = -1;
-    private int fingerSlotID = -1;
-    private int attachmentSlot01ID = -1;
-    private int attachmentSlot02ID = -1;
-    private int attachmentSlot03ID = -1;
-    private int attachmentSlot04ID = -1;
+    //private int weaponSlotID = -1;
+    //private int headSlotID = -1;
+    //private int neckSlotID = -1;
+    //private int bodySlotID = -1;
+    //private int wristSlotID = -1;
+    //private int feetSlotID = -1;
+    //private int fingerSlotID = -1;
+    //private int attachmentSlot01ID = -1;
+    //private int attachmentSlot02ID = -1;
+    //private int attachmentSlot03ID = -1;
+    //private int attachmentSlot04ID = -1;
 
-    public int WeaponSlotID { get => weaponSlotID; set => weaponSlotID = value; }
-    public int HeadSlotID { get => headSlotID; set => headSlotID = value; }
-    public int NeckSlotID { get => neckSlotID; set => neckSlotID = value; }
-    public int BodySlotID { get => bodySlotID; set => bodySlotID = value; }
-    public int WristSlotID { get => wristSlotID; set => wristSlotID = value; }
-    public int FeetSlotID { get => feetSlotID; set => feetSlotID = value; }
-    public int FingerSlotID { get => fingerSlotID; set => fingerSlotID = value; }
-    public int AttachmentSlot01ID { get => attachmentSlot01ID; set => attachmentSlot01ID = value; }
-    public int AttachmentSlot02ID { get => attachmentSlot02ID; set => attachmentSlot02ID = value; }
-    public int AttachmentSlot03ID { get => attachmentSlot03ID; set => attachmentSlot03ID = value; }
-    public int AttachmentSlot04ID { get => attachmentSlot04ID; set => attachmentSlot04ID = value; }
+    //public int WeaponSlotID { get => weaponSlotID; set => weaponSlotID = value; }
+    //public int HeadSlotID { get => headSlotID; set => headSlotID = value; }
+    //public int NeckSlotID { get => neckSlotID; set => neckSlotID = value; }
+    //public int BodySlotID { get => bodySlotID; set => bodySlotID = value; }
+    //public int WristSlotID { get => wristSlotID; set => wristSlotID = value; }
+    //public int FeetSlotID { get => feetSlotID; set => feetSlotID = value; }
+    //public int FingerSlotID { get => fingerSlotID; set => fingerSlotID = value; }
+    //public int AttachmentSlot01ID { get => attachmentSlot01ID; set => attachmentSlot01ID = value; }
+    //public int AttachmentSlot02ID { get => attachmentSlot02ID; set => attachmentSlot02ID = value; }
+    //public int AttachmentSlot03ID { get => attachmentSlot03ID; set => attachmentSlot03ID = value; }
+    //public int AttachmentSlot04ID { get => attachmentSlot04ID; set => attachmentSlot04ID = value; }
+
+    private GearEntry weaponSlotID = new GearEntry ();
+    private GearEntry headSlotID = new GearEntry ();
+    private GearEntry neckSlotID = new GearEntry ();
+    private GearEntry bodySlotID = new GearEntry ();
+    private GearEntry wristSlotID = new GearEntry ();
+    private GearEntry feetSlotID = new GearEntry ();
+    private GearEntry fingerSlotID = new GearEntry ();
+    private GearEntry attachmentSlot01ID = new GearEntry ();
+    private GearEntry attachmentSlot02ID = new GearEntry ();
+    private GearEntry attachmentSlot03ID = new GearEntry ();
+    private GearEntry attachmentSlot04ID = new GearEntry ();
+
+    public GearEntry WeaponSlotID { get => weaponSlotID; set => weaponSlotID = value; }
+    public GearEntry HeadSlotID { get => headSlotID; set => headSlotID = value; }
+    public GearEntry NeckSlotID { get => neckSlotID; set => neckSlotID = value; }
+    public GearEntry BodySlotID { get => bodySlotID; set => bodySlotID = value; }
+    public GearEntry WristSlotID { get => wristSlotID; set => wristSlotID = value; }
+    public GearEntry FeetSlotID { get => feetSlotID; set => feetSlotID = value; }
+    public GearEntry FingerSlotID { get => fingerSlotID; set => fingerSlotID = value; }
+    public GearEntry AttachmentSlot01ID { get => attachmentSlot01ID; set => attachmentSlot01ID = value; }
+    public GearEntry AttachmentSlot02ID { get => attachmentSlot02ID; set => attachmentSlot02ID = value; }
+    public GearEntry AttachmentSlot03ID { get => attachmentSlot03ID; set => attachmentSlot03ID = value; }
+    public GearEntry AttachmentSlot04ID { get => attachmentSlot04ID; set => attachmentSlot04ID = value; }
 
     public void EquipGear (int itemID)
     {
@@ -50,45 +75,48 @@ public class CharacterGear : MonoBehaviour
         switch (slot)
         {
             case GearSlot.Weapon:
-                TryEquip ( ref weaponSlotID, itemID );
-                Debug.Log ( item.Name );
-                Debug.Log ( item.gearSlot );
+                if (!EntityManager.instance.PlayerCharacter.cWeapon.CanEquip ())
+                {
+                    Debug.Log ( "Cannot equip" );
+                    break;
+                }
+                TryEquip ( weaponSlotID, itemID );
                 SetCharacterWeaponData ( itemID );
                 break;
             case GearSlot.Head:
-                TryEquip ( ref headSlotID, itemID );
+                TryEquip ( headSlotID, itemID );
                 break;
             case GearSlot.Neck:
-                TryEquip ( ref neckSlotID, itemID );
+                TryEquip ( neckSlotID, itemID );
                 break;
             case GearSlot.Body:
-                TryEquip ( ref bodySlotID, itemID );
+                TryEquip ( bodySlotID, itemID );
                 break;
             case GearSlot.Wrist:
-                TryEquip ( ref wristSlotID, itemID );
+                TryEquip ( wristSlotID, itemID );
                 break;
             case GearSlot.Feet:
-                TryEquip ( ref feetSlotID, itemID );
+                TryEquip ( feetSlotID, itemID );
                 break;
             case GearSlot.Finger:
-                TryEquip ( ref fingerSlotID, itemID );
+                TryEquip ( fingerSlotID, itemID );
                 break;
             case GearSlot.Attachment:
-                if (attachmentSlot01ID == -1)
+                if (attachmentSlot01ID.currentEquippedID == -1)
                 {
-                    TryEquip ( ref attachmentSlot01ID, itemID );
+                    TryEquip ( attachmentSlot01ID, itemID );
                 }
-                else if (attachmentSlot02ID == -1)
+                else if (attachmentSlot02ID.currentEquippedID == -1)
                 {
-                    TryEquip ( ref attachmentSlot02ID, itemID );
+                    TryEquip ( attachmentSlot02ID, itemID );
                 }
-                else if (attachmentSlot03ID == -1)
+                else if (attachmentSlot03ID.currentEquippedID == -1)
                 {
-                    TryEquip ( ref attachmentSlot03ID, itemID );
+                    TryEquip ( attachmentSlot03ID, itemID );
                 }
-                else if (attachmentSlot04ID == -1)
+                else if (attachmentSlot04ID.currentEquippedID == -1)
                 {
-                    TryEquip ( ref attachmentSlot04ID, itemID );
+                    TryEquip ( attachmentSlot04ID, itemID );
                 }
                 else
                 {
@@ -100,17 +128,20 @@ public class CharacterGear : MonoBehaviour
         GearCanvas.instance.RefreshUI ( this );
     }
 
-    private void TryEquip (ref int slot, int itemID)
+    private void TryEquip (GearEntry gearEntry, int itemID)
     {
-        if (slot == -1)
+        ItemGear itemGear = ItemDatabase.GetItem ( itemID ) as ItemGear;
+
+        if (gearEntry.currentEquippedID == -1)
         {
             EntityManager.instance.PlayerInventory.RemoveItem ( itemID, 1 );
-            slot = itemID;
+            gearEntry.currentEquippedID = itemID;
+            CheckItemGearEquipableGraphics ( gearEntry, itemGear );           
         }
         else
         {
             EntityManager.instance.PlayerInventory.RemoveItem ( itemID, 1 );
-            int notAddedAmount = EntityManager.instance.PlayerInventory.AddItem ( slot, 1 );
+            int notAddedAmount = EntityManager.instance.PlayerInventory.AddItem ( gearEntry.currentEquippedID, 1 );
 
             if (notAddedAmount == 1)
             {
@@ -118,13 +149,50 @@ public class CharacterGear : MonoBehaviour
                 return;
             }
 
-            slot = itemID;
+            gearEntry.currentEquippedID = itemID;
+            CheckItemGearEquipableGraphics ( gearEntry, itemGear );
+        }
+    }
+
+    private void CheckItemGearEquipableGraphics (GearEntry gearEntry, ItemGear itemGear)
+    {
+        if (itemGear == null)
+        {
+            if (gearEntry.currentEquippedGameObject != null)
+                Destroy ( gearEntry.currentEquippedGameObject );
+            return;
+        }
+
+        if (itemGear.category == ItemCategory.Gear)
+        {
+            ItemGearEquipable equipable = itemGear as ItemGearEquipable;
+
+            if (equipable != null)
+            {
+                if (equipable.gearData.prefab != null)
+                {
+                    if (gearEntry.currentEquippedGameObject != null)
+                        Destroy ( gearEntry.currentEquippedGameObject );
+
+                    gearEntry.currentEquippedGameObject = Instantiate ( equipable.gearData.prefab );
+                    gearEntry.currentEquippedGameObject.transform.SetParent ( EntityManager.instance.PlayerCharacter.Animator.GetBoneTransform ( equipable.gearData.equipBodyPart ) );
+
+                    gearEntry.currentEquippedGameObject.transform.localPosition = equipable.gearData.offsetPosition;
+                    gearEntry.currentEquippedGameObject.transform.localEulerAngles = equipable.gearData.offsetRotation;
+                    gearEntry.currentEquippedGameObject.transform.localScale = equipable.gearData.localScale;
+                }
+                else
+                {
+                    if (gearEntry.currentEquippedGameObject != null)
+                        Destroy ( gearEntry.currentEquippedGameObject );
+                }
+            }
         }
     }
 
     public void SetWeaponIndexNull ()
     {
-        weaponSlotID = -1;
+        weaponSlotID.currentEquippedID = -1;
     }
 
     public void UnequipGear (int itemID)
@@ -137,45 +205,45 @@ public class CharacterGear : MonoBehaviour
         switch (slot)
         {
             case GearSlot.Weapon:
-                if (TryUnequip ( ref weaponSlotID ))
+                if (TryUnequip ( weaponSlotID ))
                 {
                     SetCharacterWeaponData ( -1 );
                 }
                 break;
             case GearSlot.Head:
-                TryUnequip ( ref headSlotID );
+                TryUnequip ( headSlotID );
                 break;
             case GearSlot.Neck:
-                TryUnequip ( ref neckSlotID );
+                TryUnequip ( neckSlotID );
                 break;
             case GearSlot.Body:
-                TryUnequip ( ref bodySlotID );
+                TryUnequip ( bodySlotID );
                 break;
             case GearSlot.Wrist:
-                TryUnequip ( ref wristSlotID );
+                TryUnequip ( wristSlotID );
                 break;
             case GearSlot.Feet:
-                TryUnequip ( ref feetSlotID );
+                TryUnequip ( feetSlotID );
                 break;
             case GearSlot.Finger:
-                TryUnequip ( ref fingerSlotID );
+                TryUnequip ( fingerSlotID );
                 break;
             case GearSlot.Attachment:
-                if (attachmentSlot01ID == itemID)
+                if (attachmentSlot01ID.currentEquippedID == itemID)
                 {
-                    TryUnequip ( ref attachmentSlot01ID );
+                    TryUnequip ( attachmentSlot01ID );
                 }
-                else if (attachmentSlot02ID == itemID)
+                else if (attachmentSlot02ID.currentEquippedID == itemID)
                 {
-                    TryUnequip ( ref attachmentSlot02ID );
+                    TryUnequip ( attachmentSlot02ID );
                 }
-                else if (attachmentSlot03ID == itemID)
+                else if (attachmentSlot03ID.currentEquippedID == itemID)
                 {
-                    TryUnequip ( ref attachmentSlot03ID );
+                    TryUnequip ( attachmentSlot03ID );
                 }
-                else if (attachmentSlot04ID == itemID)
+                else if (attachmentSlot04ID.currentEquippedID == itemID)
                 {
-                    TryUnequip ( ref attachmentSlot04ID );
+                    TryUnequip ( attachmentSlot04ID );
                 }
                 else
                 {
@@ -187,14 +255,18 @@ public class CharacterGear : MonoBehaviour
         GearCanvas.instance.RefreshUI ( this );
     }
 
-    private bool TryUnequip (ref int slot)
-    {
-        if (slot != -1)
+    private bool TryUnequip (GearEntry gearEntry)
+    {        
+        // Make sure we arent unequipping a null item
+        if (gearEntry.currentEquippedID != -1)
         {
-            int added = EntityManager.instance.PlayerInventory.AddItem ( slot, 1 );
+            // If they player has inventory space we can unequip the item
+            int added = EntityManager.instance.PlayerInventory.AddItem ( gearEntry.currentEquippedID, 1 );
             if (added == 1) return false;
 
-            slot = -1;
+
+            gearEntry.currentEquippedID = -1;
+            CheckItemGearEquipableGraphics ( gearEntry, null );
             return true;
         }
         else
@@ -205,7 +277,7 @@ public class CharacterGear : MonoBehaviour
 
     private void SetCharacterWeaponData (int itemID)
     {
-        if (weaponSlotID == -1)
+        if (weaponSlotID.currentEquippedID == -1)
         {
             EntityManager.instance.PlayerCharacter.cWeapon.Unequip ( bypassAnimationDelay: true );
         }
@@ -220,6 +292,18 @@ public class CharacterGear : MonoBehaviour
             else
                 EntityManager.instance.PlayerCharacter.cWeapon.Equip ( (item as ItemGearWeaponMelee).weaponData );
 
+        }
+    }
+
+    public class GearEntry
+    {
+        public int currentEquippedID;
+        public GameObject currentEquippedGameObject;
+
+        public GearEntry ()
+        {
+            currentEquippedID = -1;
+            currentEquippedGameObject = null;
         }
     }
 }

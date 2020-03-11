@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public enum ColourDescription { OffWhiteText, DarkYellowText, GreyText, DarkGreyText, Black, White, MessageBoxInfo, MessageBoxWarning, MessageBoxError, None }
+public enum ColourDescription { OffWhiteText, DarkYellowText, GreyText, DarkGreyText, Black, White, MessageBoxInfo, MessageBoxWarning, MessageBoxError, None, InteractionDefault, InteractionAttackableEnemy }
 
 
 public class ColourHelper : MonoBehaviour
@@ -47,6 +47,11 @@ public class ColourHelper : MonoBehaviour
 
         message = message.Insert ( 0, "<color=#" + ColorUtility.ToHtmlStringRGBA ( instance.dataDictionary[colour].colour ) + ">" );
         return message + "</color>";
+    }
+
+    public static string TagColourSize(string message, ColourDescription colourDescription, float size)
+    {
+        return TagColour ( TagSize ( message, size ), colourDescription );
     }
 
     public static string TagSize (string message, float size)

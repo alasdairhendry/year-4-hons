@@ -27,12 +27,6 @@ public class Skill
         this.skillName = skillName;
         this.skillType = skillType;
         this.skillDescription = skillDescription;
-
-        if (SkillManager.instance.DEBUG_LEVEL_TO_991)
-        {
-            currentXP = SkillManager.instance.XpRatesByLevel[98];
-            currentLevel = 99;
-        }
     }
 
     public void AddXp (float amount)
@@ -42,10 +36,7 @@ public class Skill
         currentXP += amount;
         onXPGained?.Invoke ( amount, skillType );
 
-        if (currentXP >= SkillManager.instance.GetXPRequirementForLevel ( currentLevel ))
-        {
-            OnLevelUp ();
-        }
+        CheckLevelUp ();
     }
 
     public float GetProgressToNextLevelNormalised ()
@@ -73,45 +64,34 @@ public class Skill
         return SkillManager.instance.GetXPRequirementForLevel ( currentLevel );
     }
 
-    private void OnLevelUp ()
+    private void CheckLevelUp ()
     {
         if (currentLevel >= SkillModifiers.MAX_SKILL_LEVEL) return;
 
-        currentLevel++;        
-        onLevelUp?.Invoke ( currentLevel, skillType );
+        for (int i = currentLevel; i < SkillManager.instance.XpRatesByLevel.Count; i++)
+        {
+            if (i == SkillManager.instance.XpRatesByLevel.Count - 1)
+            {
+                if (currentXP >= SkillManager.instance.XpRatesByLevel[i])
+                {
+                    currentLevel = 99;
+                    onLevelUp?.Invoke ( currentLevel, skillType );
+                    SoundEffectManager.Play ( AudioClipAsset.LevelUp, AudioMixerGroup.SFX );
+                    break;
+                }
+            }
+            else
+            {
+                if (currentXP >= SkillManager.instance.XpRatesByLevel[i] && currentXP < SkillManager.instance.XpRatesByLevel[i + 1])
+                {
+                    currentLevel = i + 1;
+                    currentLevel = Mathf.Clamp ( currentLevel, 1, 99 );
+                    onLevelUp?.Invoke ( currentLevel, skillType );
+                    SoundEffectManager.Play ( AudioClipAsset.LevelUp, AudioMixerGroup.SFX );
+                    break;
+                }
+            }
+
+        }
     }
-
-    //[System.Serializable]
-    //public class SkillUnlock
-    //{
-    //    public string unlockName;
-    //    public string unlockDescription;
-    //    public int levelRestriction = -1;
-    //    public int cost;
-
-    //    public System.Action unlockAction;
-
-    //    public List<SkillUnlock> requirements = new List<SkillUnlock> ();
-
-    //    public SkillUnlock (string unlockName, string unlockDescription, int levelRestriction, int cost)
-    //    {
-    //        this.unlockName = unlockName;
-    //        this.unlockDescription = unlockDescription;
-    //        this.levelRestriction = levelRestriction;
-    //        this.cost = cost;
-    //    }
-
-    //    public void SetUnlockAction(System.Action action)
-    //    {
-    //        unlockAction = action;
-    //    }
-
-    //    public void SetRequirements (params SkillUnlock[] requirements)
-    //    {
-    //        for (int i = 0; i < requirements.Length; i++)
-    //        {
-    //            this.requirements.Add ( requirements[i] );
-    //        }
-    //    }
-    //}
 }

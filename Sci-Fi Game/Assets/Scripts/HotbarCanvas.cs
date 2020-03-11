@@ -100,10 +100,15 @@ public class HotbarCanvas : MonoBehaviour
             case InventoryInteractionData.InteractType.Equip:
                 compatibleInteractType = true;
                 break;
+            case InventoryInteractionData.InteractType.Attach:
+                compatibleInteractType = true;
+                break;
             default:
                 Debug.LogError ( "Incompatible hotbar item" );
                 break;
         }
+
+        if (item.category == ItemCategory.Consumable) compatibleInteractType = true;
 
         if (!compatibleInteractType) return;
 

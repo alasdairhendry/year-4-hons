@@ -14,7 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   factionName: Wallon
   factionAdjective: Wallonite
-  factionDescription: 
+  factionDescription: Wallonite people hail from the great continent of Wallonrot.
+    A thriving, modern nation has allowed them to advance more quickly than others.
+  factionPlayerMaterial: {fileID: 2100000, guid: f0dd791a13593c24092eab330b4af2a1,
+    type: 2}
   factionSprite: {fileID: 21300000, guid: bb0af28f84fc13e42b30d656c47f3592, type: 3}
   factionType: 4
   specialisationName: Consumer Rights

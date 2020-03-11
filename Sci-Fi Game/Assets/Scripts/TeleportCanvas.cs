@@ -18,7 +18,7 @@ public class TeleportCanvas : UIPanel
         if (instance == null) instance = this;
         else if (instance != this) { Destroy ( this.gameObject ); return; }
 
-        Close ();
+        Close ( true );
     }
 
     public override void Open ()
@@ -26,14 +26,18 @@ public class TeleportCanvas : UIPanel
         base.Open ();
         mainPanel.SetActive ( true );
         isOpened = true;
+        UIPanelController.instance.OnPanelOpened ( this );
     }
 
-    public override void Close ()
+    public override void Close (bool bypassCloseCheck = false)
     {
+        if (isOpened == false && !bypassCloseCheck) return;
+
         base.Close ();
         hotkeyActions.Clear ();
         mainPanel.SetActive ( false );
         isOpened = false;
+        UIPanelController.instance.OnPanelClosed ( this );
     }
 
     //public void SetDestinations (System.Action<TeleportDestination> onClickDestination, params TeleportDestination[] teleportDestinations)

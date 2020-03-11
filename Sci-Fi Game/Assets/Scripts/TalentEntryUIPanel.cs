@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,11 +10,13 @@ public class TalentEntryUIPanel : MonoBehaviour
     [SerializeField] private Button button;
     [SerializeField] private Image icon;
     [SerializeField] private TooltipItemUI tooltip;
+    [SerializeField] private TextMeshProUGUI levelText;
 
     private void Start ()
     {
         TalentData talentData = TalentManager.instance.GetTalent ( targetTalent ).talentData;
         icon.sprite = talentData.talentSprite;
+        SetLevelText ();
 
         tooltip.SetTooltipAction ( () =>
         {
@@ -53,6 +56,13 @@ public class TalentEntryUIPanel : MonoBehaviour
             {
                 TalentManager.instance.UpgradeTalent ( targetTalent );
             }
+
+            SetLevelText ();
         } );
+    }
+
+    private void SetLevelText ()
+    {
+        levelText.text = TalentManager.instance.GetTalent ( targetTalent ).currentLevel.ToString ( "0" );
     }
 }

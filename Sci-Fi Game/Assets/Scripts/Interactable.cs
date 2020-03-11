@@ -12,6 +12,7 @@ public class Interactable : MonoBehaviour
 
     [SerializeField] private string interactType = "Talk to";
     [SerializeField] private string interactableName = "Interactable Object";
+    [SerializeField] private ColourDescription textColour = ColourDescription.InteractionDefault;
     [Space]
     [SerializeField] private UnityEvent onInteractEvent;
     [Space]
@@ -33,6 +34,7 @@ public class Interactable : MonoBehaviour
     public bool MustFaceObject { get => mustFaceObject; set => mustFaceObject = value; }
     public bool IsInteractable { get => isInteractable; set => isInteractable = value; }
     public string InteractType { get => interactType; set => interactType = value; }
+    public ColourDescription TextColour { get => textColour; set => textColour = value; }
 
     public Vector3 UIWorldPosition ()
     {

@@ -75,7 +75,7 @@ namespace QuestFlow
 
             if (questsWhichCanBeOffered.Count > 0)
             {
-                worldMapObject.Register ( "Quest\n" + ColourHelper.TagColour ( ColourHelper.TagSize ( string.Join ( "\n", questsWhichCanBeOffered.Select ( x => x.questName ).ToList () ), 80 ), ColourDescription.OffWhiteText ) );
+                worldMapObject.Register ( "Quest\n" + ColourHelper.TagColour ( ColourHelper.TagSize ( string.Join ( "\n", questsWhichCanBeOffered.Select ( x => "- " + x.questName ).ToList () ) + "\n", 80 ), ColourDescription.OffWhiteText ) );
 
             }
             else
