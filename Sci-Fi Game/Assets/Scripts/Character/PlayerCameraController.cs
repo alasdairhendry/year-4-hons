@@ -19,6 +19,10 @@ public class PlayerCameraController : MonoBehaviour
     [SerializeField] private float smoothVelocityX;
     [SerializeField] private float smoothVelocityY;
     [SerializeField] private float turnSmooth;
+    [Space]
+    [SerializeField] private float rotationSensitivityX;
+    [SerializeField] private float rotationSensitivityY;
+    [Space]
     [SerializeField] private float rotationSpeedX;
     [SerializeField] private float rotationSpeedY;
     [Space]
@@ -87,8 +91,8 @@ public class PlayerCameraController : MonoBehaviour
 
         if (character.currentVehicle != null && character.currentVehicle.CurrentVehicleMode == VehicleMode.Hover)
         {
-            mouseX = Input.GetAxis ( "Mouse X" );
-            mouseY = Input.GetAxis ( "Mouse Y" );
+            mouseX = Input.GetAxis ( "Mouse X" ) * Time.deltaTime * rotationSensitivityX;
+            mouseY = Input.GetAxis ( "Mouse Y" ) * Time.deltaTime * rotationSensitivityY;
         }
         else if (character.currentVehicle != null && character.currentVehicle.CurrentVehicleMode == VehicleMode.Drive)
         {
@@ -116,8 +120,8 @@ public class PlayerCameraController : MonoBehaviour
 
             if (shouldRecordMovement)
             {
-                mouseX = Input.GetAxis ( "Mouse X" );
-                mouseY = Input.GetAxis ( "Mouse Y" );
+                mouseX = Input.GetAxis ( "Mouse X" ) * Time.deltaTime * rotationSensitivityX;
+                mouseY = Input.GetAxis ( "Mouse Y" ) * Time.deltaTime * rotationSensitivityY;
             }
             else
             {
@@ -219,16 +223,16 @@ public class PlayerCameraController : MonoBehaviour
             if (Mathf.Abs ( (transform.position - localTargetPosition).sqrMagnitude ) > stopMovementWhenDistanceIs)
                 transform.position = Vector3.Slerp ( transform.position, target.TransformPoint ( globalOffset ), followDamp * Time.deltaTime );
 
-            smoothX = Mathf.SmoothDamp ( smoothX, mouseX, ref smoothVelocityX, turnSmooth );
-            smoothY = Mathf.SmoothDamp ( smoothY, mouseY, ref smoothVelocityY, turnSmooth );
+            smoothX = Mathf.SmoothDamp ( smoothX, mouseX, ref smoothVelocityX, turnSmooth * Time.deltaTime);
+            smoothY = Mathf.SmoothDamp ( smoothY, mouseY, ref smoothVelocityY, turnSmooth * Time.deltaTime );
 
             if (!DEBUG_LOCK_Y_ROT)
                 yLookAngle += (smoothX * rotationSpeedY);
             if (!DEBUG_LOCK_X_ROT)
                 xLookAngle -= (smoothY * rotationSpeedX);
 
-            yLookAngle += yRecoilAngle;
-            xLookAngle += xRecoilAngle;
+            yLookAngle += yRecoilAngle * Time.deltaTime;
+            xLookAngle += xRecoilAngle * Time.deltaTime;
 
             xLookAngle = Mathf.Clamp ( xLookAngle, xClampMin, xClampMax );
 

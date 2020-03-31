@@ -103,6 +103,7 @@ public class Character : MonoBehaviour
     public Vehicle currentVehicle { get; protected set; } = null;
     public bool CanMove { get; protected set; } = true;
     [NaughtyAttributes.ShowNativeProperty] public bool isDead { get; protected set; }
+    private NPC npc;
 
     private void Awake ()
     {
@@ -111,6 +112,10 @@ public class Character : MonoBehaviour
         if (!IsAI)
         {
             EntityManager.instance.SetPlayerCharacter ( this );
+        }
+        else
+        {
+            npc = GetComponent<NPC> ();
         }
 
         rigidbody = GetComponent<Rigidbody> ();
@@ -255,6 +260,11 @@ public class Character : MonoBehaviour
 
     private bool CheckIsGrounded ()
     {
+        if (IsAI && npc != null && npc.MeshRenderer.isVisible == false)
+        {
+            return true;
+        }
+
         Vector3[] origins = new Vector3[5] { transform.position, transform.position + transform.forward * groundCheckRadialDistance, transform.position + transform.right * groundCheckRadialDistance, transform.position - transform.forward * groundCheckRadialDistance, transform.position - transform.right * groundCheckRadialDistance };
 
         Vector3 dir = -Vector3.up;

@@ -19,14 +19,6 @@ public class BankCanvas : UIPanel
         Close ( true );
     }
 
-    private void Update ()
-    {
-        if (Input.GetKeyDown ( KeyCode.B ))
-        {
-            Trigger ();
-        }
-    }
-
     private void Start ()
     {
         for (int i = 0; i < inventoryPanels.Count; i++)

@@ -44,10 +44,6 @@ public class DamageCanvas : MonoBehaviour
             {
                 go.GetComponentInChildren<TextMeshProUGUI> ().color = Color.yellow;
             }
-            else
-            {
-                go.GetComponentInChildren<TextMeshProUGUI> ().color = new Color ( 0.9f, 0.9f, 0.9f, 1.0f );
-            }
         }
     }
 
@@ -78,10 +74,6 @@ public class DamageCanvas : MonoBehaviour
             {
                 go.GetComponentInChildren<TextMeshProUGUI> ().color = Color.yellow;
             }
-            else
-            {
-                go.GetComponentInChildren<TextMeshProUGUI> ().color = new Color ( 0.9f, 0.9f, 0.9f, 1.0f );
-            }
         }
         else
         {
@@ -101,8 +93,8 @@ public class DamageCanvas : MonoBehaviour
 
         go.GetComponentInChildren<TextMeshProUGUI> ().text = text;
 
-        if (colourDescription != ColourDescription.None)
-            go.GetComponentInChildren<TextMeshProUGUI> ().color = ColourHelper.GetEditorColour ( colourDescription );
+        //if (colourDescription != ColourDescription.None)
+            //go.GetComponentInChildren<TextMeshProUGUI> ().color = ColourHelper.GetEditorColour ( colourDescription );
     }
 
 

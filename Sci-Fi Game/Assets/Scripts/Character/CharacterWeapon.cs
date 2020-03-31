@@ -108,14 +108,14 @@ public class CharacterWeapon : MonoBehaviour
                 CheckBurstCooldown ();
                 CheckReload ();
                 CheckAimPosition ();
-                SetWeaponUI ();
             }
             else
             {
                 CheckMeleeAttack ();
             }
-        }        
+        }
 
+        SetWeaponUI ();
         CheckShouldAim ();
 
         if (character.IsAI) return;
@@ -389,29 +389,27 @@ public class CharacterWeapon : MonoBehaviour
             if (potentialNPCs.Exists ( x => x.NPCAttackOption == NPCAttackOption.CannotBeAttack ))
             {
                 DoGenericMeleeAttack ( true );
-                Debug.Log ( "Generic: Unattackable Target" );
             }
             else
             {
-                if (Input.GetKey ( KeyCode.LeftAlt ))
-                {
-                    DoSpecialMeleeAttack ();
-                    Debug.Log ( "Special: Debug" );
-                    return;
-                }
+                //if (Input.GetKey ( KeyCode.LeftAlt ))
+                //{
+                //    DoSpecialMeleeAttack ();
+                //    Debug.Log ( "Special: Debug" );
+                //    return;
+                //}
 
-                if (Input.GetKey ( KeyCode.LeftControl ))
-                {
-                    comboNPCTarget = potentialNPCs[0];
-                    DoComboMeleeAttack ();
-                    Debug.Log ( "Combo: Debug" );
-                    return;
-                }
+                //if (Input.GetKey ( KeyCode.LeftControl ))
+                //{
+                //    comboNPCTarget = potentialNPCs[0];
+                //    DoComboMeleeAttack ();
+                //    Debug.Log ( "Combo: Debug" );
+                //    return;
+                //}
                 if (attackTypeRoll <= SkillModifiers.MeleeSpecialChance)
                 {
                     // Attack is a special attack
                     DoSpecialMeleeAttack ();
-                    Debug.Log ( "Special: Chance" );
                 }
                 else
                 {
@@ -422,13 +420,11 @@ public class CharacterWeapon : MonoBehaviour
                         // Attack is a combo attack
                         comboNPCTarget = potentialNPCs[0];
                         DoComboMeleeAttack ();
-                        Debug.Log ( "Combo: Chance" );
                     }
                     else
                     {
                         // Attack is a generic attack
                         DoGenericMeleeAttack ();
-                        Debug.Log ( "Generic: Chance" );
                     }
                 }
             }
@@ -436,7 +432,6 @@ public class CharacterWeapon : MonoBehaviour
         else
         {
             DoGenericMeleeAttack ();
-            Debug.Log ( "Generic: Null Target" );
         }
 
         //if (potentialTarget == null)
@@ -822,41 +817,52 @@ public class CharacterWeapon : MonoBehaviour
         }
     }
 
+    [SerializeField] private float weaponUIOffset = 0.35f;
+
     private void SetWeaponUI ()
     {
         if (character.IsAI) return;
 
-        if (currentWeaponData == null || character.currentState != Character.State.Standing || currentWeaponObject == null || currentWeaponData.weaponAttackType == WeaponAttackType.Melee)
+        if (currentWeaponData == null || character.currentState != Character.State.Standing || currentWeaponObject == null)
         {
             clipText.text = "";
         }
         else
         {
-            Vector3 position = currentWeaponObject.transform.TransformPoint ( currentWeaponGunData.clipTextLocalPosition );
+            //Vector3 position = currentWeaponObject.transform.TransformPoint ( currentWeaponGunData.clipTextLocalPosition );
+            Vector3 position = currentWeaponObject.transform.position + (transform.right * weaponUIOffset);
 
             if (isHolstered)
             {
                 clipText.text = "[H]";
-                position = currentWeaponObject.transform.TransformPoint ( currentWeaponGunData.clipTextHolsteredLocalPosition );
+                //position = currentWeaponObject.transform.TransformPoint ( currentWeaponGunData.clipTextHolsteredLocalPosition );
             }
             else
             {
-                if (character.IsAiming)
+                if (currentWeaponData.weaponAttackType == WeaponAttackType.Melee)
                 {
-                    if (currentReloadTime > 0.0f)
-                    {
-                        clipText.text = "-----";
-                    }
-                    else
-                    {
-                        clipText.text = currentAmmo.ToString ( "00" ) + " / " + currentWeaponGunData.clipSize.ToString ( "00" );
-                    }
+                    clipText.text = "";
                 }
                 else
                 {
-                    clipText.text = "";
+                    if (character.IsAiming)
+                    {
+                        if (currentReloadTime > 0.0f)
+                        {
+                            clipText.text = "-----";
+                        }
+                        else
+                        {
+                            clipText.text = currentAmmo.ToString ( "00" ) + " / " + currentWeaponGunData.clipSize.ToString ( "00" );
+                        }
+                    }
+                    else
+                    {
+                        clipText.text = "";
 
+                    }
                 }
+                
             }
 
             clipText.transform.position = position;

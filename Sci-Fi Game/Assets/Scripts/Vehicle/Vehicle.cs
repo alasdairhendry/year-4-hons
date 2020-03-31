@@ -44,9 +44,7 @@ public class Vehicle : MonoBehaviour
             if (!Application.isPlaying) return 0.0f;
             if (!engineIsOn) return 0.0f;
 
-            if (LogitechGSDK.LogiUpdate () && LogitechGSDK.LogiIsConnected ( 0 ))
-                return InputWheel.Accelerator;
-            else return Mathf.Clamp01 ( Input.GetAxis ( "Vertical" ) );
+            return Mathf.Clamp01 ( Input.GetAxis ( "Vertical" ) );
         }
     }
     public float BRAKE
@@ -56,9 +54,7 @@ public class Vehicle : MonoBehaviour
             if (!Application.isPlaying) return 0.0f;
             if (!engineIsOn) return 0.0f;
 
-            if (LogitechGSDK.LogiUpdate () && LogitechGSDK.LogiIsConnected ( 0 ))
-                return InputWheel.Brake;
-            else return Mathf.Abs ( Mathf.Clamp ( 0.0f, -1.0f, Input.GetAxis ( "Vertical" ) ) );
+            return Mathf.Abs ( Mathf.Clamp ( 0.0f, -1.0f, Input.GetAxis ( "Vertical" ) ) );
         }
     }
     public float STEERING
@@ -68,9 +64,7 @@ public class Vehicle : MonoBehaviour
             if (!Application.isPlaying) return 0.0f;
             if (!engineIsOn) return 0.0f;
 
-            if (LogitechGSDK.LogiUpdate () && LogitechGSDK.LogiIsConnected ( 0 ))
-                return InputWheel.Steering;
-            else return Input.GetAxis ( "Horizontal" );
+            return Input.GetAxis ( "Horizontal" );
         }
     }
     public Health health { get; protected set; }
@@ -194,14 +188,10 @@ public class Vehicle : MonoBehaviour
         {
             float damage = 12.5f;
 
-            Debug.Log ( "Should take " + damage );
-
             if(currentDriver != null && currentDriver == EntityManager.instance.PlayerCharacter)
             {
                 damage *= SkillModifiers.DrivingDamageReduction;
             }
-
-            Debug.Log ( "Took " + damage );
 
             health.RemoveHealth ( damage, DamageType.BluntForce );
         }

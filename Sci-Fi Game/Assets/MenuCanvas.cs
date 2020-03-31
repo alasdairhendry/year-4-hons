@@ -41,6 +41,6 @@ public class MenuCanvas : UIPanel
 
     public void OnClick_Quit ()
     {
-        LoadingManager.instance.LoadScene ( 0 );
+        LoadingManager.instance.LoadScene ( 1 );
     }
 }

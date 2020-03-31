@@ -86,6 +86,7 @@ public class MobSpawner : MonoBehaviour
         GameObject instance = Instantiate ( mobPrefab );
 
         Vector3 spawnPosition = this.transform.position + Random.insideUnitSphere * radius;
+        spawnPosition.y = this.transform.position.y + 1;
 
         NavMeshHit navMeshHit;
         bool sampledPositionSuccessfully = false;

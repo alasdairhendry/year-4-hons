@@ -92,6 +92,6 @@ public class CharacterInput : MonoBehaviour
             //return;
         //}
 
-        isAimInput = Input.GetKey ( KeyCode.V ) || Input.GetMouseButton ( 1 ) && character.isDead == false;
+        isAimInput = Input.GetMouseButton ( 1 ) && character.isDead == false;
     }
 }

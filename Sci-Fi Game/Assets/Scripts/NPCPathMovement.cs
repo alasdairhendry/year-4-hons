@@ -115,11 +115,21 @@ public class NPCPathMovement : MonoBehaviour
             case NPCPathMovementType.Loop:
                 for (int i = 0; i < predeterminedPathPositions.Count; i++)
                 {
-                    Gizmos.DrawCube ( transform.TransformPoint ( predeterminedPathPositions[i]), Vector3.one * 0.25f );
-                    if(i < predeterminedPathPositions.Count - 1)
-                        Gizmos.DrawLine ( transform.TransformPoint ( predeterminedPathPositions[i]), transform.TransformPoint ( predeterminedPathPositions[i+1]) );
+                    Vector3 pos = transform.TransformPoint ( predeterminedPathPositions[i] );
+                    pos.y = 0;
+
+                    Vector3 posZero = transform.TransformPoint ( predeterminedPathPositions[0] );
+                    posZero.y = 0;
+
+                    Gizmos.DrawCube (pos, Vector3.one * 0.25f );
+                    if (i < predeterminedPathPositions.Count - 1)
+                    {
+                        Vector3 posPlus = transform.TransformPoint ( predeterminedPathPositions[i+1] );
+                        posPlus.y = 0;
+                        Gizmos.DrawLine ( pos, posPlus );
+                    }
                     else
-                        Gizmos.DrawLine ( transform.TransformPoint ( predeterminedPathPositions[i]), transform.TransformPoint ( predeterminedPathPositions[0]) );
+                        Gizmos.DrawLine ( pos, posZero );
                 }
                 break;
             case NPCPathMovementType.PingPong:

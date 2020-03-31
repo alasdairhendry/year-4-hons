@@ -105,7 +105,8 @@ public class InventoryItemPanel : MonoBehaviour, IBeginDragHandler, IDragHandler
 
     void IBeginDragHandler.OnBeginDrag (PointerEventData eventData)
     {
-        DragHandler.OnBeginDrag ( inventoryIndex, ItemID, ItemAmount, panelDragType, contentPanel.transform, ItemDatabase.GetItem ( ItemID ).Sprite );       
+        if (ItemDatabase.ItemExists ( ItemID ))
+            DragHandler.OnBeginDrag ( inventoryIndex, ItemID, ItemAmount, panelDragType, contentPanel.transform, ItemDatabase.GetItem ( ItemID ).Sprite );
     }
 
     void IDragHandler.OnDrag (PointerEventData eventData)

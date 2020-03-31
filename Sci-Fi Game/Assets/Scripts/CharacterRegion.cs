@@ -20,7 +20,8 @@ public class CharacterRegion : MonoBehaviour
 
     private void Update ()
     {
-        DetectRegions ();
+        if (cityController)
+            DetectRegions ();
     }
 
     private void DetectRegions ()

@@ -461,8 +461,8 @@ MonoBehaviour:
   conditionRequirementType: 0
   conditions: []
   actions: []
-  dialogue: 'I heard they had brought some new people in. I don''t remember your name
-    though. '
+  dialogue: 'Huh.. I heard they had brought some new people in. I don''t remember
+    your name being mentioned though. '
   actorOverride: {fileID: 11400000, guid: fd96852e026e5fa4597ab647948f8256, type: 2}
 --- !u!114 &-6301997936571960984
 MonoBehaviour:
@@ -1389,10 +1389,7 @@ MonoBehaviour:
   - {fileID: 7894144695035106536}
   - {fileID: 673954610197931253}
   - {fileID: 4371113059984324999}
-  - {fileID: -3492216501518217662}
   - {fileID: 5068693410007320115}
-  - {fileID: -6806776518406765038}
-  - {fileID: -8417227208042917808}
   - {fileID: 4865058479397758226}
   - {fileID: -3330314613315906242}
   - {fileID: 848211013270666035}
@@ -1422,6 +1419,9 @@ MonoBehaviour:
   - {fileID: 4714095084986043965}
   - {fileID: 8141865563889559959}
   - {fileID: 5370169028265503900}
+  - {fileID: -6806776518406765038}
+  - {fileID: -3492216501518217662}
+  - {fileID: -8417227208042917808}
   - {fileID: 0}
   defaultActor: {fileID: 11400000, guid: fd96852e026e5fa4597ab647948f8256, type: 2}
 --- !u!114 &673954610197931253
@@ -1975,7 +1975,7 @@ MonoBehaviour:
   conditionRequirementType: 0
   conditions: []
   actions: []
-  dialogue: '[pn].'
+  dialogue: ..."1337No0b"..
 --- !u!114 &5370169028265503900
 MonoBehaviour:
   m_ObjectHideFlags: 0

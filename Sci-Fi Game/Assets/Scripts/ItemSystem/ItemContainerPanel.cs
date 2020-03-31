@@ -61,7 +61,8 @@ public class ItemContainerPanel : MonoBehaviour, IBeginDragHandler, IDragHandler
 
     void IBeginDragHandler.OnBeginDrag (PointerEventData eventData)
     {
-        DragHandler.OnBeginDrag ( inventoryIndex, ItemID, ItemAmount, DragHandler.Master.ItemContainer, contentPanel.transform, ItemDatabase.GetItem ( ItemID ).Sprite );
+        if (ItemDatabase.ItemExists ( ItemID ))
+            DragHandler.OnBeginDrag ( inventoryIndex, ItemID, ItemAmount, DragHandler.Master.ItemContainer, contentPanel.transform, ItemDatabase.GetItem ( ItemID ).Sprite );
     }
 
     void IDragHandler.OnDrag (PointerEventData eventData)

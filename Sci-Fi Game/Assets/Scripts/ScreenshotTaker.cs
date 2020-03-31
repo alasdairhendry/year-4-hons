@@ -11,10 +11,11 @@ public class ScreenshotTaker : MonoBehaviour
 
     private void Update ()
     {
-        if (Input.GetKeyDown ( KeyCode.Space ))
-        {
-            StartCoroutine ( TakeScreenshots () );
-        }
+        //if (Input.GetKeyDown ( KeyCode.Space ))
+        //{
+        //    StartCoroutine ( TakeScreenshots () );
+        //}
+        
     }
 
     private IEnumerator TakeScreenshots ()

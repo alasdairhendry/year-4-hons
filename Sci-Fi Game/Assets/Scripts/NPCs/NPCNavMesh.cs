@@ -91,13 +91,13 @@ public class NPCNavMesh : MonoBehaviour
         }
     }
 
-    public void SetDestination (Vector3 worldPosition, bool disableCurrentPathIfFails, bool mandatory)
+    public bool SetDestination (Vector3 worldPosition, bool disableCurrentPathIfFails, bool mandatory)
     {
         if (mandatory == false)
         {
             if (npc.MeshRenderer.isVisible == false)
             {
-                return;
+                return false;
             }
         }
 
@@ -113,6 +113,7 @@ public class NPCNavMesh : MonoBehaviour
                 HasPath = true;
                 OnPathObtained ();
                 currentPathIsMandatory = mandatory;
+                return true;
             }
             else
             {
@@ -120,12 +121,14 @@ public class NPCNavMesh : MonoBehaviour
                     ClearCurrentPath ();
 
                 CheckIsOnNavMesh ();
+                return false;
             }
         }
         else
         {
             if (disableCurrentPathIfFails)
                 ClearCurrentPath ();
+            return false;
         }
     }
 

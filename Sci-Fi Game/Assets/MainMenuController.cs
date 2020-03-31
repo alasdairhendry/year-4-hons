@@ -38,6 +38,7 @@ public class MainMenuController : MonoBehaviour
     [SerializeField] private GameObject settingsEntryTemplate;
 
     private Faction selectedFaction = null;
+    private float startDelay = 0.25f;
 
     private void Awake ()
     {
@@ -57,12 +58,31 @@ public class MainMenuController : MonoBehaviour
         SelectFaction ( factions[0] );
 
         CreateSettingsSliders ();
+        Debug.Log ( "AWake" );
     }
 
     private void Start ()
     {
-        DoCharacterWalkIn ();
-        characterNavMesh.onPathComplete += OnWalkInComplete;
+        //Debug.Log ( "Start" );
+      
+
+        //canvasGroup.DOFade ( 1.0f, 1.0f );
+        //canvasGroup.blocksRaycasts = true;
+    }
+
+    private void Update ()
+    {
+        if (startDelay > 0)
+        {
+            startDelay -= Time.deltaTime;
+
+            if (startDelay <= 0)
+            {
+                Debug.Log ( "Start Delay" );
+                characterNavMesh.onPathComplete += OnWalkInComplete;
+                DoCharacterWalkIn ();
+            }
+        }
     }
 
     public void OnClick_Play ()
@@ -99,7 +119,7 @@ public class MainMenuController : MonoBehaviour
 
     private void LoadGame ()
     {
-        LoadingManager.instance.LoadScene ( 1 );
+        LoadingManager.instance.LoadScene ( 2 );
     }
 
     public void OnClick_Settings ()
@@ -117,7 +137,7 @@ public class MainMenuController : MonoBehaviour
 
     public void OnClick_Exit ()
     {
-
+        Application.Quit ();
     }
 
     private void CreateFactionButtons ()
@@ -165,7 +185,12 @@ public class MainMenuController : MonoBehaviour
 
     public void DoCharacterWalkIn ()
     {
-        characterNavMesh.SetDestination ( walkInToSceneTransform.position, false, true );
+        bool b = characterNavMesh.SetDestination ( walkInToSceneTransform.position, false, true );
+
+        while( b == false)
+        {
+            b = characterNavMesh.SetDestination ( walkInToSceneTransform.position, false, true );
+        }
     }
 
     private void OnWalkInComplete ()

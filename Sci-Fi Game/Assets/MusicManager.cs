@@ -49,6 +49,6 @@ public class MusicManager : MonoBehaviour
         currentCounter = clip.length;
         audioSource.clip = clip;
         audioSource.Play ();
-        audioSource.DOFade ( 0.15f, 1.5f );
+        audioSource.DOFade ( 0.05f, 1.5f );
     }
 }

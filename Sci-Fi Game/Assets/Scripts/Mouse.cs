@@ -75,14 +75,17 @@ public class Mouse : MonoBehaviour
         if (Input.GetKeyDown ( KeyCode.K ))
             SkillsCanvas.instance.Trigger ();
 
+        if (Input.GetKeyDown ( KeyCode.N ))
+            TalentCanvas.instance.Trigger ();
+
         if (Input.GetKeyDown ( KeyCode.C ))
             MessageBox.instance.Trigger ();
 
         if (Input.GetKeyDown ( KeyCode.M ))
             WorldMapCanvas.instance.Trigger ();
 
-        if (Input.GetKeyDown ( KeyCode.N ))
-            TalentCanvas.instance.Trigger ();
+        if (Input.GetKeyDown ( KeyCode.O ))
+            FindObjectOfType<HelpCanvas>()?.Trigger ();
 
         //if (Input.GetKeyDown ( KeyCode.H ))
         //    GearCanvas.instance.Trigger ();
@@ -108,7 +111,7 @@ public class Mouse : MonoBehaviour
                 DialogueManager.instance.OnHotkeyPressed ( KeyCode.Space, Input.GetKey ( KeyCode.LeftShift ), Input.GetKey ( KeyCode.LeftControl ), Input.GetKey ( KeyCode.LeftAlt ) );
             }
         }
-        else if (TeleportCanvas.instance.isOpened)
+        else if (TeleportCanvas.instance != null && TeleportCanvas.instance.isOpened)
         {
             for (int i = 0; i < hotkeyNumbers.Count; i++)
             {

@@ -24,12 +24,25 @@ public class AIStateBaseCombat : AIStateBase
 
         if (CheckCanSeePlayer ( npc ))
         {
-            RotateTowardsPlayer ( npc, playerCharacter );
-            HandleGunMechanics ( npc, playerCharacter );
-            HandleMeleeMechanics ( npc );
-            npc.NPCNavMesh.ClearCurrentPath ();
-            npc.Character.isRunning = false;
-        }
+            if (PlayerTooClose ( npc ))
+            {
+                npc.Character.cWeapon.NPC_StopFire ();
+                npc.Character.isRunning = true;
+
+                if (!npc.NPCNavMesh.HasPath)
+                {
+                    npc.NPCNavMesh.SetDestination ( EntityManager.instance.PlayerCharacter.transform.position + (EntityManager.instance.PlayerCharacter.transform.forward * 5.0f), false, true );
+                }
+            }
+            else
+            {
+                RotateTowardsPlayer ( npc, playerCharacter );
+                HandleGunMechanics ( npc, playerCharacter );
+                HandleMeleeMechanics ( npc );
+                npc.NPCNavMesh.ClearCurrentPath ();
+                npc.Character.isRunning = false;
+            }       
+        }        
         else
         {
             npc.Character.cWeapon.NPC_StopFire ();
@@ -55,6 +68,15 @@ public class AIStateBaseCombat : AIStateBase
         {
             return hit.collider == EntityManager.instance.PlayerCharacter.collider;
         }
+
+        return false;
+    }
+
+    private bool PlayerTooClose (NPC npc)
+    {
+        float dist = (npc.transform.position - EntityManager.instance.PlayerCharacter.transform.position).sqrMagnitude;
+        if (dist <= 0.7f)
+            return true;
 
         return false;
     }

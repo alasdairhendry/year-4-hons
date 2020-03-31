@@ -368,15 +368,15 @@ public class NewVehicleGround : Vehicle
         }
         else
         {
-            if (Input.GetKeyDown ( KeyCode.Q ))
-            {
-                ShiftDown ();
-            }
+            //if (Input.GetKeyDown ( KeyCode.Q ))
+            //{
+            //    ShiftDown ();
+            //}
 
-            if (Input.GetKeyDown ( KeyCode.E ))
-            {
-                ShiftUp ();
-            }
+            //if (Input.GetKeyDown ( KeyCode.E ))
+            //{
+            //    ShiftUp ();
+            //}
         }
         
     }

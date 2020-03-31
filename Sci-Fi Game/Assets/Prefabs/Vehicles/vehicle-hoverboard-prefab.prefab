@@ -151,7 +151,7 @@ MonoBehaviour:
   - {x: -0.4, y: 0, z: -1}
   hoverHeight: 0.75
   hoverForce: 20
-  hoverForceGainRateModifier: 2.5
+  hoverForceGainRateModifier: 10
   hoverForceLoseRateModifier: 2.5
   hoverDamp: 2.5
   forceMode: 5

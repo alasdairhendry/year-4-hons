@@ -32,12 +32,12 @@ public class CharacterMovement : MonoBehaviour
         Vector3 moveDirection = new Vector3 ( 0.0f, 0.0f, 0.0f );
 
         if (character.IsAiming)
-            moveDirection += character.cCameraController.LookTransform.forward;
+            moveDirection += character.cCameraController.LookTransform.forward * Time.deltaTime;
         else
-            moveDirection += character.cCameraController.LookTransform.forward * character.cInput.rawInput.y;
+            moveDirection += character.cCameraController.LookTransform.forward * character.cInput.rawInput.y * Time.deltaTime;
 
         if (!character.IsAiming)
-            moveDirection += character.cCameraController.LookTransform.right * character.cInput.rawInput.x;
+            moveDirection += character.cCameraController.LookTransform.right * character.cInput.rawInput.x * Time.deltaTime;
 
         moveDirection.Normalize ();
 

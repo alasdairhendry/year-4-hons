@@ -72,7 +72,8 @@ public class HotbarEntryPanel : MonoBehaviour, IBeginDragHandler, IDragHandler, 
 
     void IBeginDragHandler.OnBeginDrag (PointerEventData eventData)
     {
-        DragHandler.OnBeginDrag ( index, currentItemID, 0, DragHandler.Master.Hotbar, image.transform, ItemDatabase.GetItem ( currentItemID ).Sprite );
+        if (ItemDatabase.ItemExists ( currentItemID ))
+            DragHandler.OnBeginDrag ( index, currentItemID, 0, DragHandler.Master.Hotbar, image.transform, ItemDatabase.GetItem ( currentItemID ).Sprite );
     }
 
     void IDragHandler.OnDrag (PointerEventData eventData)

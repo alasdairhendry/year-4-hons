@@ -96,31 +96,8 @@ public class CharacterInteraction : MonoBehaviour
                     if (Extensions.SquaredDistance ( hit.collider.transform.position, transform.position ) <= SquaredInteractionAvailableRadius)
                     {
                         EntityManager.instance.PlayerCharacter.cWeapon.SetHolsterState ( true );
-
-                        //if (InventoryItemInteraction.IsCurrentlyInteracting)
-                        //{
-                        //    InventoryItemInteraction.OnClickInteractableItem ( interactable.GetInteractableType );
-                        //}
-                        //else
-                        //{
-                            interactable.Interact ();
-                        //}
+                        interactable.Interact ();
                     }
-                }
-            }
-        }
-
-        if (Input.GetKeyUp ( KeyCode.E ) && EventSystem.current.IsPointerOverGameObject () == false)
-        {
-            ray = new Ray ( mainCamera.transform.position, mainCamera.transform.forward );
-
-            if (Physics.Raycast ( ray, out hit, interactionDisplayRadius, layerMask ))
-            {
-                Interactable interactable = hit.collider.gameObject.GetComponent<Interactable> ();
-
-                if (interactable != null)
-                {
-                    interactable.Interact ();
                 }
             }
         }

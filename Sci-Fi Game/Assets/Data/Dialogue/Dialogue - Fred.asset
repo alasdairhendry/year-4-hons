@@ -598,7 +598,7 @@ MonoBehaviour:
   conditionRequirementType: 0
   conditions: []
   actions: []
-  dialogue: '......'
+  dialogue: ......
 --- !u!114 &-3763274149943869990
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -647,7 +647,8 @@ MonoBehaviour:
   conditionRequirementType: 0
   conditions: []
   actions: []
-  dialogue: Sorry, your inventory is too full. Come back when you have some free space.
+  dialogue: Sorry, your inventory is too full. Come back when you have some free
+    space.
   actorOverride: {fileID: 11400000, guid: 5c9f65cc6567c8d428cb7c708e51f85a, type: 2}
 --- !u!114 &-3705121491618075440
 MonoBehaviour:
@@ -1214,7 +1215,7 @@ MonoBehaviour:
   conditionRequirementType: 0
   conditions: []
   actions: []
-  dialogue: '...'
+  dialogue: ...
 --- !u!114 &986218726514646948
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1332,7 +1333,7 @@ MonoBehaviour:
   conditionRequirementType: 0
   conditions: []
   actions: []
-  dialogue: '........'
+  dialogue: ........
 --- !u!114 &2204730699787447053
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1489,7 +1490,7 @@ MonoBehaviour:
   conditionRequirementType: 0
   conditions: []
   actions: []
-  dialogue: '....'
+  dialogue: ....
 --- !u!114 &2885475925543440237
 MonoBehaviour:
   m_ObjectHideFlags: 0

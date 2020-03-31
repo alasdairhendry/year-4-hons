@@ -19,19 +19,26 @@ public enum ItemCategory
 
 public abstract class ItemBaseData
 {
-    public int ID { get; set; }                   // The ID of this item - This is a unique integer and will never be changed
+    // The ID of this item - This is a unique integer and will never be changed
+    public int ID { get; set; }                   
     public string Name { get; protected set; }
-    public string Description { get; protected set; }   
-    public ItemCategory category { get; protected set; }    // The category this item belongs to
+    public string Description { get; protected set; }
 
-    public bool IsSellable { get; protected set; }          // Is the item able to be sold to shops?
-    public bool IsStackable { get; protected set; }             // Can this item be stacked on top of itself in an inventory?
+    // The category this item belongs to
+    public ItemCategory category { get; protected set; }
+    // Is the item able to be sold to shops?
+    public bool IsSellable { get; protected set; }
+    // Can this item be stacked on top of itself in an inventory?
+    public bool IsStackable { get; protected set; }
 
-    public string[] RelatedQuestIDs { get; protected set; }    // Does this item relate to any quest IDs? If so, it is considered a quest item
-    public bool IsQuestItem { get { return RelatedQuestIDs.Length > 0; } }  // Relies on RelatedQuestIDs to determine if this is a quest item or not
-
-    public int BuyPrice { get; protected set; }            // A baseline price that the player can buy this item for ( this may be overridden by a merchants price modifier ) (( The sell price will typically be 0.75f of the buy price ))
-    public Sprite Sprite { get; protected set; }            // A sprite to display in the game UI 
+    // Does this item relate to any quest IDs? If so, it is considered a quest item
+    public string[] RelatedQuestIDs { get; protected set; }
+    // Relies on RelatedQuestIDs to determine if this is a quest item or not
+    public bool IsQuestItem { get { return RelatedQuestIDs.Length > 0; } }
+    // A baseline price that the player can buy this item for ( this may be overridden by a merchants price modifier ) (( The sell price will typically be 0.75f of the buy price ))
+    public int BuyPrice { get; protected set; }
+    // A sprite to display in the game UI 
+    public Sprite Sprite { get; protected set; }            
 
     protected Dictionary<InventoryInteractionData.InteractType, InventoryInteractionData> interactionData { get; set; } = new Dictionary<InventoryInteractionData.InteractType, InventoryInteractionData> ();
     protected InventoryInteractionData.InteractType defaultInteractionData = InventoryInteractionData.InteractType.Use;

@@ -14,11 +14,6 @@ public class PrefabAssetDatabase : ScriptableObject
 
     public List<Asset> Assets { get => assets; }
 
-    private void Awake ()
-    {
-        CreateDictionary ();
-    }
-
     public void CreateDictionary ()
     {
         for (int i = 0; i < assets.Count; i++)

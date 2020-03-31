@@ -45,4 +45,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   soundEffectPrefab: {fileID: 1895060342894041460, guid: ae88631982805a242be52b0832a9a0cd,
     type: 3}
-  mainCamera: {fileID: 0}
